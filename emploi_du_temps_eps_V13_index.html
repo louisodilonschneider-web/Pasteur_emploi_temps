@@ -1,0 +1,2491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPS Emploi du Temps — Collège Pasteur</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a1a2e;--accent:#e63946;--accent2:#457b9d;--success:#2a9d8f;--border:#dee2e6;--text:#212529;--muted:#6c757d;--warn:#f4a261;--card:#f8f9fa;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);min-height:100vh;font-size:14px;}
+
+header{background:var(--primary);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.2);}
+header h1{font-family:'DM Serif Display',serif;font-size:1.4rem;letter-spacing:-.2px;}
+header h1 span{color:var(--accent);}
+.subtitle{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px;font-weight:300;}
+.hactions{display:flex;gap:8px;align-items:center;}
+
+.tabs{display:flex;border-bottom:2px solid var(--border);background:#fff;padding:0 28px;overflow-x:auto;flex-shrink:0;}
+.tab-btn{padding:12px 18px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;}
+.tab-btn:hover{color:var(--primary);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+main{display:flex;height:calc(100vh - 112px);overflow:hidden;}
+.sidebar{width:280px;min-width:250px;background:#fff;border-right:1px solid var(--border);overflow-y:auto;padding:18px 14px;flex-shrink:0;}
+.sb-sec{margin-bottom:22px;}
+.sb-sec h3{font-family:'DM Serif Display',serif;font-size:.9rem;color:var(--primary);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.content{flex:1;overflow-y:auto;padding:22px 26px;background:#fff;}
+.panel{display:none;}.panel.active{display:block;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:15px;margin-bottom:11px;}
+.card h4{font-weight:600;font-size:.88rem;margin-bottom:8px;color:var(--primary);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+
+label{display:block;font-size:.78rem;font-weight:500;color:var(--muted);margin-bottom:3px;margin-top:9px;}
+input[type=text],input[type=number],select{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.83rem;color:var(--text);background:#fff;transition:border-color .15s;}
+input:focus,select:focus{outline:none;border-color:var(--accent2);}
+input[type=color]{width:42px;height:32px;padding:2px;border:1px solid var(--border);border-radius:5px;cursor:pointer;}
+
+.btn{padding:8px 16px;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.83rem;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover{background:#c1121f;}
+.btn-secondary{background:var(--primary);color:#fff;}.btn-secondary:hover{background:#111124;}
+.btn-outline{background:#fff;color:var(--primary);border:1px solid var(--border);}.btn-outline:hover{border-color:var(--accent2);color:var(--accent2);}
+.btn-sm{padding:4px 11px;font-size:.75rem;}
+.btn-success{background:var(--success);color:#fff;}
+
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.7rem;font-weight:500;}
+.badge-green{background:#d1fae5;color:#065f46;}.badge-red{background:#fee2e2;color:#991b1b;}
+.badge-blue{background:#dbeafe;color:#1e40af;}.badge-orange{background:#ffedd5;color:#9a3412;}
+.badge-purple{background:#ede9fe;color:#5b21b6;}.badge-gray{background:#f1f5f9;color:#475569;}
+
+/* GRILLE DISPONIBILITÉ */
+.avail-grid{display:grid;grid-template-columns:88px repeat(5,1fr);gap:2px;font-size:.7rem;margin-top:8px;}
+.avail-header{background:var(--primary);color:#fff;padding:4px;text-align:center;border-radius:3px;font-size:.68rem;font-weight:500;}
+.avail-time{background:#f1f3f5;padding:3px 5px;border-radius:3px;font-weight:500;text-align:right;color:var(--muted);font-size:.65rem;display:flex;align-items:center;justify-content:flex-end;}
+.avail-cell{border-radius:3px;cursor:pointer;text-align:center;padding:4px 2px;transition:all .12s;user-select:none;font-size:.62rem;font-weight:600;}
+.avail-cell.ok{background:#d1fae5;color:#065f46;}
+.avail-cell.off{background:#fde8e8;color:#991b1b;}
+.avail-cell.pool{background:#dbeafe;color:#1e40af;cursor:default;}
+.avail-cell.wed-pm{background:#f1f5f9;color:#94a3b8;cursor:default;}
+
+/* CYCLES */
+.cycle-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.cycle-tab{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:.78rem;cursor:pointer;font-weight:500;color:var(--muted);background:#fff;transition:all .15s;}
+.cycle-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+/* INSTALL SLOT */
+.inst-row{display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid var(--border);border-radius:5px;margin-bottom:5px;font-size:.79rem;background:#fff;}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* SCHEDULE TABLE */
+.sched-wrap{overflow-x:auto;}
+.sched-table{width:100%;border-collapse:collapse;font-size:.76rem;}
+.sched-table th{background:var(--primary);color:#fff;padding:7px 9px;font-weight:500;text-align:center;border:1px solid rgba(255,255,255,.1);}
+.sched-table .tc{background:#f1f3f5;font-weight:600;font-size:.7rem;color:var(--muted);text-align:center;padding:5px 6px;width:76px;border:1px solid var(--border);white-space:nowrap;}
+.sched-table td{border:1px solid var(--border);padding:0;vertical-align:top;min-width:115px;height:54px;}
+.slot-cell{width:100%;height:100%;padding:3px 5px;font-size:.68rem;line-height:1.3;cursor:pointer;transition:filter .1s;display:block;}
+.slot-cell:hover{filter:brightness(.92);}
+.slot-cell b{display:block;font-size:.72rem;}
+.slot-pool{background:linear-gradient(135deg,#bfdbfe,#93c5fd);color:#1e3a5f;border-left:3px solid #3b82f6;}
+.slot-free{background:repeating-linear-gradient(45deg,#f8f9fa,#f8f9fa 3px,#eee 3px,#eee 6px);font-size:.62rem;color:var(--muted);display:flex;align-items:center;justify-content:center;height:100%;cursor:default;font-style:italic;}
+.slot-as{background:#fef3c7;border-left:3px solid #f59e0b;color:#78350f;}
+.slot-wedpm{background:#f8fafc;color:#94a3b8;font-size:.62rem;display:flex;align-items:center;justify-content:center;height:100%;cursor:default;}
+
+/* TEACHER CARD */
+.tcard{border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:9px;background:#fff;}
+.tcard-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.avatar{width:34px;height:34px;border-radius:50%;font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
+
+.pref-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.7rem;margin:2px;cursor:pointer;border:1px solid transparent;transition:all .1s;}
+.pref-tag.prefer{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
+.pref-tag.avoid{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+.pref-tag.neutral{background:#f1f5f9;color:#475569;border-color:#cbd5e1;}
+
+/* AS TABLE */
+.as-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px;}
+.as-table th{background:#f1f5f9;padding:7px 10px;text-align:left;font-weight:600;font-size:.75rem;color:var(--muted);border-bottom:2px solid var(--border);}
+.as-table td{padding:7px 10px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+.as-table tr:last-child td{border-bottom:none;}
+.as-input{width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.82rem;text-align:center;}
+
+/* POOL OPTIONS */
+.pool-opts{display:flex;gap:9px;margin-top:8px;}
+.pool-opt{flex:1;padding:10px;border:2px solid var(--border);border-radius:7px;cursor:pointer;text-align:center;font-size:.77rem;transition:all .15s;}
+.pool-opt.selected{border-color:var(--accent2);background:#e8f4fd;color:var(--accent2);}
+.pool-opt h5{font-size:.79rem;margin-bottom:4px;}
+.pool-opt p{font-size:.69rem;color:var(--muted);line-height:1.3;}
+.pool-opt.selected p{color:var(--accent2);opacity:.8;}
+
+.section-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--primary);margin-bottom:5px;}
+.section-sub{color:var(--muted);font-size:.8rem;margin-bottom:16px;}
+
+.alert{padding:9px 13px;border-radius:6px;margin-bottom:11px;font-size:.8rem;display:flex;align-items:flex-start;gap:7px;}
+.alert-warn{background:#fff8e1;border-left:3px solid var(--warn);color:#7b5e00;}
+.alert-info{background:#e8f4fd;border-left:3px solid var(--accent2);color:#0c4a6e;}
+.alert-success{background:#ecfdf5;border-left:3px solid var(--success);color:#064e3b;}
+.alert-danger{background:#fff1f2;border-left:3px solid var(--accent);color:#881337;}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:460px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal h3{font-family:'DM Serif Display',serif;font-size:1.05rem;margin-bottom:13px;color:var(--primary);}
+.mfooter{display:flex;gap:7px;justify-content:flex-end;margin-top:14px;padding-top:11px;border-top:1px solid var(--border);}
+
+.ttabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
+.ttab{padding:5px 13px;border-radius:18px;border:1.5px solid var(--border);font-size:.78rem;cursor:pointer;font-weight:500;color:var(--muted);background:#fff;transition:all .15s;}
+.ttab.active{font-weight:600;}
+
+.row{display:flex;gap:11px;}.col{flex:1;}
+.stats-row{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:18px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:7px;padding:13px 16px;flex:1;min-width:110px;}
+.stat-card .sv{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--primary);line-height:1;}
+.stat-card .sl{font-size:.7rem;color:var(--muted);margin-top:3px;}
+.stat-card.ok .sv{color:var(--success);}.stat-card.warn .sv{color:var(--warn);}.stat-card.err .sv{color:var(--accent);}
+
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.li{display:flex;align-items:center;gap:4px;font-size:.73rem;}
+.lc{width:13px;height:13px;border-radius:3px;}
+
+.cflist{font-size:.77rem;}
+.cfitem{display:flex;align-items:flex-start;gap:5px;padding:3px 0;border-bottom:1px solid #f5f5f5;}
+.cfdot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+
+.no-gap-note{background:#ecfdf5;border:1px solid #6ee7b7;border-radius:6px;padding:7px 11px;font-size:.77rem;color:#065f46;margin-bottom:12px;}
+
+
+/* ── DISTANCE BADGE ── */
+.dist-badge{font-size:.68rem;padding:2px 7px;border-radius:8px;font-weight:600;display:inline-block;}
+.dist-proche{background:#d1fae5;color:#065f46;}
+.dist-eloigne{background:#ffedd5;color:#9a3412;}
+
+/* ── CONTRAINTES AVANCÉES ── */
+.adv-sec{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.adv-sec:last-child{border-bottom:none;}
+.adv-h{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--primary);margin:0 0 3px;}
+.adv-sub{font-size:.78rem;color:var(--muted);margin-bottom:11px;}
+.prio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px;}
+.prio-card{border:1px solid var(--border);border-radius:8px;padding:11px;background:#fff;}
+.prio-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.co-row{display:flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;background:#fff;flex-wrap:wrap;}
+.co-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:10px;font-size:.71rem;font-weight:600;}
+
+/* ── PERMUTATION ── */
+.swap-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:#f8f9fa;border-radius:7px;margin-bottom:10px;font-size:.8rem;}
+
+/* ── PISCINE SUPERVISION ── */
+.pool-sup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+.pool-day-card{border:1px solid var(--border);border-radius:8px;padding:12px;background:#fff;}
+.pool-day-title{font-weight:700;font-size:.84rem;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pool-teacher-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #f0f0f0;font-size:.79rem;}
+.pool-teacher-row:last-child{border-bottom:none;}
+.sup-badge{padding:1px 7px;border-radius:10px;font-size:.68rem;font-weight:600;background:#fef3c7;color:#78350f;border:1px solid #fcd34d;}
+
+/* ── CONFLITS SOLUTIONS ── */
+.cf-sol{background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;padding:9px 12px;margin-top:6px;font-size:.77rem;color:#78350f;}
+.cf-sol strong{color:#92400e;}
+.multi-edt-btn{padding:7px 16px;border-radius:6px;border:1.5px solid var(--border);font-size:.8rem;cursor:pointer;font-weight:500;background:#fff;transition:all .15s;margin-right:6px;margin-bottom:6px;}
+.multi-edt-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+/* ── VUE PAR CYCLE ── */
+.cycle-view-nav{display:flex;gap:6px;margin-bottom:14px;}
+.cycle-view-btn{padding:6px 16px;border-radius:20px;border:2px solid var(--border);font-size:.8rem;cursor:pointer;font-weight:600;color:var(--muted);background:#fff;transition:all .15s;}
+.cycle-view-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.install-balance-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px;}
+.install-bal-card{border:1px solid var(--border);border-radius:7px;padding:10px;background:#fff;font-size:.78rem;}
+.install-bal-bar{height:6px;border-radius:3px;margin:4px 0;background:var(--border);overflow:hidden;}
+.install-bal-fill{height:100%;border-radius:3px;background:var(--accent2);}
+
+/* ── PANNEAU COURS NON PLANIFIÉS ── */
+.failed-panel{background:#fff8f0;border:2px solid #f97316;border-radius:8px;padding:13px 15px;margin-bottom:14px;}
+.failed-panel-title{font-weight:700;font-size:.88rem;color:#c2410c;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.failed-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #fde8d5;font-size:.8rem;}
+.failed-item:last-child{border-bottom:none;}
+.btn-insert{padding:4px 11px;font-size:.72rem;border:1.5px solid #f97316;background:#fff;color:#c2410c;border-radius:5px;cursor:pointer;font-weight:600;transition:all .15s;}
+.btn-insert:hover{background:#fff7ed;}
+.btn-insert.active{background:#f97316;color:#fff;}
+/* Surlignage des cellules en mode insertion manuelle */
+.sched-table td.insert-ok{background:#dcfce7 !important;cursor:pointer;outline:2px solid #16a34a;outline-offset:-2px;}
+.sched-table td.insert-ok:hover{background:#bbf7d0 !important;}
+.sched-table td.insert-ko{background:#fee2e2 !important;cursor:help;outline:2px solid #dc2626;outline-offset:-2px;}
+/* Tooltip */
+.ins-tooltip{position:fixed;background:#1a1a2e;color:#fff;padding:6px 10px;border-radius:6px;font-size:.72rem;line-height:1.5;pointer-events:none;z-index:300;max-width:240px;display:none;}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-wrap{display:flex;align-items:center;gap:10px;padding:10px 0;}
+.toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:22px;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;}
+.toggle-switch input:checked+.toggle-slider{background:var(--success);}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
+.cal-wrap{overflow-x:auto;margin-top:8px;}
+.cal-table{width:100%;border-collapse:collapse;font-size:.74rem;table-layout:fixed;}
+.cal-table .cal-th{background:var(--primary);color:#fff;padding:6px 8px;font-weight:500;font-size:.75rem;text-align:center;border:1px solid rgba(255,255,255,.12);}
+.cal-table .cal-time{width:58px;background:#f4f5f7;font-size:.63rem;color:var(--muted);font-weight:600;text-align:right;padding:0 6px 0 0;border:1px solid #e8eaed;vertical-align:top;padding-top:4px;white-space:nowrap;}
+.cal-table td{border:1px solid #e8eaed;vertical-align:top;padding:0;position:relative;}
+.cal-block{padding:5px 7px;font-size:.69rem;line-height:1.35;border-left:3px solid transparent;height:100%;display:block;}
+.cal-block.eps-2h{background:#fffde7;border-left-color:#f9a825;}
+.cal-block.eps-1h{background:#fffde7;border-left-color:#f9a825;}
+.cal-block.pool{background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-left-color:#1976d2;}
+.cal-block.as{background:#fef3c7;border-left-color:#f59e0b;color:#78350f;}
+.cal-block.libre{background:repeating-linear-gradient(45deg,#f8f9fa,#f8f9fa 4px,#edf0f2 4px,#edf0f2 8px);cursor:default;}
+.cal-block.wedpm{background:#f0f4f8;color:#9ca3af;cursor:default;font-style:italic;}
+.cal-block strong{display:block;font-size:.71rem;font-weight:700;color:var(--primary);}
+.cal-block small{font-size:.62rem;color:var(--muted);}
+.cal-block .cal-install{font-size:.6rem;color:#555;margin-top:2px;font-style:italic;}
+.cal-teacher-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.cal-teacher-tab{padding:6px 15px;border-radius:20px;border:2px solid var(--border);font-size:.79rem;cursor:pointer;font-weight:600;color:var(--muted);background:#fff;transition:all .15s;}
+.cal-teacher-tab.active{color:#fff;border-color:transparent;}
+/* Tableau présences parallèles */
+.par-cell-0{background:#f8f9fa;color:#d1d5db;}
+.par-cell-1{background:#d1fae5;color:#065f46;}
+.par-cell-2{background:#a7f3d0;color:#064e3b;}
+.par-cell-3{background:#fef3c7;color:#78350f;}
+.par-cell-4{background:#fed7aa;color:#7c2d12;}
+.par-cell-5{background:#fecaca;color:#7f1d1d;}
+
+@media print{.sidebar,.tabs,header .hactions,.btn{display:none;}main{height:auto;overflow:visible;}.content{overflow:visible;}}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:#f0f0f0;}::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>EPS <span>Emploi du Temps</span></h1>
+    <div class="subtitle">Collège Pasteur — Villemomble</div>
+  </div>
+  <div class="hactions">
+    <button class="btn btn-outline btn-sm" onclick="exportData()">📤 Exporter</button>
+    <button class="btn btn-outline btn-sm" onclick="importData()">📥 Importer</button>
+    <button class="btn btn-primary" onclick="generateSchedule()">⚡ Générer l'EDT</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active"  onclick="switchTab('dashboard')">📊 Tableau de bord</button>
+  <button class="tab-btn" onclick="switchTab('teachers')">👩‍🏫 Enseignants</button>
+  <button class="tab-btn" onclick="switchTab('installations')">🏟️ Installations</button>
+  <button class="tab-btn" onclick="switchTab('constraints')">⚙️ Contraintes</button>
+  <button class="tab-btn" onclick="switchTab('advanced')">🔧 Contraintes avancées</button>
+  <button class="tab-btn" onclick="switchTab('schedule')">📅 Emploi du Temps</button>
+  <button class="tab-btn" onclick="switchTab('calview')">🗓️ EDT Actuel</button>
+  <button class="tab-btn" onclick="switchTab('cycleview')">📊 Vue par cycle</button>
+  <button class="tab-btn" onclick="switchTab('as')">🏅 Heures AS</button>
+  <button class="tab-btn" onclick="switchTab('conflicts')">⚠️ Vérification</button>
+</div>
+
+<main>
+  <div class="sidebar"><div id="sb"></div></div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="section-title">Tableau de bord</div>
+      <div class="section-sub">Vue d'ensemble de la configuration et répartition horaire.</div>
+      <div class="stats-row" id="db-stats"></div>
+      <div class="row">
+        <div class="col"><div class="card"><h4>📋 Enseignants</h4><div id="db-teachers"></div></div></div>
+        <div class="col"><div class="card"><h4>🎓 Classes</h4><div id="db-classes"></div></div></div>
+      </div>
+      <div class="card" style="margin-top:10px"><h4>🏊 Piscine</h4><div id="db-pool"></div></div>
+      <div class="alert alert-info" style="margin-top:14px">
+        <span>ℹ️</span>
+        <div><strong>Règles actives :</strong> 24h entre 2 cours d'une même classe · S3+S4 interdit pour les 2h · M4 déconseillé 6ème · S1 déconseillé · <strong>Mercredi PM exclu</strong> (matin autorisé) · Cours enchaînés (pas de trou) · Toutes les sessions d'une 6ème avec le même enseignant</div>
+      </div>
+    </div>
+
+    <!-- ENSEIGNANTS -->
+    <div class="panel" id="panel-teachers">
+      <div class="section-title">Enseignants</div>
+      <div class="section-sub">Journées libres, préférences de niveaux. Heures nettes (3h AS déduites).</div>
+      <div id="teachers-list"></div>
+    </div>
+
+    <!-- INSTALLATIONS -->
+    <div class="panel" id="panel-installations">
+      <div class="section-title">Disponibilités des installations</div>
+      <div class="section-sub">Choisissez un cycle prédéfini ou personnalisez créneau par créneau. Le mercredi après-midi est toujours exclu.</div>
+      <div class="cycle-tabs">
+        <div class="cycle-tab active" onclick="setCycleView(1,this)">Cycle 1</div>
+        <div class="cycle-tab" onclick="setCycleView(2,this)">Cycle 2</div>
+        <div class="cycle-tab" onclick="setCycleView(3,this)">Cycle 3</div>
+      </div>
+      <div id="cycle-desc" style="font-size:.8rem;color:var(--muted);margin-bottom:12px"></div>
+      <div id="installations-panel"></div>
+    </div>
+
+    <!-- CONTRAINTES -->
+    <div class="panel" id="panel-constraints">
+      <div class="section-title">Contraintes et paramètres</div>
+      <div class="section-sub">Configuration piscine et règles de génération.</div>
+      <div id="constraints-panel"></div>
+    </div>
+
+
+    <!-- CONTRAINTES AVANCÉES -->
+    <div class="panel" id="panel-advanced">
+      <div class="section-title">Contraintes avancées</div>
+      <div class="section-sub">Installation prioritaire · Co-enseignement · Permutation · Encadrement piscine</div>
+      <div id="advanced-panel"></div>
+    </div>
+
+    <!-- EDT ACTUEL (vue calendrier par enseignant) -->
+    <div class="panel" id="panel-calview">
+      <div class="section-title">🗓️ EDT Actuel — Vue calendrier</div>
+      <div class="section-sub">Vue hebdomadaire par enseignant, format agenda. Inspiré des emplois du temps réels. Sélectionnez un enseignant ou affichez tous en parallèle.</div>
+      <div id="calview-panel"></div>
+    </div>
+
+    <!-- VUE PAR CYCLE -->
+    <div class="panel" id="panel-cycleview">
+      <div class="section-title">Vue par cycle — Installations & Équilibre</div>
+      <div class="section-sub">Visualisez qui enseigne quoi et dans quelle installation, par cycle.</div>
+      <div id="cycleview-panel"></div>
+    </div>
+
+    <!-- EMPLOI DU TEMPS -->
+    <div class="panel" id="panel-schedule">
+      <div class="section-title">Emploi du Temps</div>
+      <div class="section-sub">Vue hebdomadaire. Cliquez sur un créneau pour modifier.</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><div class="ttabs" id="sched-ttabs" style="margin-bottom:0;flex:1"></div><button class="btn btn-outline btn-sm" onclick="generateAnother()" title="Générer une autre proposition">🎲 Autre proposition</button></div><div id="edt-history" style="margin-bottom:10px"></div>
+      <!-- ✅ FIX 5 — Panneau cours non planifiés -->
+      <div id="failed-panel-container"></div>
+      <div class="legend">
+        <div class="li"><div class="lc" style="background:linear-gradient(135deg,#bfdbfe,#93c5fd);border:2px solid #3b82f6"></div>Piscine</div>
+        <div class="li"><div class="lc" style="background:#d1fae5"></div>Cours 2h</div>
+        <div class="li"><div class="lc" style="background:#ede9fe"></div>Cours 1h</div>
+        <div class="li"><div class="lc" style="background:#fef3c7;border-left:3px solid #f59e0b"></div>AS</div>
+        <div class="li"><div class="lc" style="background:repeating-linear-gradient(45deg,#f8f9fa,#f8f9fa 3px,#eee 3px,#eee 6px)"></div>Libre</div>
+        <div class="li" id="legend-insert" style="display:none"><div class="lc" style="background:#dcfce7;outline:2px solid #16a34a"></div>Créneau libre</div>
+        <div class="li" id="legend-insert-ko" style="display:none"><div class="lc" style="background:#fee2e2;outline:2px solid #dc2626"></div>Créneau bloqué</div>
+      </div>
+      <div class="sched-wrap"><div id="sched-container"></div></div>
+      <!-- Tableau récapitulatif enseignants en parallèle -->
+      <div style="margin-top:22px">
+        <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--primary);margin-bottom:4px">👥 Enseignants présents en parallèle</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Nombre d'enseignants ayant un cours EPS ou AS sur chaque créneau. Le maximum est 5 (toute l'équipe).</div>
+        <div class="sched-wrap"><div id="parallel-container"></div></div>
+      </div>
+    </div>
+    <!-- Tooltip insertion manuelle -->
+    <div class="ins-tooltip" id="ins-tooltip"></div>
+
+    <!-- HEURES AS -->
+    <div class="panel" id="panel-as">
+      <div class="section-title">Heures AS — Association Sportive</div>
+      <div class="section-sub">Planifiez les 3h d'AS par enseignant. Ces heures apparaissent dans l'emploi du temps individuel.</div>
+      <div id="as-panel"></div>
+    </div>
+
+    <!-- VÉRIFICATION -->
+    <div class="panel" id="panel-conflicts">
+      <div class="section-title">Vérification des contraintes</div>
+      <div class="section-sub">Analyse automatique des violations.</div>
+      <div id="conflicts-content"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title"></h3>
+    <div id="modal-body"></div>
+    <div class="mfooter">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" id="modal-ok" onclick="modalConfirm()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+// ═══════════════════════════════════════════════
+// CONSTANTES
+// ═══════════════════════════════════════════════
+var DAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+var DSHORT=['L','Ma','Me','J','V'];
+var TS=[
+  {id:'M1',s:'08:25',e:'09:20',m:8*60+25,me:9*60+20},
+  {id:'M2',s:'09:25',e:'10:20',m:9*60+25,me:10*60+20},
+  {id:'M3',s:'10:35',e:'11:30',m:10*60+35,me:11*60+30},
+  {id:'M4',s:'11:35',e:'12:30',m:11*60+35,me:12*60+30},
+  {id:'S1',s:'13:00',e:'13:55',m:13*60,me:13*60+55},
+  {id:'S2',s:'14:00',e:'14:55',m:14*60,me:14*60+55},
+  {id:'S3',s:'15:10',e:'16:05',m:15*60+10,me:16*60+5},
+  {id:'S4',s:'16:10',e:'17:05',m:16*60+10,me:17*60+5},
+];
+var PM_SLOTS=['S1','S2','S3','S4'];
+var WED_PM_OFF=['Mercredi:S1','Mercredi:S2','Mercredi:S3','Mercredi:S4'];
+
+// ═══════════════════════════════════════════════
+// CYCLES DE DISPONIBILITÉ
+// 3 cycles prédéfinis pour les installations (hors piscine)
+// Chaque cycle correspond à une répartition saisonnière type
+// ═══════════════════════════════════════════════
+var CYCLES={
+  1:{
+    label:'Cycle 1 — Automne/Hiver (Gymnases prioritaires)',
+    desc:'Priorité aux installations couvertes. Stade fermé lundi et vendredi. Salle polyvalente disponible toute la semaine.',
+    // Pour chaque installation: quels jours/slots sont ouverts
+    overrides:{
+      gymnase1: {close:[], open:[]},          // tout ouvert (défaut)
+      gymnase2: {close:[], open:[]},
+      salle_polyv: {close:[], open:[]},
+      stade: {close:['Lundi','Vendredi'], open:[]}, // fermé lun+ven
+    }
+  },
+  2:{
+    label:'Cycle 2 — Printemps (Mixte)',
+    desc:'Accès au stade réouvert. Salle polyvalente fermée le mercredi matin. Gymnase 2 fermé le vendredi après-midi.',
+    overrides:{
+      gymnase1: {close:[], open:[]},
+      gymnase2: {close:[], open:[], closeSlots:{'Vendredi':['S2','S3','S4']}},
+      salle_polyv: {close:[], open:[], closeSlots:{'Mercredi':['M1','M2','M3','M4']}},
+      stade: {close:[], open:[]},
+    }
+  },
+  3:{
+    label:'Cycle 3 — Été (Extérieur prioritaire)',
+    desc:'Priorité au stade et extérieur. Gymnase 2 fermé lundi et mercredi. Salle polyvalente fermée en fin de semaine.',
+    overrides:{
+      gymnase1: {close:[], open:[]},
+      gymnase2: {close:['Lundi','Mercredi'], open:[]},
+      salle_polyv: {close:['Jeudi','Vendredi'], open:[]},
+      stade: {close:[], open:[]},
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════
+// UTILITAIRES (déclarés AVANT les données)
+// ═══════════════════════════════════════════════
+function shuffle(arr){var a=[...arr];for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function slotMin(day,sid){return DAYS.indexOf(day)*24*60+(TS.find(function(x){return x.id===sid;})||{m:0}).m;}
+// Fin du dernier slot d'une session (pour règle 24h correcte)
+function slotEnd(day,sid){return DAYS.indexOf(day)*24*60+(TS.find(function(x){return x.id===sid;})||{me:0}).me;}
+function overlap(sA,sB){return sA.some(function(s){return sB.indexOf(s)>-1;});}
+function lighten(hex,f){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return 'rgb('+Math.round(r+(255-r)*f)+','+Math.round(g+(255-g)*f)+','+Math.round(b+(255-b)*f)+')';}
+function isWedPM(day,slotId){return day==='Mercredi'&&PM_SLOTS.indexOf(slotId)>-1;}
+
+function buildDefaultAvail(closedDays){
+  closedDays=closedDays||[];
+  var av={};
+  DAYS.forEach(function(d){
+    av[d]={};
+    TS.forEach(function(ts){av[d][ts.id]=closedDays.indexOf(d)===-1;});
+    if(d==='Mercredi')PM_SLOTS.forEach(function(s){av[d][s]=false;});
+  });
+  return av;
+}
+function buildPoolAvail(){
+  var av={};
+  DAYS.forEach(function(d){av[d]={};TS.forEach(function(ts){av[d][ts.id]=false;});});
+  av['Mardi']['M1']=av['Mardi']['M2']=av['Jeudi']['M3']=av['Jeudi']['M4']=true;
+  return av;
+}
+
+function applyCycleToAvail(baseAvail,instId,cycleNum){
+  // Clone
+  var av=JSON.parse(JSON.stringify(baseAvail));
+  if(instId==='piscine')return av;
+  var cy=CYCLES[cycleNum];if(!cy)return av;
+  var ov=cy.overrides[instId];if(!ov)return av;
+  // Fermer jours entiers
+  (ov.close||[]).forEach(function(d){
+    TS.forEach(function(ts){av[d][ts.id]=false;});
+  });
+  // Fermer slots spécifiques
+  if(ov.closeSlots){
+    Object.keys(ov.closeSlots).forEach(function(d){
+      (ov.closeSlots[d]||[]).forEach(function(s){if(av[d])av[d][s]=false;});
+    });
+  }
+  // Toujours maintenir mercredi pm fermé
+  PM_SLOTS.forEach(function(s){if(av['Mercredi'])av['Mercredi'][s]=false;});
+  return av;
+}
+
+function buildClasses(){
+  var cls=[];
+  ['6eA','6eB','6eC','6eD','6eE','6eF','6eG'].forEach(function(c){
+    // 6ème = 2 sessions de 2h (dont 1 piscine), même enseignant obligatoire
+    cls.push({id:c,niveau:'6eme',sessions:[{duration:2,isPool:true},{duration:2,isPool:false}],sameTeacher:true});
+  });
+  ['5eme','4eme','3eme'].forEach(function(niv){
+    ['A','B','C','D','E','F'].forEach(function(l){
+      cls.push({id:niv.replace('eme','e')+l,niveau:niv,sessions:[{duration:2},{duration:1}],sameTeacher:false});
+    });
+  });
+  cls.push({id:'ULIS',niveau:'ULIS',sessions:[{duration:1}],sameTeacher:false});
+  return cls;
+}
+
+// ═══════════════════════════════════════════════
+// DONNÉES PAR DÉFAUT
+// Service − 3h AS = heures cours à planifier
+// ═══════════════════════════════════════════════
+var DEFAULT_TEACHERS=[
+  {id:'clement',name:'Clément',serviceH:22,minH:19,color:'#e63946',dayOff:'',halfOff:'',prefLevels:[],avoidLevels:[]},
+  {id:'steven', name:'Steven', serviceH:22,minH:19,color:'#457b9d',dayOff:'',halfOff:'',prefLevels:[],avoidLevels:[]},
+  {id:'anne',   name:'Anne',   serviceH:20,minH:17,color:'#2a9d8f',dayOff:'',halfOff:'',prefLevels:[],avoidLevels:['4eme','3eme']},
+  {id:'pauline',name:'Pauline',serviceH:20,minH:17,color:'#f4a261',dayOff:'',halfOff:'',prefLevels:[],avoidLevels:[]},
+  {id:'louis',  name:'Louis',  serviceH:18,minH:15,color:'#6d4c7d',dayOff:'',halfOff:'',prefLevels:[],avoidLevels:[]},
+];
+var DEFAULT_INSTALLATIONS=[
+  {id:'gymnase1',   name:'Gymnase 1',          color:'#4caf50',capacity:2,distance:'proche', availability:buildDefaultAvail()},
+  {id:'gymnase2',   name:'Gymnase 2',          color:'#8bc34a',capacity:1,distance:'proche', availability:buildDefaultAvail()},
+  {id:'salle_polyv',name:'Salle polyvalente',  color:'#ff9800',capacity:1,distance:'proche', availability:buildDefaultAvail()},
+  {id:'stade',      name:'Stade / Terrain ext.',color:'#03a9f4',capacity:2,distance:'eloigne',availability:buildDefaultAvail(['Mercredi'])},
+  {id:'piscine',    name:'Piscine',            color:'#3b82f6',capacity:4,distance:'eloigne',availability:buildPoolAvail()},
+];
+// AS sessions par enseignant: [{day, slots, label}]
+var DEFAULT_AS={};
+DEFAULT_TEACHERS.forEach(function(t){DEFAULT_AS[t.id]=[];});
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+// Advanced constraints + multi-EDT
+function buildDefaultAdv(){
+  return {
+    instPriority:{1:{},2:{},3:{}},
+    coTeach:[],
+    poolSup:{mardi:{accompany:[],extra:''},jeudi:{accompany:[],extra:''}},
+    advCycleView:1,
+    classTeacher:{} // classId -> teacherId (assignment forcé toutes sessions)
+  };
+}
+
+var S={
+  teachers:JSON.parse(JSON.stringify(DEFAULT_TEACHERS)),
+  classes:buildClasses(),
+  installations:JSON.parse(JSON.stringify(DEFAULT_INSTALLATIONS)),
+  poolConfig:'option1',
+  schedule:[],   // EDT actif
+  edts:[],       // Historique des EDTs générés [{label, schedule}]
+  as:JSON.parse(JSON.stringify(DEFAULT_AS)),
+  advanced:buildDefaultAdv(),
+  options:{compactMode:false},  // S.options — nouvelles options sans casser les imports
+  currentTeacherView:'all',
+  currentCycleView:1,
+  currentTab:'dashboard',
+  swapSel:{a:null,b:null},
+};
+var MC={}; // modal context
+var G_STILL_FAILED=[]; // cours non planifiés du dernier EDT généré (global pour insertion manuelle)
+var G_INSERT_MODE=null; // {cls, duration, forcedTeacherId} en cours d'insertion manuelle
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function switchTab(tab){
+  S.currentTab=tab;
+  var tabs=['dashboard','teachers','installations','constraints','advanced','schedule','calview','cycleview','as','conflicts'];
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',tabs[i]===tab);});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+tab).classList.add('active');
+  renderSB();renderPanel(tab);
+}
+function renderPanel(tab){
+  if(tab==='dashboard')renderDashboard();
+  else if(tab==='teachers')renderTeachers();
+  else if(tab==='installations')renderInstallations();
+  else if(tab==='constraints')renderConstraints();
+  else if(tab==='advanced')renderAdvanced();
+  else if(tab==='schedule')renderSchedule();
+  else if(tab==='calview')renderCalView();
+  else if(tab==='cycleview')renderCycleView();
+  else if(tab==='as')renderAS();
+  else if(tab==='conflicts')renderConflicts();
+}
+
+// ═══════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════
+function renderSB(){
+  var tab=S.currentTab,html='';
+  if(tab==='dashboard'){
+    html='<div class="sb-sec"><h3>Actions rapides</h3>'
+      +'<button class="btn btn-primary" style="width:100%;margin-bottom:7px" onclick="generateSchedule()">⚡ Générer l\'EDT</button>'
+      +'<button class="btn btn-outline" style="width:100%;margin-bottom:7px" onclick="switchTab(\'schedule\')">📅 Voir l\'EDT</button>'
+      +'<button class="btn btn-outline" style="width:100%;margin-bottom:7px" onclick="switchTab(\'conflicts\')">⚠️ Vérifier</button>'
+      +'</div><div class="sb-sec"><h3>Heures planifiées</h3>'
+      +S.teachers.map(function(t){var h=countH(t.id),ok=h>=t.minH;
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:.8rem">'
+          +'<span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:'+t.color+';display:inline-block"></span>'+t.name+'</span>'
+          +'<span class="badge '+(ok?'badge-green':'badge-red')+'">'+h+'h/'+t.minH+'h</span></div>';}).join('')
+      +'</div>';
+  }else if(tab==='installations'){
+    html='<div class="sb-sec"><h3>Installations</h3>'
+      +S.installations.map(function(i){return '<div class="inst-row"><div class="dot" style="background:'+i.color+'"></div><span style="font-size:.8rem">'+i.name+'</span></div>';}).join('')
+      +'<button class="btn btn-outline btn-sm" style="margin-top:7px;width:100%" onclick="openAddInstModal()">+ Ajouter</button>'
+      +'</div>';
+  }else if(tab==='schedule'){
+    html='<div class="sb-sec"><h3>Filtres</h3>'
+      +'<label>Vue</label><select onchange="S.currentTeacherView=this.value;renderSchedTable()">'
+      +'<option value="all"'+(S.currentTeacherView==='all'?' selected':'')+'>Tous</option>'
+      +S.teachers.map(function(t){return '<option value="'+t.id+'"'+(S.currentTeacherView===t.id?' selected':'')+'>'+t.name+'</option>';}).join('')
+      +'</select>'
+      +'<div style="margin-top:10px"><button class="btn btn-outline btn-sm" style="width:100%" onclick="window.print()">🖨️ Imprimer</button></div>'
+      +'</div>';
+  }else{
+    html='<div class="sb-sec"><h3>Navigation</h3><p style="font-size:.78rem;color:var(--muted)">Configurez les paramètres puis générez l\'emploi du temps.</p></div>';
+  }
+  document.getElementById('sb').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard(){
+  var total=S.classes.reduce(function(s,c){return s+c.sessions.reduce(function(a,ss){return a+ss.duration;},0);},0);
+  var sched=S.schedule.reduce(function(s,e){return s+e.duration;},0);
+  var cf=detectConflicts();
+  document.getElementById('db-stats').innerHTML=
+    '<div class="stat-card"><div class="sv">'+S.classes.length+'</div><div class="sl">Classes</div></div>'
+    +'<div class="stat-card"><div class="sv">'+total+'h</div><div class="sl">Heures EPS totales</div></div>'
+    +'<div class="stat-card '+(sched>=total?'ok':'warn')+'"><div class="sv">'+sched+'h</div><div class="sl">Planifiées</div></div>'
+    +'<div class="stat-card '+(cf.length===0?'ok':'err')+'"><div class="sv">'+cf.length+'</div><div class="sl">Conflits</div></div>';
+
+  document.getElementById('db-teachers').innerHTML=S.teachers.map(function(t){
+    var h=countH(t.id),as=countAS(t.id);
+    var c6=S.schedule.filter(function(e){return e.teacherId===t.id&&getCls(e.classId)&&getCls(e.classId).niveau==='6eme';}).length;
+    return '<div style="display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid #f5f5f5">'
+      +'<div style="width:9px;height:9px;border-radius:50%;background:'+t.color+';flex-shrink:0"></div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.81rem">'+t.name+'</div>'
+      +'<div style="font-size:.7rem;color:var(--muted)">'+c6+' cl. 6ème · '+as+'h AS</div></div>'
+      +'<span class="badge '+(h>=t.minH?'badge-green':'badge-red')+'">'+h+'/'+t.minH+'h</span></div>';}).join('');
+
+  var byNiv={};
+  S.classes.forEach(function(c){
+    if(!byNiv[c.niveau])byNiv[c.niveau]={total:0,ok:0};
+    byNiv[c.niveau].total++;
+    var need=c.sessions.reduce(function(a,ss){return a+ss.duration;},0);
+    var done=S.schedule.filter(function(e){return e.classId===c.id;}).reduce(function(s,e){return s+e.duration;},0);
+    if(done>=need)byNiv[c.niveau].ok++;
+  });
+  document.getElementById('db-classes').innerHTML=Object.keys(byNiv).map(function(niv){
+    var d=byNiv[niv];
+    return '<div style="display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid #f5f5f5">'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.81rem">'+niv+'</div><div style="font-size:.7rem;color:var(--muted)">'+d.total+' classe(s)</div></div>'
+      +'<span class="badge '+(d.ok===d.total?'badge-green':'badge-orange')+'">'+d.ok+'/'+d.total+'</span></div>';}).join('');
+
+  var poolOpt=S.poolConfig==='option1'?'4 classes mardi M1+M2 · 3 classes jeudi M3+M4':'1 sans piscine · 3 mardi + 3 jeudi';
+  document.getElementById('db-pool').innerHTML='<div class="alert alert-info" style="margin:0"><span>🏊</span><div><strong>Option active:</strong> '+poolOpt+'</div></div>';
+}
+
+// ═══════════════════════════════════════════════
+// ENSEIGNANTS
+// ═══════════════════════════════════════════════
+function renderTeachers(){
+  var levels=['6eme','5eme','4eme','3eme','ULIS'];
+  document.getElementById('teachers-list').innerHTML=
+    '<div class="alert alert-info" style="margin-bottom:12px"><span>ℹ️</span>'
+    +'<div><strong>3h AS déduites</strong> du service de chaque enseignant. Les 6ème sont systématiquement attribuées au même enseignant pour toutes leurs sessions (piscine + cours).</div></div>'
+    +S.teachers.map(function(t){
+      var h=countH(t.id);
+      var halfOpts=[''].concat(DAYS.filter(function(d){return d!==t.dayOff;}).reduce(function(a,d){return a.concat([d+' matin',d+' après-midi']);},[]));
+      return '<div class="tcard">'
+        +'<div class="tcard-head"><div class="avatar" style="background:'+t.color+'">'+t.name[0]+'</div>'
+        +'<div style="flex:1"><div style="font-weight:600;font-size:.88rem">'+t.name+'</div>'
+        +'<small style="color:var(--muted)">Service '+t.serviceH+'h − 3h AS = <strong>'+t.minH+'h cours</strong> · '+h+'h planifiées</small></div>'
+        +'<span class="badge '+(h>=t.minH?'badge-green':'badge-red')+'">'+h+'/'+t.minH+'h</span></div>'
+        +'<div class="row">'
+        +'<div class="col"><label>Journée libre</label><select onchange="updT(\''+t.id+'\',\'dayOff\',this.value)">'
+        +'<option value="">-- Choisir --</option>'
+        +DAYS.map(function(d){return '<option value="'+d+'"'+(t.dayOff===d?' selected':'')+'>'+d+'</option>';}).join('')
+        +'</select></div>'
+        +'<div class="col"><label>Demi-journée libre</label><select onchange="updT(\''+t.id+'\',\'halfOff\',this.value)">'
+        +halfOpts.map(function(o){return '<option value="'+o+'"'+(t.halfOff===o?' selected':'')+'>'+(o||'-- Choisir --')+'</option>';}).join('')
+        +'</select></div></div>'
+        +'<label style="margin-top:10px">Niveaux (cliquer pour alterner : Neutre → Préféré → Éviter)</label>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:4px">'
+        +levels.map(function(lv){
+          var iP=t.prefLevels.indexOf(lv)>-1,iA=t.avoidLevels.indexOf(lv)>-1;
+          return '<span class="pref-tag '+(iP?'prefer':iA?'avoid':'neutral')+'" onclick="cyclePref(\''+t.id+'\',\''+lv+'\')">'+lv+'</span>';}).join('')
+        +'</div></div>';}).join('');
+}
+function updT(id,field,val){var t=S.teachers.find(function(x){return x.id===id;});if(t){t[field]=val;save();}renderSB();renderDashboard();}
+function cyclePref(tid,lv){
+  var t=S.teachers.find(function(x){return x.id===tid;});if(!t)return;
+  var iP=t.prefLevels.indexOf(lv)>-1,iA=t.avoidLevels.indexOf(lv)>-1;
+  if(!iP&&!iA){t.prefLevels.push(lv);}
+  else if(iP){t.prefLevels=t.prefLevels.filter(function(x){return x!==lv;});t.avoidLevels.push(lv);}
+  else{t.avoidLevels=t.avoidLevels.filter(function(x){return x!==lv;});}
+  renderTeachers();save();
+}
+
+// ═══════════════════════════════════════════════
+// INSTALLATIONS + CYCLES
+// ═══════════════════════════════════════════════
+var cycleViewNum=1;
+function setCycleView(n,el){
+  cycleViewNum=n;
+  document.querySelectorAll('.cycle-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  renderInstallations();
+}
+
+function renderInstallations(){
+  var cy=CYCLES[cycleViewNum];
+  document.getElementById('cycle-desc').textContent=cy?cy.label+' — '+cy.desc:'';
+
+  document.getElementById('installations-panel').innerHTML=
+    S.installations.map(function(inst,ii){
+      var rows=TS.map(function(ts){
+        var cells=DAYS.map(function(d,di){
+          var isPool=inst.id==='piscine';
+          var isPoolFixed=isPool&&((d==='Mardi'&&(ts.id==='M1'||ts.id==='M2'))||(d==='Jeudi'&&(ts.id==='M3'||ts.id==='M4')));
+          var isWedPm=isWedPM(d,ts.id);
+          if(isPoolFixed)return '<div class="avail-cell pool">🏊</div>';
+          if(isWedPm)return '<div class="avail-cell wed-pm">—</div>';
+          // Lire directement la disponibilité de base (vérité stockée)
+          var avail=inst.availability&&inst.availability[d]?inst.availability[d][ts.id]:false;
+          var cls=avail?'ok':'off';
+          return '<div class="avail-cell '+cls+'" onclick="toggleInstSlot(\''+inst.id+'\',\''+d+'\',\''+ts.id+'\')" title="'+(avail?'✓ Disponible — cliquer pour fermer':'✕ Indisponible — cliquer pour ouvrir')+'">'+(avail?'✓':'✕')+'</div>';
+        }).join('');
+        return '<div class="avail-time">'+ts.s+'</div>'+cells;
+      }).join('');
+
+      var delBtn=ii>0?'<button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick="removeInst(\''+inst.id+'\')">🗑️</button>':'';
+      return '<div class="card" style="border-left:4px solid '+inst.color+'">'
+        +'<h4><div class="dot" style="background:'+inst.color+';width:13px;height:13px;border-radius:3px;flex-shrink:0"></div>'
+        +'<input type="text" value="'+inst.name+'" style="font-weight:600;font-size:.86rem;border:1px solid transparent;padding:2px 6px;border-radius:4px;flex:1;min-width:0;background:transparent;color:var(--primary)" '
+        +'onchange="renameInst(\''+inst.id+'\',this.value)" '
+        +'onfocus="this.style.borderColor=\'var(--accent2)\';this.style.background=\'#fff\'" '
+        +'onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'">'
+        +'<button class="btn btn-outline btn-sm" onclick="openEditInstModal(\''+inst.id+'\')">⚙️</button>'
+        +delBtn+'</h4>'
+        +'<div style="font-size:.72rem;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+        +'Capacité&nbsp;: <strong>'+inst.capacity+'</strong>'
+        +' · <span class="dist-badge dist-'+(inst.distance||'proche')+'">'+(inst.distance==='eloigne'?'🚌 Éloignée — 2h min.':'📍 Proche')+'</span>'
+        +'<button class="btn btn-sm btn-outline" style="font-size:.68rem;padding:2px 9px" onclick="toggleInstDist(\''+inst.id+'\')" title="Basculer proche / éloignée">'+(inst.distance==='eloigne'?'→ Proche':'→ Éloignée')+'</button>'
+        +(inst.id!=='piscine'?'<button class="btn btn-sm btn-outline" style="font-size:.67rem;padding:2px 8px;margin-left:4px" onclick="resetInstToCycle(\''+inst.id+'\','+cycleViewNum+')">↺ Cycle '+cycleViewNum+'</button>':'')
+        +'</div>'
+        +'<div style="font-size:.71rem;color:#aaa;margin-bottom:5px">Cliquez les cases : vert=disponible, rouge=indisponible</div>'
+        +'<div class="avail-grid">'
+        +'<div class="avail-header"></div>'
+        +DSHORT.map(function(d){return '<div class="avail-header">'+d+'</div>';}).join('')
+        +rows+'</div></div>';
+    }).join('')
+    +'<div style="margin-top:10px;display:flex;gap:9px">'
+    +'<button class="btn btn-outline" onclick="openAddInstModal()">+ Ajouter une installation</button>'
+    +'<button class="btn btn-outline" onclick="applyCycleToAll()">🔄 Appliquer Cycle '+cycleViewNum+' à toutes les installations</button>'
+    +'</div>';
+}
+
+function applyCycleToAll(){
+  if(!confirm('Appliquer le Cycle '+cycleViewNum+' à toutes les installations ? Les disponibilités personnalisées seront remplacées.'))return;
+  S.installations.forEach(function(inst){
+    if(inst.id==='piscine')return;
+    inst.availability=applyCycleToAvail(buildDefaultAvail(),inst.id,cycleViewNum);
+  });
+  save();renderInstallations();
+}
+
+function toggleInstSlot(instId,day,slot){
+  if(isWedPM(day,slot))return; // mercredi PM toujours bloqué EPS
+  // Piscine : créneaux fixes non modifiables
+  if(instId==='piscine'&&((day==='Mardi'&&(slot==='M1'||slot==='M2'))||(day==='Jeudi'&&(slot==='M3'||slot==='M4'))))return;
+  var inst=S.installations.find(function(i){return i.id===instId;});if(!inst)return;
+  if(!inst.availability[day])inst.availability[day]={};
+  inst.availability[day][slot]=!inst.availability[day][slot];
+  save();renderInstallations();
+}
+
+// Réinitialiser une installation selon un cycle prédéfini
+function resetInstToCycle(instId,cyNum){
+  var inst=S.installations.find(function(i){return i.id===instId;});if(!inst)return;
+  if(!confirm('Réinitialiser "'+inst.name+'" sur le Cycle '+cyNum+' ?'))return;
+  var base=buildDefaultAvail(instId==='stade'?['Mercredi']:[]);
+  inst.availability=applyCycleToAvail(base,instId,cyNum);
+  save();renderInstallations();
+}
+function renameInst(id,name){var i=S.installations.find(function(x){return x.id===id;});if(i&&name.trim()){i.name=name.trim();save();renderSB();}}
+function toggleInstDist(id){
+  var inst=S.installations.find(function(i){return i.id===id;});if(!inst)return;
+  inst.distance=inst.distance==='eloigne'?'proche':'eloigne';
+  save();renderInstallations();
+  showToast(inst.name+' → '+(inst.distance==='eloigne'?'🚌 Éloignée':'📍 Proche'));
+}
+function removeInst(id){if(!confirm('Supprimer cette installation ?'))return;S.installations=S.installations.filter(function(i){return i.id!==id;});save();renderInstallations();renderSB();}
+
+function openAddInstModal(){
+  document.getElementById('modal-title').textContent='Nouvelle installation';
+  document.getElementById('modal-body').innerHTML=
+    '<label>Nom</label><input type="text" id="i-name" placeholder="Ex: Dojo">'
+    +'<label>Capacité (groupes simultanés)</label><select id="i-cap"><option>1</option><option>2</option><option>3</option></select>'
+    +'<label>Couleur</label><input type="color" id="i-col" value="#888888">'
+    +'<label>Localisation</label><select id="i-dist">'
+    +'<option value="proche">📍 Proche — cours 1h et 2h possibles</option>'
+    +'<option value="eloigne">🚌 Éloignée — cours 2h uniquement (déplacement)</option>'
+    +'</select>'
+    +'<label style="margin-top:10px">Disponibilité initiale</label>'
+    +'<select id="i-cycle"><option value="default">Toujours disponible (hors mercredi PM)</option>'
+    +[1,2,3].map(function(n){return '<option value="cycle'+n+'">Appliquer Cycle '+n+'</option>';}).join('')
+    +'</select>';
+  document.getElementById('modal-ok').textContent='Ajouter';
+  MC={type:'add-inst'};
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function openEditInstModal(id){
+  var inst=S.installations.find(function(i){return i.id===id;});if(!inst)return;
+  document.getElementById('modal-title').textContent='Paramètres : '+inst.name;
+  document.getElementById('modal-body').innerHTML=
+    '<label>Nom</label><input type="text" id="i-name" value="'+inst.name+'">'
+    +'<label>Capacité (groupes simultanés)</label><select id="i-cap">'
+    +[1,2,3].map(function(n){return '<option value="'+n+'"'+(inst.capacity===n?' selected':'')+'>'+n+'</option>';}).join('')+'</select>'
+    +'<label>Couleur</label><input type="color" id="i-col" value="'+inst.color+'">'
+    +'<label>Localisation</label>'
+    +'<select id="i-dist">'
+    +'<option value="proche"'+(inst.distance!=='eloigne'?' selected':'')+'>📍 Proche — cours 1h et 2h possibles</option>'
+    +'<option value="eloigne"'+(inst.distance==='eloigne'?' selected':'')+'>🚌 Éloignée — cours 2h uniquement (déplacement)</option>'
+    +'</select>'
+    +'<div style="font-size:.75rem;color:var(--muted);margin-top:6px">Valeur actuelle : <strong>'+(inst.distance==='eloigne'?'🚌 Éloignée':'📍 Proche')+'</strong></div>';
+  document.getElementById('modal-ok').textContent='Enregistrer';
+  MC={type:'edit-inst',id:id};
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════
+// CONTRAINTES
+// ═══════════════════════════════════════════════
+function renderConstraints(){
+  if(!S.options)S.options={compactMode:false};
+  document.getElementById('constraints-panel').innerHTML=
+    '<div class="card"><h4>🏊 Configuration piscine — 6ème</h4>'
+    +'<p style="font-size:.79rem;color:var(--muted);margin-bottom:11px">7 classes de 6ème. Mardi M1+M2 et Jeudi M3+M4 réservés piscine.</p>'
+    +'<div class="pool-opts">'
+    +'<div class="pool-opt '+(S.poolConfig==='option1'?'selected':'')+'" onclick="setPool(\'option1\')">'
+    +'<h5>🅰️ Option 1</h5><p>4 classes mardi<br>3 classes jeudi</p></div>'
+    +'<div class="pool-opt '+(S.poolConfig==='option2'?'selected':'')+'" onclick="setPool(\'option2\')">'
+    +'<h5>🅱️ Option 2</h5><p>1 classe sans piscine<br>3 mardi + 3 jeudi</p></div>'
+    +'</div></div>'
+    +'<div class="card"><h4>⏰ Règles appliquées lors de la génération</h4>'
+    +'<div style="font-size:.81rem;line-height:2.1">'
+    +'<div>✅ <strong>Règle 24h exacte</strong> — fin du cours + 24h ≤ début du suivant (même classe)</div>'
+    +'<div>🚫 <strong>S3+S4 interdit</strong> pour les cours de 2h</div>'
+    +'<div>⚠️ <strong>M4 déconseillé</strong> pour les 6ème · <strong>S1 déconseillé</strong> pour tous</div>'
+    +'<div>📅 <strong>Mercredi PM exclu</strong> (S1-S4) — matin autorisé · AS autorisée toute la journée</div>'
+    +'<div>🔗 <strong>Cours enchaînés</strong> — chainScore dominant (300 pts) garantit l\'adjacence</div>'
+    +'<div>📥 <strong>AS pré-injectées</strong> — les créneaux AS bloquent l\'enseignant dès le départ</div>'
+    +'<div>👩‍🏫 <strong>6ème : même enseignant</strong> pour toutes les sessions (piscine + cours)</div>'
+    +'<div>⏱️ <strong>Max 6h EPS/jour/enseignant</strong></div>'
+    +'</div></div>'
+    // ✅ FIX 6 — Toggle mode journée compacte
+    +'<div class="card"><h4>🗜️ Options de génération</h4>'
+    +'<div class="toggle-wrap">'
+    +'<label class="toggle-switch"><input type="checkbox" '+(S.options.compactMode?'checked':'')+' onchange="S.options.compactMode=this.checked;save();renderConstraints()">'
+    +'<span class="toggle-slider"></span></label>'
+    +'<div>'
+    +'<div style="font-weight:600;font-size:.84rem">Journée compacte (sans trous)</div>'
+    +'<div style="font-size:.74rem;color:var(--muted)">Quand activé : si un enseignant a déjà des cours ce jour, seuls les créneaux contigus au bloc existant sont tentés. Si aucun n\'est libre, l\'algorithme essaie un autre jour plutôt que de créer un trou.'
+    +(S.options.compactMode?' <span style="color:var(--success);font-weight:600">✓ Actif</span>':' <span style="color:var(--muted)">Inactif</span>')+'</div>'
+    +'</div></div>'
+    +'</div>'
+    +'<div style="display:flex;gap:9px;margin-top:14px">'
+    +'<button class="btn btn-primary" onclick="generateSchedule()">⚡ Générer l\'EDT</button>'
+    +'<button class="btn btn-outline" onclick="resetSched()">🔄 Réinitialiser</button>'
+    +'</div>';
+}
+function setPool(opt){S.poolConfig=opt;renderConstraints();save();}
+
+// ═══════════════════════════════════════════════
+// EMPLOI DU TEMPS
+// ═══════════════════════════════════════════════
+function renderSchedule(){
+  var tabs=document.getElementById('sched-ttabs');
+  tabs.innerHTML='<div class="ttab '+(S.currentTeacherView==='all'?'active':'')+'" style="'+(S.currentTeacherView==='all'?'border-color:var(--primary);color:var(--primary)':'')+'" onclick="S.currentTeacherView=\'all\';renderSchedule()">Tous</div>'
+    +S.teachers.map(function(t){var a=S.currentTeacherView===t.id;return '<div class="ttab '+(a?'active':'')+'" style="'+(a?'border-color:'+t.color+';color:'+t.color:'')+'" onclick="S.currentTeacherView=\''+t.id+'\';renderSchedule()">'+t.name+'</div>';}).join('');
+
+  // Historique EDTs
+  var histEl=document.getElementById('edt-history');
+  if(histEl&&S.edts&&S.edts.length){
+    histEl.innerHTML='<div style="font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:6px">📚 Historique ('+S.edts.length+' EDT générés)</div>'
+      +S.edts.map(function(e,i){
+        var active=JSON.stringify(e.schedule)===JSON.stringify(S.schedule);
+        return '<span style="display:inline-flex;align-items:center;gap:0;margin-right:4px;margin-bottom:4px">'
+          +'<button class="multi-edt-btn'+(active?' active':'')+'" style="border-radius:6px 0 0 6px;margin:0" onclick="loadEDT('+i+')">'+e.label+'</button>'
+          +'<button onclick="deleteEDT('+i+')" title="Supprimer cet EDT" style="padding:7px 9px;border:1.5px solid var(--border);border-left:none;border-radius:0 6px 6px 0;background:#fff1f2;color:#991b1b;cursor:pointer;font-size:.78rem;line-height:1">🗑️</button>'
+          +'</span>';
+      }).join('');
+  }else if(histEl){histEl.innerHTML='';}
+
+  renderSchedTable();
+  renderFailedPanel();
+}
+
+// ═══════════════════════════════════════════════
+// PANNEAU COURS NON PLANIFIÉS + INSERTION MANUELLE
+// ═══════════════════════════════════════════════
+function renderFailedPanel(){
+  var el=document.getElementById('failed-panel-container');
+  if(!el)return;
+  if(!G_STILL_FAILED||!G_STILL_FAILED.length){el.innerHTML='';return;}
+
+  var activeIdx=G_INSERT_MODE?G_INSERT_MODE._idx:-1;
+  var html='<div class="failed-panel">'
+    +'<div class="failed-panel-title">⚠️ '+G_STILL_FAILED.length+' cours non planifié'+(G_STILL_FAILED.length>1?'s':'')+' — cliquez "Insérer" pour les placer manuellement</div>';
+
+  G_STILL_FAILED.forEach(function(sess,i){
+    var t=sess.forcedTeacherId?S.teachers.find(function(x){return x.id===sess.forcedTeacherId;}):null;
+    var isActive=(i===activeIdx);
+    html+='<div class="failed-item">'
+      +'<span style="font-weight:700;font-size:.82rem">'+sess.cls.id+'</span>'
+      +'<span class="badge badge-gray">'+sess.cls.niveau+'</span>'
+      +'<span class="badge badge-blue">'+sess.duration+'h</span>'
+      +(t?'<span class="badge" style="background:'+lighten(t.color,.85)+';color:'+t.color+'">'+t.name+'</span>':'')
+      +'<button class="btn-insert'+(isActive?' active':'')+'" onclick="'+(isActive?'cancelInsertMode()':'startInsertMode('+i+')')+'">'
+      +(isActive?'✕ Annuler':'➕ Insérer')
+      +'</button>'
+      +(isActive?'<span style="font-size:.72rem;color:#c2410c;font-style:italic">Cliquez une case verte dans le tableau</span>':'')
+      +'</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+
+  // Afficher/masquer légende mode insertion
+  var li=document.getElementById('legend-insert');
+  var liko=document.getElementById('legend-insert-ko');
+  if(li)li.style.display=G_INSERT_MODE?'flex':'none';
+  if(liko)liko.style.display=G_INSERT_MODE?'flex':'none';
+}
+
+function startInsertMode(idx){
+  G_INSERT_MODE=Object.assign({},G_STILL_FAILED[idx],{_idx:idx});
+  renderSchedTable();
+  renderFailedPanel();
+}
+
+function cancelInsertMode(){
+  G_INSERT_MODE=null;
+  renderSchedTable();
+  renderFailedPanel();
+}
+
+// Calcule si un créneau (day, slots) est disponible pour l'insertion manuelle
+// Retourne {ok:true} ou {ok:false, reason:'...'}
+function checkInsertSlot(sess,day,slots){
+  if(isWedPM(day,slots[0]))return{ok:false,reason:'Mercredi après-midi interdit pour l\'EPS'};
+  if(day==='Mercredi'&&slots.some(function(s){return PM_SLOTS.indexOf(s)>-1;}))return{ok:false,reason:'Mercredi PM interdit'};
+  // Vérifier occupation de la classe ce jour-là
+  var clsBusy=S.schedule.some(function(e){return e.classId===sess.cls.id&&e.day===day&&overlap(e.slots,slots);});
+  if(clsBusy)return{ok:false,reason:'La classe '+sess.cls.id+' a déjà un cours à ce créneau'};
+  // Règle 24h (simplifiée : vérifier contre tous les cours existants de la classe)
+  var clsAllSlots=S.schedule.filter(function(e){return e.classId===sess.cls.id;});
+  var newStart=slotMin(day,slots[0]);
+  var newEnd=slotEnd(day,slots[slots.length-1]);
+  for(var i=0;i<clsAllSlots.length;i++){
+    var e=clsAllSlots[i];
+    var eEnd=slotEnd(e.day,e.slots[e.slots.length-1]);
+    var eStart=slotMin(e.day,e.slots[0]);
+    var fwdGap=newStart-eEnd;
+    var bwdGap=eStart-newEnd;
+    var gap=Math.max(fwdGap,bwdGap);
+    if(gap<24*60)return{ok:false,reason:'Règle 24h : seulement '+Math.round(gap/60)+'h d\'écart avec le cours '+e.classId+' '+e.day};
+  }
+  // Vérifier enseignant forcé
+  var tid=sess.forcedTeacherId||null;
+  if(tid){
+    var tBusy=S.schedule.some(function(e){return e.teacherId===tid&&e.day===day&&overlap(e.slots,slots);});
+    if(tBusy){var tn=(S.teachers.find(function(t){return t.id===tid;})||{name:tid}).name;return{ok:false,reason:tn+' a déjà un cours à ce créneau'};}
+    var tDayOff=isTDayOff(tid,day,slots[0]);
+    if(tDayOff)return{ok:false,reason:'Journée/demi-journée libre de l\'enseignant'};
+    // Max 6h/jour
+    var hDay=S.schedule.filter(function(e){return e.teacherId===tid&&e.day===day;}).reduce(function(s,e){return s+e.duration;},0);
+    if(hDay+slots.length>6)return{ok:false,reason:'Limite 6h/jour atteinte pour cet enseignant'};
+  }
+  // Vérifier installation disponible
+  var inst=null;
+  var allInst=S.installations.filter(function(i){
+    if(i.id==='piscine')return false;
+    if(i.distance==='eloigne'&&slots.length===1)return false;
+    if(!slots.every(function(s){return i.availability[day]&&i.availability[day][s];}))return false;
+    var usedMax=slots.reduce(function(mx,s){
+      var cnt=S.schedule.filter(function(e){return e.installId===i.id&&e.day===day&&e.slots.indexOf(s)>-1;}).length;
+      return Math.max(mx,cnt);
+    },0);
+    return usedMax<i.capacity;
+  });
+  if(!allInst.length)return{ok:false,reason:'Aucune installation disponible (vérifiez les disponibilités)'};
+  inst=allInst[0];
+  return{ok:true,installId:inst.id,teacherId:tid};
+}
+
+function tryManualInsert(day,slotId){
+  if(!G_INSERT_MODE)return;
+  var sess=G_INSERT_MODE;
+  var slots=sess.duration===2
+    ?[slotId, TS[TS.findIndex(function(x){return x.id===slotId;})+1]&&TS[TS.findIndex(function(x){return x.id===slotId;})+1].id].filter(Boolean)
+    :[slotId];
+  if(slots.length<sess.duration){showToast('⚠️ Pas assez de créneaux consécutifs disponibles ici');return;}
+  var check=checkInsertSlot(sess,day,slots);
+  if(!check.ok){showToast('❌ '+check.reason);return;}
+
+  // Trouver le meilleur enseignant si non forcé
+  var tid=check.teacherId;
+  if(!tid){
+    var best=S.teachers.filter(function(t){
+      if(isTDayOff(t.id,day,slots[0]))return false;
+      if(S.schedule.some(function(e){return e.teacherId===t.id&&e.day===day&&overlap(e.slots,slots);}))return false;
+      var hDay=S.schedule.filter(function(e){return e.teacherId===t.id&&e.day===day;}).reduce(function(s,e){return s+e.duration;},0);
+      return hDay+slots.length<=6;
+    });
+    if(!best.length){showToast('❌ Aucun enseignant disponible à ce créneau');return;}
+    tid=best[0].id;
+  }
+
+  // Insérer le cours
+  S.schedule.push({classId:sess.cls.id,teacherId:tid,installId:check.installId,day:day,slots:slots,duration:sess.duration,isPool:false});
+  // Retirer de la liste des non planifiés
+  G_STILL_FAILED.splice(G_INSERT_MODE._idx,1);
+  G_INSERT_MODE=null;
+  save();
+  renderSchedTable();
+  renderFailedPanel();
+  renderSB();
+  showToast('✅ '+sess.cls.id+' inséré le '+day+' à '+TS.find(function(x){return x.id===slotId;}).s);
+}
+
+function isTDayOff(tid,day,slotId){
+  var t=S.teachers.find(function(x){return x.id===tid;});if(!t)return false;
+  if(t.dayOff===day)return true;
+  if(t.halfOff){
+    var sp=t.halfOff.lastIndexOf(' ');
+    var hd=t.halfOff.substring(0,sp),hp=t.halfOff.substring(sp+1);
+    if(day===hd){
+      var ts=TS.find(function(x){return x.id===slotId;});
+      var mor=ts&&ts.m<13*60;
+      if(hp==='matin'&&mor)return true;
+      if(hp==='après-midi'&&!mor)return true;
+    }
+  }
+  return false;
+}
+
+function renderSchedTable(){
+  var view=S.currentTeacherView;
+  var entries=(view==='all'?S.schedule:S.schedule.filter(function(e){return e.teacherId===view;}));
+  var asEntries=[];
+  if(view!=='all'){
+    (S.as[view]||[]).forEach(function(a){asEntries.push({classId:'AS',teacherId:view,installId:'',day:a.day,slots:a.slots,duration:a.slots.length,isAS:true,label:a.label||'AS'});});
+  }else{
+    S.teachers.forEach(function(t){(S.as[t.id]||[]).forEach(function(a){asEntries.push({classId:'AS-'+t.id,teacherId:t.id,installId:'',day:a.day,slots:a.slots,duration:a.slots.length,isAS:true,label:a.label||'AS'});});});
+  }
+  var allEntries=entries.concat(asEntries);
+
+  // Index par créneau : toutes les entrées (pas juste la première)
+  var idx={};
+  DAYS.forEach(function(d){TS.forEach(function(ts){idx[d+'_'+ts.id]=[];});});
+  allEntries.forEach(function(e){var k=e.day+'_'+e.slots[0];if(idx[k])idx[k].push(e);});
+  // Créneaux couverts par des cours 2h (slot[1] ne génère pas de nouvelle cellule)
+  var covered={};
+  allEntries.forEach(function(e){if(e.slots.length>1)e.slots.slice(1).forEach(function(s){covered[e.day+'_'+s]=true;});});
+
+  var html='<table class="sched-table"><thead><tr><th style="width:74px">Créneau</th>'
+    +DAYS.map(function(d){return '<th>'+d+'</th>';}).join('')+'</tr></thead><tbody>';
+
+  TS.forEach(function(ts){
+    html+='<tr><td class="tc">'+ts.s+'<br><small style="font-size:.62rem">'+ts.e+'</small></td>';
+    DAYS.forEach(function(d){
+      var key=d+'_'+ts.id;
+      if(covered[key])return;
+      var list=idx[key]||[];
+      var wedpm=isWedPM(d,ts.id);
+      var dayoff=view!=='all'&&isTDayOff(view,d,ts.id);
+
+      if(wedpm){html+='<td><div class="slot-wedpm">Mercredi PM</div></td>';return;}
+      if(dayoff){html+='<td><div class="slot-free">LIBRE</div></td>';return;}
+
+      // ✅ FIX 5 — Mode insertion manuelle : surligner les cellules vides
+      if(G_INSERT_MODE&&!list.length){
+        var sess=G_INSERT_MODE;
+        // Calculer les slots pour ce créneau selon la durée
+        var testSlots=sess.duration===2?(function(){
+          var idx2=TS.findIndex(function(x){return x.id===ts.id;});
+          var nxt=TS[idx2+1];
+          return nxt?[ts.id,nxt.id]:null;
+        })():[ts.id];
+        if(!testSlots){html+='<td></td>';return;}
+        var chk=checkInsertSlot(sess,d,testSlots);
+        if(chk.ok){
+          html+='<td class="insert-ok" onclick="tryManualInsert(\''+d+'\',\''+ts.id+'\')" title="Cliquez pour insérer ici"></td>';
+        }else{
+          html+='<td class="insert-ko" '
+            +'onmouseenter="showInsTooltip(event,\''+chk.reason.replace(/'/g,'&apos;')+'\')" '
+            +'onmouseleave="hideInsTooltip()"></td>';
+        }
+        return;
+      }
+
+      if(!list.length){html+='<td></td>';return;}
+
+      // ✅ Afficher TOUTES les entrées du créneau (EPS + AS multiples)
+      var has2h=list.some(function(e){return e.slots.length>1;});
+      var rs=(has2h&&list.length===1)?'rowspan="2"':'';
+
+      var cellContent=list.map(function(e){
+        var teacher=S.teachers.find(function(t){return t.id===e.teacherId;});
+        var inst=S.installations.find(function(i){return i.id===e.installId;});
+        var bg,bl;
+        if(e.isPool){bg='linear-gradient(135deg,#bfdbfe,#93c5fd)';bl='2px solid #3b82f6';}
+        else if(e.isAS){bg=lighten('#f59e0b',0.72);bl='3px solid #f59e0b';}
+        else{bg=lighten(teacher?teacher.color:'#888',e.duration===2?0.82:0.91);bl='3px solid '+(teacher?teacher.color:'#888');}
+
+        return '<div class="slot-cell '+(e.isPool?'slot-pool':e.isAS?'slot-as':'')+'" '
+          +'style="background:'+bg+';border-left:'+bl+';margin-bottom:2px" '
+          +'onclick="'+(e.isAS?'openASModal(\''+e.teacherId+'\')':'openSlotModal(\''+e.classId+'\',\''+d+'\',\''+ts.id+'\')')+'">'
+          +'<b>'+(e.isAS?(e.label||'AS'):e.classId+(e.duration===1?' <span style=\'font-weight:400;font-size:.7em\'>(1h)</span>':''))+'</b>'
+          +(view==='all'&&!e.isAS&&teacher?'<span style="font-size:.63rem;color:'+teacher.color+'">'+teacher.name+'</span><br>':'')
+          +(view==='all'&&e.isAS&&teacher?'<span style="font-size:.63rem;color:#b45309">'+teacher.name+'</span><br>':'')
+          +'<span style="font-size:.6rem;color:#666;font-style:italic">'+(e.isPool?'🏊':e.isAS?'':inst?inst.name:'')+'</span>'
+          +'</div>';
+      }).join('');
+
+      html+='<td '+rs+' style="vertical-align:top;padding:2px">'+cellContent+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById('sched-container').innerHTML=html;
+
+  // Tableau enseignants en parallèle
+  renderParallelTable(allEntries);
+}
+
+function renderParallelTable(allEntries){
+  var el=document.getElementById('parallel-container');
+  if(!el)return;
+  var n=S.teachers.length; // max possible = 5
+
+  // Pour chaque créneau : quels enseignants ont quelque chose
+  var html='<table class="sched-table"><thead><tr>'
+    +'<th style="width:74px">Créneau</th>'
+    +DAYS.map(function(d){return '<th>'+d+'</th>';}).join('')
+    +'</tr></thead><tbody>';
+
+  // Palette couleur selon charge : 0=vide, 1-2=vert, 3-4=orange, 5=rouge
+  function cellColor(count){
+    if(count===0)return{bg:'#f8f9fa',col:'#ccc'};
+    if(count<=2)return{bg:'#d1fae5',col:'#065f46'};
+    if(count<=4)return{bg:'#fef3c7',col:'#78350f'};
+    return{bg:'#fee2e2',col:'#991b1b'};
+  }
+
+  TS.forEach(function(ts){
+    html+='<tr><td class="tc" style="font-size:.7rem">'+ts.s+'<br><small style="font-size:.6rem">'+ts.e+'</small></td>';
+    DAYS.forEach(function(d){
+      if(isWedPM(d,ts.id)){html+='<td><div style="text-align:center;font-size:.6rem;color:#b0b8c1">PM</div></td>';return;}
+
+      // Trouver tous les enseignants occupés sur ce créneau (EPS ou AS)
+      var busy=new Set();
+      allEntries.forEach(function(e){
+        if(e.slots.indexOf(ts.id)>-1&&e.day===d){
+          busy.add(e.teacherId);
+        }
+      });
+      var count=busy.size;
+      var c=cellColor(count);
+      var teachers=[...busy].map(function(tid){
+        var t=S.teachers.find(function(x){return x.id===tid;});
+        return t?t.name[0]:'?';
+      }).join('');
+
+      html+='<td style="padding:3px;text-align:center">'
+        +'<div style="background:'+c.bg+';color:'+c.col+';border-radius:5px;padding:4px 3px;font-weight:700;font-size:.85rem;line-height:1.1">'
+        +count
+        +'<div style="font-size:.55rem;font-weight:400;letter-spacing:0;opacity:.85">'+teachers+'</div>'
+        +'</div></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+
+  // Légende
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:.74rem">'
+    +'<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#d1fae5;display:inline-block"></span>1-2 enseignants</span>'
+    +'<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#fef3c7;display:inline-block"></span>3-4 enseignants</span>'
+    +'<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:#fee2e2;display:inline-block"></span>5 enseignants (toute l\'équipe)</span>'
+    +'</div>';
+
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════
+// HEURES AS
+// ═══════════════════════════════════════════════
+function countAS(tid){
+  return (S.as[tid]||[]).reduce(function(s,a){return s+a.slots.length;},0);
+}
+function renderAS(){
+  document.getElementById('as-panel').innerHTML=
+    '<div class="alert alert-info" style="margin-bottom:14px"><span>🏅</span>'
+    +'<div>Saisissez les créneaux AS pour chaque enseignant. <strong>Le mercredi est autorisé pour l\'AS</strong> (y compris l\'après-midi). Chaque enseignant dispose de 3h d\'AS.</div></div>'
+    +S.teachers.map(function(t){
+      var sessions=S.as[t.id]||[];
+      var total=countAS(t.id);
+      var over=total>3;
+      var ok=total===3;
+      return '<div class="card" style="border-left:4px solid '+t.color+'">'
+        +'<h4><div class="avatar" style="background:'+t.color+';width:28px;height:28px;font-size:.78rem">'+t.name[0]+'</div>'
+        +t.name
+        +'<span class="badge '+(ok?'badge-green':over?'badge-red':'badge-orange')+'" style="margin-left:auto">'
+        +total+'h AS / 3h'+(over?' ⚠️ dépassé':'')
+        +'</span>'
+        +'<button class="btn btn-sm btn-outline" onclick="addASSess(\''+t.id+'\')">+ Ajouter</button>'
+        +'</h4>'
+        +(sessions.length===0
+          ?'<p style="font-size:.78rem;color:var(--muted);margin-top:4px">Aucun créneau AS saisi.</p>'
+          :'<table class="as-table"><thead><tr><th>Jour</th><th>Début</th><th>Fin</th><th>Libellé</th><th>Statut</th><th></th></tr></thead><tbody>'
+          +sessions.map(function(a,ai){
+            // Vérifier chevauchement avec EPS
+            var conflict=S.schedule.find(function(e){
+              return e.teacherId===t.id&&e.day===a.day&&e.slots.some(function(s){return a.slots.indexOf(s)>-1;});
+            });
+            return '<tr style="'+(conflict?'background:#fff5f5':'')+'">'
+              +'<td>'+a.day+'</td>'
+              +'<td>'+(TS.find(function(x){return x.id===a.slots[0];})||{s:'?'}).s+'</td>'
+              +'<td>'+(TS.find(function(x){return x.id===a.slots[a.slots.length-1];})||{e:'?'}).e+'</td>'
+              +'<td><input class="as-input" style="width:120px" value="'+(a.label||'AS')+'" onchange="updASLabel(\''+t.id+'\','+ai+',this.value)"></td>'
+              +'<td>'+(conflict?'<span class="badge badge-red" title="Conflit avec '+conflict.classId+'">⚠️ Conflit EPS</span>':'<span class="badge badge-green">✓ OK</span>')+'</td>'
+              +'<td><button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick="removeASSess(\''+t.id+'\','+ai+')">🗑️</button></td>'
+              +'</tr>';
+          }).join('')
+          +'</tbody></table>')
+        +'</div>';
+    }).join('');
+}
+function addASSess(tid){
+  // Ouvrir modale pour sélectionner jour + créneau
+  document.getElementById('modal-title').textContent='Ajouter un créneau AS';
+  document.getElementById('modal-body').innerHTML=
+    '<label>Enseignant</label><div style="font-weight:600;font-size:.88rem;padding:6px 0">'+(S.teachers.find(function(t){return t.id===tid;})||{name:'?'}).name+'</div>'
+    +'<label>Jour</label><select id="as-day">'
+    +DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('')+'</select>'
+    +'<label>Créneau de début</label><select id="as-start">'
+    +TS.map(function(ts){return '<option value="'+ts.id+'">'+ts.s+' ('+ts.id+')</option>';}).join('')+'</select>'
+    +'<label>Durée</label><select id="as-dur"><option value="1">1h (1 créneau)</option><option value="2">2h (2 créneaux consécutifs)</option><option value="3">3h (3 créneaux consécutifs)</option></select>'
+    +'<label>Libellé</label><input type="text" id="as-label" value="AS" placeholder="Ex: Basket AS">';
+  document.getElementById('modal-ok').textContent='Ajouter';
+  MC={type:'add-as',tid:tid};
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function updASLabel(tid,idx,val){if(S.as[tid]&&S.as[tid][idx])S.as[tid][idx].label=val;save();}
+function removeASSess(tid,idx){S.as[tid].splice(idx,1);save();renderAS();}
+function openASModal(tid){switchTab('as');}
+
+// ═══════════════════════════════════════════════
+// CONFLITS
+// ═══════════════════════════════════════════════
+function detectConflicts(){
+  var cf=[],sch=S.schedule;
+  // Règle 24h exacte : fin du cours A + 24h ≤ début du cours B (même classe)
+  var byC={};sch.forEach(function(e){if(!byC[e.classId])byC[e.classId]=[];byC[e.classId].push(e);});
+  Object.keys(byC).forEach(function(cid){var ses=byC[cid];
+    for(var i=0;i<ses.length;i++)for(var j=i+1;j<ses.length;j++){
+      var a=ses[i],b=ses[j];
+      var aEnd=slotEnd(a.day,a.slots[a.slots.length-1]);
+      var bEnd=slotEnd(b.day,b.slots[b.slots.length-1]);
+      var aStart=slotMin(a.day,a.slots[0]);
+      var bStart=slotMin(b.day,b.slots[0]);
+      // Le cours qui se termine le premier doit être suivi de 24h avant le début du second
+      var firstEnd=aEnd<=bEnd?aEnd:bEnd;
+      var secondStart=aEnd<=bEnd?bStart:aStart;
+      var diff=secondStart-firstEnd;
+      if(diff<24*60)cf.push({type:'24h',msg:cid+': '+a.day+' '+a.slots.join('+')+' ↔ '+b.day+' '+b.slots.join('+')+' ('+Math.round(diff/60)+'h d\'écart, 24h requises)'});
+    }});
+  // Journées libres
+  sch.forEach(function(e){var t=S.teachers.find(function(x){return x.id===e.teacherId;});if(!t)return;
+    if(t.dayOff===e.day)cf.push({type:'dayoff',msg:t.name+': cours '+e.day+' (journée libre) — '+e.classId});
+    if(t.halfOff){var sp=t.halfOff.lastIndexOf(' '),hd=t.halfOff.substring(0,sp),hp=t.halfOff.substring(sp+1);
+      if(e.day===hd){var ts=TS.find(function(x){return x.id===e.slots[0];});var mor=ts&&ts.m<13*60;
+        if((hp==='matin'&&mor)||(hp==='après-midi'&&!mor))cf.push({type:'dayoff',msg:t.name+': cours '+e.day+' '+hp+' (demi-journée libre) — '+e.classId});}}});
+  // Heures min
+  S.teachers.forEach(function(t){var h=countH(t.id);if(h<t.minH)cf.push({type:'minH',msg:t.name+': '+h+'h planifiées, min '+t.minH+'h'});});
+  // 6ème sans enseignant
+  if(sch.length>0)S.teachers.forEach(function(t){if(!sch.some(function(e){return e.teacherId===t.id&&getCls(e.classId)&&getCls(e.classId).niveau==='6eme';}))cf.push({type:'no6',msg:t.name+': aucune classe de 6ème'});});
+  // S3+S4
+  sch.forEach(function(e){if(e.duration===2&&e.slots.indexOf('S3')>-1&&e.slots.indexOf('S4')>-1)cf.push({type:'s3s4',msg:e.classId+': cours 2h sur S3+S4'});});
+  // Mercredi PM (S1-S4) interdit pour EPS — le matin est autorisé
+  sch.forEach(function(e){
+    if(e.isAS||e.day!=='Mercredi')return;
+    var pmSlots=e.slots.filter(function(s){return PM_SLOTS.indexOf(s)>-1;});
+    if(pmSlots.length)cf.push({type:'wedpm',msg:e.classId+': cours EPS mercredi après-midi ('+pmSlots.join('+')+')'});
+  });
+  // Double classe
+  sch.forEach(function(a,ai){sch.forEach(function(b,bi){if(ai>=bi)return;
+    if(a.classId===b.classId&&a.day===b.day&&overlap(a.slots,b.slots))cf.push({type:'doubC',msg:'Classe '+a.classId+': double créneau '+a.day});});});
+  // Double enseignant
+  sch.forEach(function(a,ai){sch.forEach(function(b,bi){if(ai>=bi)return;
+    if(a.teacherId===b.teacherId&&a.day===b.day&&overlap(a.slots,b.slots)){var t=S.teachers.find(function(x){return x.id===a.teacherId;});cf.push({type:'doubT',msg:(t?t.name:'?')+': double cours '+a.day+' — '+a.classId+' / '+b.classId});}});});
+  // Classes avec plusieurs enseignants (sameTeacher)
+  var clsSessions={};
+  sch.forEach(function(e){if(!clsSessions[e.classId])clsSessions[e.classId]=[];clsSessions[e.classId].push(e.teacherId);});
+  Object.keys(clsSessions).forEach(function(cid){
+    var cls=getCls(cid);if(!cls)return;
+    var teachers=[...new Set(clsSessions[cid])];
+    if(teachers.length>1)cf.push({type:'multiT',msg:'Classe '+cid+' ('+cls.niveau+'): '+teachers.length+' enseignants différents — objectif : un seul enseignant par classe'});
+  });
+  // Trous dans l'emploi du temps (gap)
+  S.teachers.forEach(function(t){
+    DAYS.forEach(function(day){
+      var tCours=sch.filter(function(e){return e.teacherId===t.id&&e.day===day;});
+      if(tCours.length<2)return;
+      var tsIdxs=[];
+      tCours.forEach(function(e){e.slots.forEach(function(s){tsIdxs.push(TS.findIndex(function(x){return x.id===s;}));});});
+      tsIdxs.sort(function(a,b){return a-b;});
+      for(var i=0;i<tsIdxs.length-1;i++){
+        if(tsIdxs[i+1]-tsIdxs[i]>1)cf.push({type:'gap',msg:t.name+' '+day+': trou entre '+TS[tsIdxs[i]].id+' et '+TS[tsIdxs[i+1]].id});
+      }
+    });
+  });
+  // ✅ Max 6h d'EPS par jour par enseignant
+  S.teachers.forEach(function(t){
+    DAYS.forEach(function(day){
+      var hDay=sch.filter(function(e){return e.teacherId===t.id&&e.day===day;})
+        .reduce(function(s,e){return s+e.duration;},0);
+      if(hDay>6)cf.push({type:'maxH',msg:t.name+' '+day+' : '+hDay+'h d\'EPS (maximum 6h autorisé)'});
+    });
+  });
+  // Installations éloignées avec cours 1h
+  sch.forEach(function(e){
+    if(e.isPool)return;
+    var inst=S.installations.find(function(i){return i.id===e.installId;});
+    if(inst&&inst.distance==='eloigne'&&e.duration===1)
+      cf.push({type:'distDur',msg:e.classId+': cours 1h sur installation éloignée ('+inst.name+') — interdit'});
+  });
+  return cf;
+}
+// Solutions suggérées par type de conflit
+var CF_SOLUTIONS={
+  '24h':'💡 <strong>Solution :</strong> Répartir les cours de la classe sur des jours différents (l\'algorithme le fait automatiquement). Si le problème persiste, vérifiez que la classe n\'a pas deux sessions le même jour.',
+  'dayoff':'💡 <strong>Solution :</strong> Modifiez la journée libre de l\'enseignant dans l\'onglet Enseignants, ou déplacez le cours via la permutation.',
+  'minH':'💡 <strong>Solution :</strong> Vérifiez que les installations sont disponibles sur suffisamment de créneaux. Assouplissez les contraintes ou ajoutez une installation.',
+  'no6':'💡 <strong>Solution :</strong> Régénérez l\'EDT (🎲 Autre proposition) — l\'algorithme distribuera mieux les 6ème. Ou utilisez la permutation pour attribuer une 6ème manuellement.',
+  's3s4':'💡 <strong>Solution :</strong> Ce créneau est interdit pour les 2h. Déplacez le cours via la permutation vers M1+M2, M2+M3, M3+M4, S1+S2 ou S2+S3.',
+  'wedpm':'💡 <strong>Solution :</strong> Aucun cours EPS le mercredi (ni matin ni après-midi). Régénérez l\'EDT — le bug est corrigé. Les créneaux AS restent autorisés le mercredi.',
+  'doubC':'💡 <strong>Solution :</strong> Conflit de planning sur la même classe. Utilisez la permutation pour déplacer l\'un des deux cours.',
+  'doubT':'💡 <strong>Solution :</strong> L\'enseignant a deux cours en même temps. Utilisez la permutation ou régénérez (🎲 Autre proposition).',
+  'multiT':'💡 <strong>Solution :</strong> Assignez cette classe à un enseignant dans les Contraintes avancées → Assignation de classes, puis régénérez.',
+  'gap':'💡 <strong>Solution :</strong> Utilisez la permutation pour déplacer un cours et combler le trou, ou régénérez (🎲 Autre proposition).',
+  'maxH':'💡 <strong>Solution :</strong> Cet enseignant dépasse 6h d\'EPS dans la journée. Déplacez un cours vers un autre jour via la permutation, ou régénérez.',
+  'distDur':'💡 <strong>Solution :</strong> Une installation éloignée ne peut accueillir que des cours de 2h. Déplacez ce cours via la permutation vers une installation proche.',
+  '6emeT':'💡 <strong>Solution :</strong> La 6ème doit avoir le même enseignant pour piscine et cours. Régénérez ou corrigez via la permutation.'
+};
+
+function renderConflicts(){
+  var cf=detectConflicts();
+  var el=document.getElementById('conflicts-content');
+  if(!cf.length){
+    el.innerHTML='<div class="alert alert-success"><span>✅</span><div><strong>Aucun conflit !</strong> Toutes les contraintes sont respectées.</div></div>'
+      +'<div style="margin-top:12px;display:flex;gap:8px"><button class="btn btn-outline" onclick="generateAnother()">🎲 Générer une autre proposition</button></div>';
+    return;
+  }
+  var byT={};cf.forEach(function(c){if(!byT[c.type])byT[c.type]=[];byT[c.type].push(c);});
+  var L={
+    '24h':'⏰ Règle 24h','dayoff':'📅 Journées libres','minH':'📊 Heures insuffisantes',
+    'no6':'🎓 Absence de 6ème','s3s4':'🚫 S3+S4','wedpm':'📅 Mercredi — EPS interdit',
+    'doubC':'🎒 Double classe','doubT':'👩‍🏫 Double enseignant','6emeT':'🔗 6ème — enseignant non unique',
+    'multiT':'👥 Classes partagées','gap':'⬛ Trous dans l\'EDT','distDur':'🚌 Installation éloignée — 1h',
+    'maxH':'⏱️ Max 6h/jour dépassé'
+  };
+  el.innerHTML=
+    '<div class="alert alert-danger" style="margin-bottom:10px"><span>⚠️</span><div><strong>'+cf.length+' conflit(s) détecté(s)</strong></div></div>'
+    +'<div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary btn-sm" onclick="generateAnother()">🎲 Générer une autre proposition sans conflit</button>'
+    +'<button class="btn btn-outline btn-sm" onclick="switchTab(\'advanced\')">🔧 Contraintes avancées</button>'
+    +'</div>'
+    +Object.keys(byT).map(function(type){var list=byT[type];
+      return '<div class="card"><h4>'+(L[type]||type)+' <span class="badge badge-red">'+list.length+'</span></h4>'
+        +'<div class="cflist">'+list.map(function(c){return '<div class="cfitem"><div class="cfdot" style="background:var(--accent)"></div><div>'+c.msg+'</div></div>';}).join('')+'</div>'
+        +(CF_SOLUTIONS[type]?'<div class="cf-sol">'+CF_SOLUTIONS[type]+'</div>':'')
+        +'</div>';}).join('');
+}
+
+// ═══════════════════════════════════════════════
+// GÉNÉRATION
+// ═══════════════════════════════════════════════
+// Génère et sauvegarde dans l'historique EDTs
+function generateSchedule(addToHistory){
+  if(!addToHistory&&!confirm('Générer un nouvel emploi du temps ? L\'EDT actuel sera remplacé.'))return;
+  S.schedule=[];
+
+  var teachers=S.teachers;
+  var tH={};teachers.forEach(function(t){tH[t.id]=0;});
+  var tSlots={};teachers.forEach(function(t){tSlots[t.id]={};}); // day+slot -> true
+  var clsLast={};  // classId -> minutes
+  var instUse={};  // instId_day_slot -> count
+  var tDaySched={};// teacherId -> {day -> [slotId,...]}  pour calcul de trous
+
+  teachers.forEach(function(t){tDaySched[t.id]={};DAYS.forEach(function(d){tDaySched[t.id][d]=[];});});
+
+  // ✅ FIX 1 — Pré-injecter les créneaux AS dans tSlots/tDaySched/tH
+  // L'algorithme sait ainsi que l'enseignant est déjà occupé à ces créneaux
+  teachers.forEach(function(t){
+    (S.as[t.id]||[]).forEach(function(sess){
+      sess.slots.forEach(function(s){
+        tSlots[t.id][sess.day+'_'+s]=true;
+        if(tDaySched[t.id][sess.day])tDaySched[t.id][sess.day].push(s);
+      });
+      tH[t.id]+=sess.slots.length;
+    });
+  });
+
+  // ─ Helpers ─
+  function tOff(t,day,slots){
+    if(isTDayOff(t.id,day,slots[0]))return true;
+    if(slots.some(function(s){return tSlots[t.id][day+'_'+s];}))return true;
+    // ✅ Règle : max 6h d'EPS par jour par enseignant
+    var hToday=S.schedule.filter(function(e){return e.teacherId===t.id&&e.day===day;})
+      .reduce(function(s,e){return s+e.duration;},0);
+    var newH=slots.length; // 1 slot = 1h
+    if(hToday+newH>6)return true;
+    return false;
+  }
+  function ok24(cid,day,slots){
+    // Règle exacte : la fin du cours précédent + 24h <= début du nouveau cours
+    var last=clsLast[cid];if(last===undefined)return true;
+    var newStart=slotMin(day,slots[0]);
+    return newStart-last>=24*60; // last = fin du cours précédent
+  }
+  function clsFree(cid,day,slots){
+    return !S.schedule.some(function(e){return e.classId===cid&&e.day===day&&overlap(e.slots,slots);});
+  }
+  function iFree(instId,day,slots){
+    var inst=S.installations.find(function(i){return i.id===instId;});if(!inst)return false;
+    if(!slots.every(function(s){return inst.availability[day]&&inst.availability[day][s];}))return false;
+    var used=slots.reduce(function(mx,s){return Math.max(mx,instUse[instId+'_'+day+'_'+s]||0);},0);
+    return used<inst.capacity;
+  }
+  function pickInst(day,slots,teacherId,dur){
+    // Installation prioritaire configurée
+    var prio='';
+    if(teacherId&&S.advanced&&S.advanced.instPriority){
+      var cy=(S.advanced.advCycleView||1);
+      prio=(S.advanced.instPriority[cy]||{})[teacherId]||'';
+    }
+    var candidates=S.installations.filter(function(i){
+      if(i.id==='piscine')return false;
+      if(!iFree(i.id,day,slots))return false;
+      if(i.distance==='eloigne'&&dur===1)return false; // éloignée interdit pour 1h
+      return true;
+    });
+    if(!candidates.length)return null;
+    return candidates.sort(function(a,b){
+      // 1. Priorité explicite enseignant
+      if(a.id===prio&&b.id!==prio)return -1;
+      if(b.id===prio&&a.id!==prio)return 1;
+      // 2. Distance vs durée : 2h→ éloignées d'abord, 1h→ proches d'abord
+      var aEl=a.distance==='eloigne'?1:0,bEl=b.distance==='eloigne'?1:0;
+      if(aEl!==bEl)return dur===2?(bEl-aEl):(aEl-bEl);
+      // 3. Équilibrage taux remplissage
+      var au=slots.reduce(function(s,sl){return s+(instUse[a.id+'_'+day+'_'+sl]||0);},0);
+      var bu=slots.reduce(function(s,sl){return s+(instUse[b.id+'_'+day+'_'+sl]||0);},0);
+      return (a.capacity>0?au/a.capacity:au)-(b.capacity>0?bu/b.capacity:bu);
+    })[0]||null;
+  }
+  function markInst(instId,day,slots){slots.forEach(function(s){var k=instId+'_'+day+'_'+s;instUse[k]=(instUse[k]||0)+1;});}
+  function markT(tid,day,slots){slots.forEach(function(s){tSlots[tid][day+'_'+s]=true;tDaySched[tid][day].push(s);});}
+  function regSched(e){
+    markT(e.teacherId,e.day,e.slots);
+    // Stocker la FIN du dernier slot (pour règle 24h exacte : fin + 24h <= début suivant)
+    var lastSlotId=e.slots[e.slots.length-1];
+    clsLast[e.classId]=slotEnd(e.day,lastSlotId);
+    tH[e.teacherId]+=e.duration;
+    if(e.installId)markInst(e.installId,e.day,e.slots);
+    S.schedule.push(e);
+  }
+  function isAvoid(slotId,niveau){return slotId==='S1'||(niveau==='6eme'&&slotId==='M4');}
+
+  // Score "enchaînement" : bonus DOMINANT si le créneau est adjacent à un bloc existant
+  // Valeurs élevées pour que l'adjacence prime sur tous les autres critères
+  function chainScore(tid,day,slots){
+    var existing=tDaySched[tid][day];if(!existing.length)return 0;
+    var newIdxs=slots.map(function(s){return TS.findIndex(function(x){return x.id===s;});});
+    var exIdxs=existing.map(function(s){return TS.findIndex(function(x){return x.id===s;});});
+    var minNew=Math.min.apply(null,newIdxs),maxNew=Math.max.apply(null,newIdxs);
+    var minEx=Math.min.apply(null,exIdxs),maxEx=Math.max.apply(null,exIdxs);
+    // Directement contigu = bonus dominant (300 pts > toute autre pénalité)
+    if(minNew===maxEx+1||minEx===maxNew+1)return 300;
+    // Gap d'un créneau (un trou d'1 slot) = bonus fort
+    var gap=Math.min(Math.abs(minNew-maxEx-1),Math.abs(minEx-maxNew-1));
+    if(gap===1)return 80;
+    if(gap===2)return 20;
+    return 0;
+  }
+
+  function scoreT(t,cls,slots,day){
+    var sc=0;
+    // Équilibrage : favorise l'enseignant le moins chargé (pénalité plus douce)
+    sc-=tH[t.id]*5;
+    if(t.prefLevels.indexOf(cls.niveau)>-1)sc+=30;
+    if(t.avoidLevels.indexOf(cls.niveau)>-1)sc-=40;
+    if(slots.some(function(s){return isAvoid(s,cls.niveau);}))sc-=15;
+    if(cls.niveau==='6eme'&&!S.schedule.some(function(e){return e.teacherId===t.id&&getCls(e.classId)&&getCls(e.classId).niveau==='6eme';}))sc+=25;
+    sc+=chainScore(t.id,day,slots);
+    // Bonus si l'enseignant n'a pas encore son quota d'heures
+    var remaining=t.minH-tH[t.id];
+    if(remaining>0)sc+=remaining*3;
+    return sc;
+  }
+
+  function get2hPairs(day){
+    // Mercredi matin autorisé, PM interdit → seules les paires matinales sont valides
+    if(day==='Mercredi')return[['M1','M2'],['M2','M3'],['M3','M4']];
+    return[['M1','M2'],['M2','M3'],['M3','M4'],['S1','S2'],['S2','S3']];
+  }
+  function get1hSlots(day){
+    // Mercredi matin autorisé, PM interdit
+    if(day==='Mercredi')return[['M1'],['M2'],['M3'],['M4']];
+    return[['M1'],['M2'],['M3'],['M4'],['S2'],['S3'],['S4']];
+  }
+  // Blocs piscine fixes
+  function isPoolBlock(day,slots){
+    return (day==='Mardi'&&(slots.indexOf('M1')>-1||slots.indexOf('M2')>-1))
+      ||(day==='Jeudi'&&(slots.indexOf('M3')>-1||slots.indexOf('M4')>-1));
+  }
+
+  function tryScheduleSession(cls,duration,forcedTeacherId,relaxed){
+    // ── Co-enseignement : chercher une contrainte applicable ──
+    var coConst=null;
+    if(S.advanced&&S.advanced.coTeach){
+      S.advanced.coTeach.forEach(function(ct){
+        if(ct.duration!==duration)return;
+        if(ct.levels.indexOf(cls.niveau)===-1)return;
+        if(forcedTeacherId&&ct.teacherIds.indexOf(forcedTeacherId)===-1)return;
+        coConst=ct;
+      });
+    }
+
+    var days=shuffle([...DAYS]);
+    for(var di=0;di<days.length;di++){
+      var day=days[di];
+      // ✅ Mercredi matin autorisé — seul le PM est bloqué (vérifié via isWedPM ci-dessous)
+      if(coConst&&coConst.day&&coConst.day!==day)continue;
+
+      var opts=duration===2?get2hPairs(day):get1hSlots(day);
+
+      // ✅ FIX 2 — Tri des opts : contigus EN PREMIER si l'enseignant a déjà des cours ce jour
+      if(coConst&&coConst.slots&&coConst.slots.length){
+        // Co-enseignement : le créneau forcé passe en premier, puis contigus, puis reste
+        var coOpt=[coConst.slots];
+        var rest=opts.filter(function(o){return JSON.stringify(o)!==JSON.stringify(coConst.slots);});
+        var tid0=forcedTeacherId||(coConst.teacherIds&&coConst.teacherIds[0]);
+        if(tid0&&tDaySched[tid0]&&tDaySched[tid0][day].length){
+          rest=rest.slice().sort(function(a,b){return chainScore(tid0,day,b)-chainScore(tid0,day,a);});
+        }
+        opts=coOpt.concat(rest);
+      }else if(forcedTeacherId&&tDaySched[forcedTeacherId]&&tDaySched[forcedTeacherId][day].length){
+        // Enseignant forcé avec déjà des cours ce jour → contigus d'abord
+        opts=opts.slice().sort(function(a,b){return chainScore(forcedTeacherId,day,b)-chainScore(forcedTeacherId,day,a);});
+      }else if(!forcedTeacherId){
+        opts=shuffle(opts);
+      }
+      for(var si=0;si<opts.length;si++){
+        var slots=opts[si];
+        if(isPoolBlock(day,slots))continue;
+        if(slots.some(function(s){return isWedPM(day,s);}))continue;
+        if(!ok24(cls.id,day,slots))continue;
+        if(!clsFree(cls.id,day,slots))continue;
+        if(!relaxed&&slots.some(function(s){return isAvoid(s,cls.niveau);}))continue;
+
+        // ✅ FIX 6 — Mode journée compacte : si activé et qu'un enseignant a déjà des cours
+        // ce jour, rejeter tout créneau non adjacent (laisser l'algo essayer un autre jour)
+        if(S.options&&S.options.compactMode&&!relaxed){
+          var tidCheck=forcedTeacherId;
+          // En mode non-forcé on ne connaît pas encore le prof, on vérifie après sélection
+          if(tidCheck&&tDaySched[tidCheck]&&tDaySched[tidCheck][day].length>0){
+            if(chainScore(tidCheck,day,slots)===0)continue;
+          }
+        }
+
+        var cands;
+        if(forcedTeacherId){
+          var ft=teachers.find(function(t){return t.id===forcedTeacherId;});
+          cands=ft&&!tOff(ft,day,slots)?[ft]:[];
+        }else{
+          cands=teachers.filter(function(t){return !tOff(t,day,slots);});
+        }
+        if(!cands.length)continue;
+
+        var best=cands.map(function(t){return{t:t,sc:scoreT(t,cls,slots,day)};}).sort(function(a,b){return b.sc-a.sc;})[0].t;
+        var inst=pickInst(day,slots,best.id,duration);if(!inst)continue;
+
+        regSched({classId:cls.id,teacherId:best.id,installId:inst.id,day:day,slots:slots,duration:duration,isPool:false});
+        // Mémoriser l'enseignant pour les sessions suivantes de la même classe
+        if(!classTeacher[cls.id])classTeacher[cls.id]=best.id;
+        return best.id;
+      }
+    }
+    return null;
+  }
+
+  // ─── PHASE 1 : Piscine 6ème ───
+  var sixemes=shuffle(S.classes.filter(function(c){return c.niveau==='6eme';}));
+  var tuesPool=[],thursPool=[];
+  if(S.poolConfig==='option1'){tuesPool=sixemes.slice(0,4);thursPool=sixemes.slice(4,7);}
+  else{tuesPool=sixemes.slice(0,3);thursPool=sixemes.slice(3,6);}
+  // sixemes[6] en option2 = no-pool (géré en phase 2)
+
+  var poolTC={};teachers.forEach(function(t){poolTC[t.id]=0;});
+  // Map classId -> assigned teacherId pour 6ème
+  var sixTeacher={};
+
+  // ─── classTeacher déclaré ICI pour être accessible dans assignPool ───
+  // Sera complété après la phase piscine avec sixTeacher, puis les assignations manuelles
+  var classTeacher={};
+  // Pré-charger les assignations manuelles dès maintenant (pour la piscine 6ème)
+  if(S.advanced&&S.advanced.classTeacher){
+    Object.keys(S.advanced.classTeacher).forEach(function(cid){
+      if(S.advanced.classTeacher[cid])classTeacher[cid]=S.advanced.classTeacher[cid];
+    });
+  }
+
+  function assignPool(cls,day,slots){
+    // Respecter l'assignation forcée depuis les contraintes avancées
+    var forcedTid=classTeacher[cls.id]||null;
+    var avail=teachers.filter(function(t){
+      if(isTDayOff(t.id,day,slots[0]))return false;
+      if(slots.some(function(s){return tSlots[t.id][day+'_'+s];}))return false;
+      if(forcedTid&&t.id!==forcedTid)return false;
+      return true;
+    }).sort(function(a,b){return poolTC[a.id]-poolTC[b.id];});
+    if(!avail.length){
+      // Si l'enseignant forcé est indisponible, on ignore la contrainte et on prend le premier dispo
+      avail=teachers.filter(function(t){return !isTDayOff(t.id,day,slots[0])&&!slots.some(function(s){return tSlots[t.id][day+'_'+s];});}).sort(function(a,b){return poolTC[a.id]-poolTC[b.id];});
+    }
+    if(!avail.length)return null;
+    var teacher=avail[0];
+    poolTC[teacher.id]++;tH[teacher.id]+=2;
+    markT(teacher.id,day,slots);
+    // FIN du dernier slot piscine pour règle 24h
+    clsLast[cls.id]=slotEnd(day,slots[slots.length-1]);
+    markInst('piscine',day,slots);
+    sixTeacher[cls.id]=teacher.id;
+    classTeacher[cls.id]=teacher.id; // mettre à jour classTeacher aussi
+    S.schedule.push({classId:cls.id,teacherId:teacher.id,installId:'piscine',day:day,slots:slots,duration:2,isPool:true});
+    return teacher.id;
+  }
+
+  tuesPool.forEach(function(cls){assignPool(cls,'Mardi',['M1','M2']);});
+  thursPool.forEach(function(cls){assignPool(cls,'Jeudi',['M3','M4']);});
+
+  // ─── PHASE 2 : Tous les autres cours ───
+  // classTeacher est déjà à jour (piscine + assignations manuelles pré-chargées)
+
+  var sessions=[];
+  S.classes.forEach(function(cls){
+    cls.sessions.forEach(function(sess){
+      if(sess.isPool)return; // piscine déjà gérée
+      sessions.push({cls:cls,duration:sess.duration,forcedTeacherId:classTeacher[cls.id]||null});
+    });
+  });
+  // Trier: 2h en premier pour bloquer les enseignants, 1h ensuite sur même enseignant
+  sessions.sort(function(a,b){return b.duration-a.duration;});
+
+  var failed=[];
+  sessions.forEach(function(sess){
+    var ok=tryScheduleSession(sess.cls,sess.duration,sess.forcedTeacherId,false);
+    if(!ok)failed.push(sess);
+  });
+  // Tentative relâchée (créneaux déconseillés acceptés)
+  var stillFailed=[];
+  failed.forEach(function(sess){
+    var ok=tryScheduleSession(sess.cls,sess.duration,sess.forcedTeacherId,true);
+    if(!ok)stillFailed.push(sess);
+  });
+
+  // Sauvegarder dans l'historique
+  if(!S.edts)S.edts=[];
+  var label='EDT '+(S.edts.length+1)+' — '+new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'});
+  S.edts.push({label:label,schedule:JSON.parse(JSON.stringify(S.schedule)),ts:Date.now()});
+  if(S.edts.length>10)S.edts.shift(); // max 10
+
+  // ✅ FIX 5 — Stocker globally pour le panneau d'insertion manuelle
+  G_STILL_FAILED=stillFailed.map(function(sess){
+    return {cls:sess.cls,duration:sess.duration,forcedTeacherId:sess.forcedTeacherId};
+  });
+  G_INSERT_MODE=null;
+
+  save();switchTab('schedule');renderSB();
+  var cf2=detectConflicts();
+  var msg='✅ EDT généré : '+S.schedule.length+' créneaux — sauvegardé sous "'+label+'".\n';
+  if(stillFailed.length>0){
+    msg+='⚠️ '+stillFailed.length+' cours non planifiés :\n';
+    stillFailed.forEach(function(sess){
+      msg+='  • '+sess.cls.id+' ('+sess.cls.niveau+') — '+sess.duration+'h\n';
+    });
+    msg+='💡 Causes possibles : installations indisponibles, contrainte 24h trop stricte, max 6h/jour atteint, journée libre de l\'enseignant.\n';
+  }
+  msg+=cf2.length?'⚠️ '+cf2.length+' conflit(s) — voir onglet Vérification.':'✅ Aucun conflit détecté !';
+  showToast(stillFailed.length?'⚠️ '+stillFailed.length+' cours non planifiés — voir détails':'✅ EDT généré sans conflit');
+  if(cf2.length>0||stillFailed.length>0){alert(msg);}
+}
+
+function generateAnother(){
+  // Génère sans demander confirmation, ajoute à l'historique
+  S.schedule=[];
+  generateSchedule(true);
+}
+
+function loadEDT(idx){
+  if(!S.edts[idx])return;
+  if(!confirm('Charger "'+S.edts[idx].label+'" ? L\'EDT actuel sera remplacé.'))return;
+  S.schedule=JSON.parse(JSON.stringify(S.edts[idx].schedule));
+  save();renderSchedule();renderSB();showToast('📂 '+S.edts[idx].label+' chargé');
+}
+function deleteEDT(idx){
+  if(!S.edts[idx])return;
+  if(!confirm('Supprimer "'+S.edts[idx].label+'" de l\'historique ?'))return;
+  S.edts.splice(idx,1);
+  save();renderSchedule();showToast('🗑️ EDT supprimé de l\'historique');
+}
+
+function resetSched(){if(!confirm('Réinitialiser l\'EDT ?'))return;S.schedule=[];save();renderPanel(S.currentTab);renderSB();}
+
+// ═══════════════════════════════════════════════
+// MODAL CRÉNEAU EDT
+// ═══════════════════════════════════════════════
+function openSlotModal(classId,day,slotId){
+  var entry=S.schedule.find(function(e){return e.classId===classId&&e.day===day&&e.slots.indexOf(slotId)>-1;});
+  if(!entry)return;
+  MC={type:'slot',entry:entry};
+  var cls=getCls(classId);
+  document.getElementById('modal-title').textContent=classId+' — '+day+' '+entry.slots.join('+');
+  document.getElementById('modal-body').innerHTML=
+    '<div style="font-size:.83rem;margin-bottom:11px;color:var(--muted)">Niveau : <strong>'+(cls?cls.niveau:'?')+'</strong> · Durée : <strong>'+entry.duration+'h</strong>'+(entry.isPool?' · 🏊 Piscine':'')+'</div>'
+    +(cls&&cls.sameTeacher?'<div class="alert alert-warn" style="margin-bottom:10px"><span>⚠️</span><div>Classe 6ème : changer l\'enseignant ici peut créer une incohérence avec la session piscine.</div></div>':'')
+    +'<label>Enseignant</label><select id="m-teacher">'
+    +S.teachers.map(function(t){return '<option value="'+t.id+'"'+(t.id===entry.teacherId?' selected':'')+'>'+t.name+'</option>';}).join('')+'</select>'
+    +'<label>Installation</label><select id="m-install"'+(entry.isPool?' disabled':'')+'>'+S.installations.map(function(i){return '<option value="'+i.id+'"'+(i.id===entry.installId?' selected':'')+'>'+i.name+'</option>';}).join('')+'</select>'
+    +'<div style="margin-top:13px"><button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;width:100%" onclick="deleteSlot(\''+classId+'\',\''+day+'\',\''+slotId+'\')">🗑️ Supprimer ce créneau</button></div>';
+  document.getElementById('modal-ok').textContent='Enregistrer';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function deleteSlot(classId,day,slotId){
+  if(!confirm('Supprimer ?'))return;
+  S.schedule=S.schedule.filter(function(e){return!(e.classId===classId&&e.day===day);});
+  save();closeModal();renderSchedTable();renderSB();
+}
+
+// ═══════════════════════════════════════════════
+// MODAL DISPATCH
+// ═══════════════════════════════════════════════
+function modalConfirm(){
+  var type=MC.type;
+  if(type==='slot'){
+    var e=MC.entry;if(!e)return;
+    e.teacherId=document.getElementById('m-teacher').value;
+    if(!e.isPool)e.installId=document.getElementById('m-install').value;
+    save();closeModal();renderSchedTable();renderSB();
+  }else if(type==='add-coteach'){
+    var t1=document.getElementById('ct-t1').value,t2=document.getElementById('ct-t2').value;
+    if(t1===t2){alert('Deux enseignants différents requis.');return;}
+    var ctDur=parseInt(document.getElementById('ct-dur').value)||1;
+    var ctDay=document.getElementById('ct-day').value;
+    var ctSlots=[].map.call(document.querySelectorAll('.ct-slot:checked'),function(x){return x.value;});
+    var ctLevels=[].map.call(document.querySelectorAll('.ct-lv:checked'),function(x){return x.value;});
+    if(!ctSlots.length){alert('Sélectionnez au moins un créneau.');return;}
+    S.advanced.coTeach.push({teacherIds:[t1,t2],slots:ctSlots,day:ctDay,duration:ctDur,levels:ctLevels});
+    save();closeModal();renderAdvanced();
+  }else if(type==='add-inst'){
+    var name=document.getElementById('i-name').value.trim();
+    if(!name){alert('Nom requis.');return;}
+    var cap=parseInt(document.getElementById('i-cap').value)||1;
+    var col=document.getElementById('i-col').value;
+    var dist=document.getElementById('i-dist')?document.getElementById('i-dist').value:'proche';
+    var cyc=document.getElementById('i-cycle').value;
+    var baseAv=buildDefaultAvail();
+    if(cyc!=='default'){var n=parseInt(cyc.replace('cycle',''));baseAv=applyCycleToAvail(baseAv,'_new',n);}
+    S.installations.push({id:'inst_'+Date.now(),name:name,color:col,capacity:cap,distance:dist,availability:baseAv});
+    save();closeModal();renderInstallations();renderSB();
+  }else if(type==='edit-inst'){
+    var inst=S.installations.find(function(i){return i.id===MC.id;});if(!inst)return;
+    var n2=document.getElementById('i-name').value.trim();if(!n2){alert('Nom requis.');return;}
+    inst.name=n2;
+    inst.capacity=parseInt(document.getElementById('i-cap').value)||1;
+    inst.color=document.getElementById('i-col').value;
+    var distEl=document.getElementById('i-dist');
+    if(distEl)inst.distance=distEl.value; // ne pas écraser si champ absent
+    save();closeModal();renderInstallations();renderSB();
+  }else if(type==='add-as'){
+    var day=document.getElementById('as-day').value;
+    var start=document.getElementById('as-start').value;
+    var dur=parseInt(document.getElementById('as-dur').value)||1;
+    var label=document.getElementById('as-label').value.trim()||'AS';
+    var tid=MC.tid;
+    // Build slots
+    var startIdx=TS.findIndex(function(x){return x.id===start;});
+    var slots=[];
+    for(var i=0;i<dur&&(startIdx+i)<TS.length;i++)slots.push(TS[startIdx+i].id);
+    // Vérifier conflit avec cours EPS existants pour cet enseignant
+    var conflict=S.schedule.find(function(e){
+      return e.teacherId===tid&&e.day===day&&e.slots.some(function(s){return slots.indexOf(s)>-1;});
+    });
+    if(conflict){
+      if(!confirm('⚠️ Ce créneau AS chevauche un cours EPS existant ('+conflict.classId+' '+day+' '+conflict.slots.join('+')+'). Ajouter quand même ?'))return;
+    }
+    // AS autorisée le mercredi (y compris PM)
+    if(!S.as[tid])S.as[tid]=[];
+    S.as[tid].push({day:day,slots:slots,label:label});
+    save();closeModal();renderAS();
+    save();closeModal();renderAS();
+  }
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');MC={};}
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function getCls(id){return S.classes.find(function(c){return c.id===id;});}
+function countH(tid){return S.schedule.filter(function(e){return e.teacherId===tid;}).reduce(function(s,e){return s+e.duration;},0);}
+
+// ═══════════════════════════════════════════════
+// PERSISTANCE
+// ═══════════════════════════════════════════════
+function save(){
+  try{localStorage.setItem('eps_v4',JSON.stringify({
+    teachers:S.teachers,installations:S.installations,
+    schedule:S.schedule,edts:S.edts,
+    poolConfig:S.poolConfig,as:S.as,advanced:S.advanced,options:S.options
+  }));}catch(e){}
+}
+function load(){
+  try{
+    var raw=localStorage.getItem('eps_v4');
+    if(!raw)raw=localStorage.getItem('eps_v3'); // compat ancienne version
+    if(!raw)return;
+    var d=JSON.parse(raw);
+    if(d.teachers)S.teachers=d.teachers;
+    if(d.installations)S.installations=d.installations;
+    if(d.schedule)S.schedule=d.schedule;
+    if(d.edts)S.edts=d.edts;
+    if(d.poolConfig)S.poolConfig=d.poolConfig;
+    if(d.as)S.as=d.as;
+    if(d.advanced)S.advanced=d.advanced;
+    if(d.options)S.options=Object.assign({compactMode:false},d.options);
+    S.teachers.forEach(function(t){if(!S.as[t.id])S.as[t.id]=[];});
+    if(!S.advanced)S.advanced=buildDefaultAdv();
+    if(!S.edts)S.edts=[];
+    if(!S.options)S.options={compactMode:false};
+  }catch(e){}
+}
+function exportData(){
+  var d={teachers:S.teachers,installations:S.installations,
+    schedule:S.schedule,edts:S.edts,poolConfig:S.poolConfig,
+    as:S.as,advanced:S.advanced,exportDate:new Date().toISOString()};
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+  a.download='eps_edt_pasteur_'+new Date().toLocaleDateString('fr').replace(/\//g,'-')+'.json';
+  a.click();
+}
+function importData(){document.getElementById('import-file').click();}
+function handleImport(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){try{
+    var d=JSON.parse(ev.target.result);
+    if(d.teachers)S.teachers=d.teachers;
+    if(d.installations)S.installations=d.installations;
+    if(d.schedule)S.schedule=d.schedule;
+    if(d.edts)S.edts=d.edts;
+    if(d.poolConfig)S.poolConfig=d.poolConfig;
+    if(d.as)S.as=d.as;
+    if(d.advanced)S.advanced=d.advanced;
+    S.teachers.forEach(function(t){if(!S.as[t.id])S.as[t.id]=[];});
+    if(!S.advanced)S.advanced=buildDefaultAdv();
+    if(!S.edts)S.edts=[];
+    save();renderPanel(S.currentTab);renderSB();showToast('✅ Importé avec succès !');
+  }catch(err){alert('❌ Erreur : '+err.message);}};
+  r.readAsText(f);e.target.value='';
+}
+
+function showToast(msg){
+  var t=document.createElement('div');t.textContent=msg;
+  Object.assign(t.style,{position:'fixed',bottom:'20px',left:'50%',transform:'translateX(-50%)',
+    background:'#1a1a2e',color:'#fff',padding:'9px 20px',borderRadius:'20px',fontSize:'.8rem',
+    zIndex:'400',boxShadow:'0 4px 14px rgba(0,0,0,.25)',whiteSpace:'nowrap'});
+  document.body.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';t.style.transition='opacity .3s';
+    setTimeout(function(){t.remove();},300);},2000);
+}
+
+function showInsTooltip(evt,reason){
+  var tip=document.getElementById('ins-tooltip');
+  if(!tip)return;
+  tip.textContent='🚫 '+reason;
+  tip.style.display='block';
+  tip.style.left=(evt.clientX+12)+'px';
+  tip.style.top=(evt.clientY-8)+'px';
+}
+function hideInsTooltip(){
+  var tip=document.getElementById('ins-tooltip');
+  if(tip)tip.style.display='none';
+}
+
+
+// ═══════════════════════════════════════════════
+// CONTRAINTES AVANCÉES
+// ═══════════════════════════════════════════════
+function renderAdvanced(){
+  if(!S.advanced)S.advanced=buildDefaultAdv();
+  var adv=S.advanced;
+  var cy=adv.advCycleView||1;
+  var html='';
+
+  // 1. Installation prioritaire par cycle
+  html+='<div class="adv-sec"><div class="adv-h">1 — Installation prioritaire par enseignant</div>'
+    +'<div class="adv-sub">L\'algorithme tentera d\'affecter en priorité cette installation à l\'enseignant. Choisissez le cycle de référence.</div>'
+    +'<div style="display:flex;gap:6px;margin-bottom:11px">'
+    +[1,2,3].map(function(n){return '<button class="btn btn-sm '+(cy===n?'btn-secondary':'btn-outline')+'" onclick="S.advanced.advCycleView='+n+';save();renderAdvanced()">Cycle '+n+'</button>';}).join('')
+    +'</div><div class="prio-grid">';
+  S.teachers.forEach(function(t){
+    var cur=(adv.instPriority[cy]||{})[t.id]||'';
+    html+='<div class="prio-card"><div class="prio-head">'
+      +'<div style="width:26px;height:26px;border-radius:50%;background:'+t.color+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.74rem">'+t.name[0]+'</div>'
+      +'<span style="font-weight:600;font-size:.82rem">'+t.name+'</span></div>'
+      +'<select onchange="if(!S.advanced.instPriority['+cy+'])S.advanced.instPriority['+cy+']={};S.advanced.instPriority['+cy+']=JSON.parse(JSON.stringify(S.advanced.instPriority['+cy+']||{}));S.advanced.instPriority['+cy+']=Object.assign(S.advanced.instPriority['+cy+']||{},JSON.parse(\'{\\"'+t.id+'\\":\\"\'+this.value+\'\\"}\'\'));save();renderAdvanced()">'
+      +'<option value="">— Aucune priorité —</option>'
+      +S.installations.filter(function(i){return i.id!=='piscine';}).map(function(i){return '<option value="'+i.id+'"'+(cur===i.id?' selected':'')+'>'+i.name+'</option>';}).join('')
+      +'</select>'
+      +(cur?'<div style="font-size:.7rem;color:var(--success);margin-top:4px">✓ '+(S.installations.find(function(i){return i.id===cur;})||{name:'?'}).name+'</div>':'')
+      +'</div>';
+  });
+  html+='</div></div>';
+
+  // 2. Assignation classe → enseignant (toutes sessions)
+  html+='<div class="adv-sec"><div class="adv-h">2 — Assignation de classes (toutes sessions)</div>'
+    +'<div class="adv-sub">Forcez un enseignant à prendre en charge TOUTES les sessions d\'une classe. Pour les 6ème, l\'enseignant assigné prend aussi la piscine. Laissez vide pour laisser l\'algorithme décider.</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px">';
+  S.classes.forEach(function(cls){
+    var cur=(adv.classTeacher||{})[cls.id]||'';
+    var is6=(cls.niveau==='6eme');
+    html+='<div style="border:1px solid '+(is6?'#3b82f6':' var(--border)')+';border-radius:6px;padding:8px;background:#fff'+(is6?';border-left:3px solid #3b82f6':'')+';">'
+      +'<div style="font-weight:600;font-size:.8rem;margin-bottom:5px">'+cls.id+' <span style="color:var(--muted);font-size:.7rem">('+cls.niveau+(is6?' 🏊':'')+' )</span></div>'
+      +'<select onchange="if(!S.advanced.classTeacher)S.advanced.classTeacher={};S.advanced.classTeacher[\''+cls.id+'\']=this.value;save()">'
+      +'<option value="">Auto</option>'
+      +S.teachers.map(function(t){return '<option value="'+t.id+'"'+(cur===t.id?' selected':'')+'>'+t.name+'</option>';}).join('')
+      +'</select>'
+      +(cur?'<div style="font-size:.68rem;color:var(--accent2);margin-top:3px">→ '+(S.teachers.find(function(t){return t.id===cur;})||{name:'?'}).name+'</div>':'')
+      +'</div>';
+  });
+  html+='</div></div>';
+
+  // 3. Co-enseignement
+  html+='<div class="adv-sec"><div class="adv-h">3 — Créneaux partagés (co-enseignement)</div>'
+    +'<div class="adv-sub">Synchronisez les créneaux 1h de deux enseignants sur les mêmes slots (ex. Louis + Pauline, 3ème, S2+S3).</div>';
+  var cts=adv.coTeach||[];
+  if(!cts.length)html+='<div class="alert alert-info"><span>ℹ️</span><div>Aucun créneau partagé.</div></div>';
+  else cts.forEach(function(ct,ci){
+    var t1=S.teachers.find(function(t){return t.id===ct.teacherIds[0];})||{name:'?',color:'#888'};
+    var t2=S.teachers.find(function(t){return t.id===ct.teacherIds[1];})||{name:'?',color:'#888'};
+    html+='<div class="co-row">'
+      +'<span class="co-tag" style="background:'+lighten(t1.color,.85)+';color:'+t1.color+'">'+t1.name+'</span>'
+      +'+ <span class="co-tag" style="background:'+lighten(t2.color,.85)+';color:'+t2.color+'">'+t2.name+'</span>'
+      +'<span class="badge badge-gray">'+ct.slots.join('+')+'</span>'
+      +'<span class="badge badge-blue">'+ct.duration+'h</span>'
+      +'<span class="badge badge-purple">'+ct.levels.join(', ')+'</span>'
+      +(ct.day?'<span class="badge badge-orange">'+ct.day+'</span>':'')
+      +'<button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;margin-left:auto" onclick="S.advanced.coTeach.splice('+ci+',1);save();renderAdvanced()">🗑️</button>'
+      +'</div>';
+  });
+  html+='<button class="btn btn-outline btn-sm" style="margin-top:6px" onclick="openCoTeachModal()">+ Ajouter</button></div>';
+
+  // 4. Permutation
+  html+='<div class="adv-sec"><div class="adv-h">4 — Permutation de classes</div>'
+    +'<div class="adv-sub">Cliquez <span style="color:var(--accent);font-weight:600">Rouge A</span> puis <span style="color:var(--success);font-weight:600">Vert B</span> pour permuter.</div>';
+  if(!S.schedule.length)html+='<div class="alert alert-info"><span>📅</span><div>Générez l\'EDT d\'abord.</div></div>';
+  else html+=renderSwapBoard();
+  html+='</div>';
+
+  // 5. Encadrement piscine
+  html+='<div class="adv-sec"><div class="adv-h">5 — Encadrement piscine</div>'
+    +'<div class="adv-sub">Qui accompagne les classes et qui est le collègue suppléant. 3 classes = 1 suppléant, 4 classes = toute l\'équipe.</div>'
+    +'<div class="pool-sup-grid">';
+  ['mardi','jeudi'].forEach(function(jour){
+    var data=adv.poolSup[jour]||{accompany:[],extra:''};
+    var nb=S.schedule.filter(function(e){return e.isPool&&e.day===(jour==='mardi'?'Mardi':'Jeudi');}).length;
+    html+='<div class="pool-day-card"><div class="pool-day-title">🏊 '+(jour==='mardi'?'Mardi M1+M2':'Jeudi M3+M4')
+      +' <span class="badge badge-blue">'+nb+' classe(s)</span></div>'
+      +(nb>=4?'<div class="alert alert-warn" style="font-size:.74rem;margin-bottom:8px"><span>⚠️</span><div>4 classes → toute l\'équipe mobilisée</div></div>':'')
+      +'<div style="font-size:.75rem;font-weight:600;margin-bottom:5px">Accompagnateurs :</div>'
+      +S.teachers.map(function(t){var chk=(data.accompany||[]).indexOf(t.id)>-1;
+        return '<div class="pool-teacher-row"><input type="checkbox" '+(chk?'checked':'')+' onchange="togglePoolAcc(\''+jour+'\',\''+t.id+'\',this.checked)" style="width:15px;height:15px;accent-color:'+t.color+'">'
+          +'<div style="width:8px;height:8px;border-radius:50%;background:'+t.color+'"></div>'
+          +'<span>'+t.name+'</span>'+(t.id===data.extra?'<span class="sup-badge" style="margin-left:auto">Suppléant</span>':'')+'</div>';}).join('')
+      +'<div style="font-size:.75rem;font-weight:600;margin:8px 0 4px">Suppléant :</div>'
+      +'<select onchange="S.advanced.poolSup[\''+jour+'\'].extra=this.value;save();renderAdvanced()">'
+      +'<option value="">— Aucun —</option>'
+      +S.teachers.map(function(t){return '<option value="'+t.id+'"'+(data.extra===t.id?' selected':'')+'>'+t.name+'</option>';}).join('')
+      +'</select></div>';
+  });
+  html+='</div></div>';
+
+  document.getElementById('advanced-panel').innerHTML=html;
+}
+
+function setPrio(cy,tid,val){
+  if(!S.advanced.instPriority[cy])S.advanced.instPriority[cy]={};
+  S.advanced.instPriority[cy][tid]=val;save();
+}
+function togglePoolAcc(jour,tid,checked){
+  if(!S.advanced.poolSup[jour])S.advanced.poolSup[jour]={accompany:[],extra:''};
+  var arr=S.advanced.poolSup[jour].accompany;
+  if(checked&&arr.indexOf(tid)===-1)arr.push(tid);
+  else if(!checked)S.advanced.poolSup[jour].accompany=arr.filter(function(x){return x!==tid;});
+  save();renderAdvanced();
+}
+function openCoTeachModal(){
+  document.getElementById('modal-title').textContent='Ajouter un créneau partagé';
+  document.getElementById('modal-body').innerHTML=
+    '<div style="display:flex;gap:10px">'
+    +'<div style="flex:1"><label>Enseignant A</label><select id="ct-t1">'+S.teachers.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div>'
+    +'<div style="flex:1"><label>Enseignant B</label><select id="ct-t2">'+S.teachers.map(function(t,i){return '<option value="'+t.id+'"'+(i===1?' selected':'')+'>'+t.name+'</option>';}).join('')+'</select></div>'
+    +'</div>'
+    +'<label>Durée</label><select id="ct-dur"><option value="1">1h</option><option value="2">2h</option></select>'
+    +'<label>Créneaux cibles</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:5px">'
+    +TS.map(function(ts){return '<label style="display:flex;align-items:center;gap:3px;font-size:.76rem;margin-top:0;cursor:pointer"><input type="checkbox" class="ct-slot" value="'+ts.id+'"> '+ts.id+'</label>';}).join('')+'</div>'
+    +'<label>Jour (optionnel)</label><select id="ct-day"><option value="">Tout jour</option>'+DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('')+'</select>'
+    +'<label>Niveaux</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:5px">'
+    +['6eme','5eme','4eme','3eme','ULIS'].map(function(lv){return '<label style="display:flex;align-items:center;gap:3px;font-size:.76rem;margin-top:0;cursor:pointer"><input type="checkbox" class="ct-lv" value="'+lv+'" checked> '+lv+'</label>';}).join('')+'</div>';
+  document.getElementById('modal-ok').textContent='Ajouter';
+  MC={type:'add-coteach'};
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+// Permutation
+function renderSwapBoard(){
+  var selA=S.swapSel&&S.swapSel.a,selB=S.swapSel&&S.swapSel.b;
+  var html='<div class="swap-info">';
+  html+=selA?'<span class="badge badge-red">A: '+selA.classId+' – '+selA.tname+' '+selA.day+' '+selA.slots[0]+'</span>':'<span class="badge badge-gray">A : cliquez une case</span>';
+  html+='↔';
+  html+=selB?'<span class="badge badge-green">B: '+selB.classId+' – '+selB.tname+' '+selB.day+' '+selB.slots[0]+'</span>':'<span class="badge badge-gray">B : cliquez une autre</span>';
+  if(selA&&selB){
+    html+='<button class="btn btn-sm btn-primary" onclick="doSwap(\'classes\')">↔ Échanger classes</button>';
+    html+='<button class="btn btn-sm btn-secondary" onclick="doSwap(\'teachers\')">↔ Échanger enseignants</button>';
+    html+='<button class="btn btn-sm btn-outline" onclick="S.swapSel={a:null,b:null};renderAdvanced()">✕</button>';
+  }
+  html+='</div>';
+  var dayO={Lundi:0,Mardi:1,Mercredi:2,Jeudi:3,Vendredi:4};
+  var nonPool=S.schedule.filter(function(e){return !e.isPool;});
+  var tSch={};S.teachers.forEach(function(t){tSch[t.id]=nonPool.filter(function(e){return e.teacherId===t.id;});});
+  var allSlots=[];
+  nonPool.forEach(function(e){var k=e.day+'|'+e.slots[0];if(!allSlots.find(function(s){return s.k===k;}))allSlots.push({k:k,day:e.day,slot:e.slots[0]});});
+  allSlots.sort(function(a,b){var dd=dayO[a.day]-dayO[b.day];if(dd)return dd;return TS.findIndex(function(x){return x.id===a.slot;})-TS.findIndex(function(x){return x.id===b.slot;});});
+  html+='<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:.73rem">';
+  html+='<thead><tr><th style="background:var(--primary);color:#fff;padding:6px 8px;border:1px solid rgba(255,255,255,.1);min-width:75px">Enseignant</th>';
+  allSlots.forEach(function(s){html+='<th style="background:var(--primary);color:#fff;padding:5px 6px;border:1px solid rgba(255,255,255,.1);font-size:.67rem;text-align:center">'+s.day.slice(0,2)+'<br>'+s.slot+'</th>';});
+  html+='</tr></thead><tbody>';
+  S.teachers.forEach(function(t){
+    html+='<tr><td style="padding:5px 7px;border:1px solid var(--border);font-weight:600;background:'+lighten(t.color,.93)+'">'
+      +'<span style="display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:'+t.color+'"></span>'+t.name+'</span></td>';
+    allSlots.forEach(function(s){
+      var e=tSch[t.id].find(function(x){return x.day===s.day&&x.slots[0]===s.slot;});
+      if(!e){html+='<td style="border:1px solid var(--border)"></td>';return;}
+      var isA=selA&&selA.classId===e.classId&&selA.day===e.day&&selA.slots[0]===e.slots[0];
+      var isB=selB&&selB.classId===e.classId&&selB.day===e.day&&selB.slots[0]===e.slots[0];
+      var border=isA?'2px solid var(--accent)':isB?'2px solid var(--success)':'1px solid var(--border)';
+      var bg=isA?'#fff1f2':isB?'#ecfdf5':lighten(t.color,.88);
+      html+='<td style="border:'+border+';padding:0;vertical-align:top">'
+        +'<div style="padding:3px 5px;cursor:pointer;background:'+bg+';min-height:34px;font-size:.68rem" '
+        +'onclick="selSwap(\''+e.classId+'\',\''+e.day+'\',\''+e.slots.join(',')+'\',\''+t.id+'\',\''+t.name+'\')"><b>'+e.classId+'</b>'
+        +(e.duration===1?'<br><small style="color:var(--muted)">(1h)</small>':'')+'</div></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  return html;
+}
+function selSwap(cid,day,sStr,tid,tname){
+  if(!S.swapSel)S.swapSel={a:null,b:null};
+  var entry={classId:cid,day:day,slots:sStr.split(','),tid:tid,tname:tname};
+  if(!S.swapSel.a)S.swapSel.a=entry;
+  else if(!S.swapSel.b){
+    if(S.swapSel.a.classId===cid&&S.swapSel.a.day===day){showToast('⚠️ Choisissez une case différente');return;}
+    S.swapSel.b=entry;
+  }else S.swapSel={a:entry,b:null};
+  renderAdvanced();
+}
+function doSwap(mode){
+  var A=S.swapSel.a,B=S.swapSel.b;if(!A||!B)return;
+  var eA=S.schedule.find(function(e){return e.classId===A.classId&&e.day===A.day&&e.slots[0]===A.slots[0];});
+  var eB=S.schedule.find(function(e){return e.classId===B.classId&&e.day===B.day&&e.slots[0]===B.slots[0];});
+  if(!eA||!eB){showToast('⚠️ Entrées introuvables');return;}
+  if(mode==='classes'){var tc=eA.classId;eA.classId=eB.classId;eB.classId=tc;}
+  else{var tt=eA.teacherId;eA.teacherId=eB.teacherId;eB.teacherId=tt;}
+  S.swapSel={a:null,b:null};save();renderAdvanced();showToast('✅ Permutation effectuée');
+}
+
+// ═══════════════════════════════════════════════
+// VUE PAR CYCLE (installations et équilibre)
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// EDT ACTUEL — VUE CALENDRIER PAR ENSEIGNANT
+// Format inspiré des images réelles (Pronote-like)
+// ═══════════════════════════════════════════════
+var calViewTeacher='all';
+
+function renderCalView(){
+  var el=document.getElementById('calview-panel');
+  if(!el)return;
+
+  // ── Sélecteur enseignant ──
+  var tabs='<div class="cal-teacher-tabs">'
+    +'<button class="cal-teacher-tab'+(calViewTeacher==='all'?' active':'')+'" '
+    +'style="'+(calViewTeacher==='all'?'background:var(--primary);border-color:var(--primary);color:#fff;':'')+'" '
+    +'onclick="calViewTeacher=\'all\';renderCalView()">👥 Tous en parallèle</button>'
+    +S.teachers.map(function(t){
+      var a=calViewTeacher===t.id;
+      return '<button class="cal-teacher-tab'+(a?' active':'')+'" '
+        +'style="'+(a?'background:'+t.color+';border-color:'+t.color+';':'')+'" '
+        +'onclick="calViewTeacher=\''+t.id+'\';renderCalView()">'+t.name+'</button>';
+    }).join('')
+    +'</div>';
+
+  var html=tabs;
+
+  if(calViewTeacher==='all'){
+    html+=renderParallelCalendar();
+  }else{
+    var t=S.teachers.find(function(x){return x.id===calViewTeacher;});
+    if(t)html+=renderTeacherCalendar(t);
+  }
+
+  el.innerHTML=html;
+}
+
+// Retourne la hauteur en px d'un bloc selon sa durée
+function calBlockH(dur){ return dur===2?'108px':'54px'; }
+
+// Rendu du calendrier d'un enseignant (fidèle aux images)
+function renderTeacherCalendar(t){
+  if(!S.schedule.length&&!(S.as[t.id]&&S.as[t.id].length)){
+    return '<div class="alert alert-info"><span>📅</span><div>Aucun EDT généré. Cliquez sur <strong>⚡ Générer l\'EDT</strong> pour commencer.</div></div>';
+  }
+
+  // Collecter les entrées de cet enseignant
+  var entries=S.schedule.filter(function(e){return e.teacherId===t.id;});
+  var asE=(S.as[t.id]||[]).map(function(a){
+    return {classId:'AS',teacherId:t.id,installId:'',day:a.day,slots:a.slots,duration:a.slots.length,isAS:true,label:a.label||'AS'};
+  });
+  var all=entries.concat(asE);
+
+  // Stats rapides
+  var totalH=countH(t.id);
+  var totalAS=countAS(t.id);
+  var classes=[...new Set(entries.filter(function(e){return !e.isPool;}).map(function(e){return e.classId;}))];
+
+  var info='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center">'
+    +'<div style="display:flex;align-items:center;gap:8px">'
+    +'<div style="width:36px;height:36px;border-radius:50%;background:'+t.color+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem">'+t.name[0]+'</div>'
+    +'<div><div style="font-weight:700;font-size:.95rem">'+t.name+'</div>'
+    +'<div style="font-size:.73rem;color:var(--muted)">Service '+t.serviceH+'h — '+t.minH+'h de cours</div></div>'
+    +'</div>'
+    +'<span class="badge '+(totalH>=t.minH?'badge-green':'badge-red')+'" style="font-size:.8rem">'+totalH+'h / '+t.minH+'h</span>'
+    +'<span class="badge badge-orange" style="font-size:.8rem">'+totalAS+'h AS / 3h</span>'
+    +'<span class="badge badge-blue" style="font-size:.8rem">'+classes.length+' classe(s)</span>'
+    +'</div>';
+
+  // Construire le calendrier
+  // Structure : pour chaque jour, trouver tous les cours triés par créneau
+  var DAY_NAMES=['Lun.','Mar.','Mer.','Jeu.','Ven.'];
+
+  // Index : day -> { slotId -> entry }
+  var dayEntries={};
+  DAYS.forEach(function(d){dayEntries[d]={};});
+  all.forEach(function(e){
+    if(!dayEntries[e.day])return;
+    e.slots.forEach(function(s,si){
+      if(si===0)dayEntries[e.day][s]=e; // stocker à partir du premier slot
+    });
+  });
+  // Slots couverts (2ème slot d'un cours 2h)
+  var covered={};
+  all.forEach(function(e){
+    if(e.slots.length>1)e.slots.slice(1).forEach(function(s){covered[e.day+'_'+s]=true;});
+  });
+
+  var html='<div class="cal-wrap"><table class="cal-table"><thead><tr>'
+    +'<th class="cal-th" style="width:62px">Heure</th>'
+    +DAYS.map(function(d,i){
+      return '<th class="cal-th">'+DAY_NAMES[i]+'<br><span style="font-weight:300;font-size:.65rem;opacity:.7">'+d+'</span></th>';
+    }).join('')
+    +'</tr></thead><tbody>';
+
+  TS.forEach(function(ts){
+    html+='<tr>';
+    // Colonne heure
+    html+='<td class="cal-time">'+ts.s+'<br><span style="font-size:.55rem;color:#bbb">'+ts.e+'</span></td>';
+
+    DAYS.forEach(function(d){
+      // Skip si slot couvert par un cours 2h
+      if(covered[d+'_'+ts.id]){return;}
+
+      var e=dayEntries[d][ts.id];
+      var isDayOff=isTDayOff(t.id,d,ts.id);
+      var isWedPm=isWedPM(d,ts.id);
+
+      var rs=e&&e.slots.length>1?'rowspan="2"':'';
+      var tdH=e&&e.slots.length>1?'height:108px':'height:54px';
+
+      if(isDayOff){
+        html+='<td '+rs+' style="'+tdH+'"><div class="cal-block libre" style="height:100%;opacity:.5"><small>Libre</small></div></td>';
+        return;
+      }
+      if(isWedPm){
+        html+='<td style="height:54px"><div class="cal-block wedpm" style="height:100%;font-size:.6rem">Mercredi PM</div></td>';
+        return;
+      }
+      if(!e){
+        html+='<td style="height:54px"></td>';
+        return;
+      }
+
+      var inst=S.installations.find(function(i){return i.id===e.installId;});
+      var instName=inst?inst.name:'';
+      var cls=e.isPool?'pool':e.isAS?'as':e.duration===2?'eps-2h':'eps-1h';
+      var label=e.isPool?'🏊 Natation':e.isAS?(e.label||'AS'):e.classId;
+      var sublabel=e.isPool?'Piscine':e.isAS?'':getCls(e.classId)?(getCls(e.classId).niveau):'';
+
+      html+='<td '+rs+' style="'+tdH+';padding:0">'
+        +'<div class="cal-block '+cls+'" style="height:100%;border-left-color:'+t.color+'">'
+        +'<strong style="color:'+t.color+'">'+label+'</strong>'
+        +(sublabel?'<small>'+sublabel+'</small>':'')
+        +(instName&&!e.isAS?'<div class="cal-install">📍 '+instName+'</div>':'')
+        +(e.isPool?'<div class="cal-install">🏊 Piscine</div>':'')
+        +(e.isAS&&inst?'<div class="cal-install">📍 '+instName+'</div>':'')
+        +'</div></td>';
+    });
+    html+='</tr>';
+  });
+
+  html+='</tbody></table></div>';
+  return info+html;
+}
+
+// Rendu "Tous en parallèle" : matrice enseignant × créneau + tableau de présences
+function renderParallelCalendar(){
+  if(!S.schedule.length){
+    return '<div class="alert alert-info"><span>📅</span><div>Aucun EDT généré. Cliquez sur <strong>⚡ Générer l\'EDT</strong> pour commencer.</div></div>';
+  }
+
+  var DAY_NAMES=['Lun.','Mar.','Mer.','Jeu.','Ven.'];
+
+  // ── Tableau 1 : EDT de chaque enseignant côte à côte ──
+  var covered={};
+  var allEntries=S.schedule.slice();
+  S.teachers.forEach(function(t){
+    (S.as[t.id]||[]).forEach(function(a){
+      allEntries.push({classId:'AS',teacherId:t.id,installId:'',day:a.day,slots:a.slots,duration:a.slots.length,isAS:true,label:a.label||'AS'});
+    });
+  });
+  allEntries.forEach(function(e){
+    if(e.slots.length>1)e.slots.slice(1).forEach(function(s){covered[e.day+'_'+e.teacherId+'_'+s]=true;});
+  });
+
+  // Index : teacherId -> day -> slotId -> entry
+  var idx={};
+  S.teachers.forEach(function(t){
+    idx[t.id]={};
+    DAYS.forEach(function(d){idx[t.id][d]={};});
+  });
+  allEntries.forEach(function(e){
+    if(!idx[e.teacherId])return;
+    if(!idx[e.teacherId][e.day])return;
+    idx[e.teacherId][e.day][e.slots[0]]=e;
+  });
+
+  var html='<div style="font-weight:600;font-size:.88rem;margin-bottom:10px;color:var(--primary)">📋 EDT de chaque enseignant</div>';
+  html+='<div class="cal-wrap"><table class="cal-table" style="font-size:.67rem"><thead><tr>'
+    +'<th class="cal-th" style="width:58px">Heure</th>'
+    +DAYS.map(function(d,di){
+      return '<th class="cal-th" colspan="'+S.teachers.length+'">'+DAY_NAMES[di]+' — '+d+'</th>';
+    }).join('')+'</tr>';
+  // Sous-entête : noms des enseignants répétés pour chaque jour
+  html+='<tr><th class="cal-th" style="background:#0f0f23;font-size:.6rem"></th>';
+  DAYS.forEach(function(){
+    S.teachers.forEach(function(t){
+      html+='<th class="cal-th" style="background:'+t.color+';font-size:.62rem;padding:4px 3px;white-space:nowrap;min-width:60px">'+t.name+'</th>';
+    });
+  });
+  html+='</tr></thead><tbody>';
+
+  TS.forEach(function(ts){
+    html+='<tr><td class="cal-time" style="font-size:.62rem">'+ts.s+'</td>';
+    DAYS.forEach(function(d){
+      S.teachers.forEach(function(t){
+        if(covered[d+'_'+t.id+'_'+ts.id]){return;}
+        var e=idx[t.id][d][ts.id];
+        var isDayOff=isTDayOff(t.id,d,ts.id);
+        var isWedPm=isWedPM(d,ts.id);
+        var rs=e&&e.slots.length>1?'rowspan="2"':'';
+        var h=e&&e.slots.length>1?'height:108px':'height:54px';
+
+        if(isDayOff){html+='<td '+rs+' style="'+h+';background:#f5f5f5"></td>';return;}
+        if(isWedPm){html+='<td style="background:#f8fafc;font-size:.55rem;color:#ccc;text-align:center;vertical-align:middle">—</td>';return;}
+        if(!e){html+='<td style="'+h+'"></td>';return;}
+
+        var inst=S.installations.find(function(i){return i.id===e.installId;});
+        var label=e.isPool?'🏊':e.isAS?(e.label||'AS'):e.classId;
+        var bg=e.isPool?'#dbeafe':e.isAS?'#fef9c3':lighten(t.color,e.duration===2?.82:.91);
+        var bc=e.isPool?'#3b82f6':e.isAS?'#f59e0b':t.color;
+
+        html+='<td '+rs+' style="'+h+';padding:0">'
+          +'<div style="height:100%;padding:3px 4px;background:'+bg+';border-left:2px solid '+bc+';font-size:.62rem;line-height:1.3">'
+          +'<b style="display:block;font-size:.65rem;color:'+bc+'">'+label+'</b>'
+          +(inst&&!e.isAS?'<span style="font-size:.55rem;color:#888;font-style:italic">'+inst.name+'</span>':'')
+          +'</div></td>';
+      });
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+
+  // ── Tableau 2 : Présences en parallèle (nb enseignants par créneau) ──
+  html+='<div style="margin-top:28px">';
+  html+='<div style="font-weight:600;font-size:.88rem;margin-bottom:4px;color:var(--primary)">👥 Enseignants présents en parallèle</div>';
+  html+='<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Nombre d\'enseignants occupés (EPS + AS) simultanément sur chaque créneau. <span style="background:#fecaca;padding:1px 5px;border-radius:3px;font-size:.7rem">Rouge = toute l\'équipe</span></div>';
+  html+='<div class="cal-wrap"><table class="cal-table"><thead><tr>'
+    +'<th class="cal-th" style="width:62px">Heure</th>'
+    +DAYS.map(function(d,i){return '<th class="cal-th">'+DAY_NAMES[i]+'<br><span style="font-weight:300;font-size:.65rem;opacity:.8">'+d+'</span></th>';}).join('')
+    +'</tr></thead><tbody>';
+
+  TS.forEach(function(ts){
+    html+='<tr><td class="cal-time">'+ts.s+'<br><span style="font-size:.55rem;color:#bbb">'+ts.e+'</span></td>';
+    DAYS.forEach(function(d){
+      if(isWedPM(d,ts.id)){
+        html+='<td style="height:54px"><div style="height:100%;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#c0c9d0">PM</div></td>';
+        return;
+      }
+      // Compter les enseignants occupés sur ce créneau
+      var busy=[];
+      S.teachers.forEach(function(t){
+        var hasEPS=S.schedule.some(function(e){return e.teacherId===t.id&&e.day===d&&e.slots.indexOf(ts.id)>-1;});
+        var hasAS=(S.as[t.id]||[]).some(function(a){return a.day===d&&a.slots.indexOf(ts.id)>-1;});
+        if(hasEPS||hasAS)busy.push(t);
+      });
+      var n=busy.length;
+      var cellCls='par-cell-'+n;
+      var initials=busy.map(function(t){return t.name[0];}).join('');
+      // Dots colorés des enseignants présents
+      var dots=busy.map(function(t){
+        return '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+t.color+';margin:1px" title="'+t.name+'"></span>';
+      }).join('');
+
+      html+='<td style="height:54px;padding:3px">'
+        +'<div class="'+cellCls+'" style="height:100%;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">'
+        +(n>0?'<span style="font-size:1.2rem;font-weight:800;line-height:1">'+n+'</span>':'<span style="font-size:.7rem;opacity:.4">—</span>')
+        +(n>0?'<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1px">'+dots+'</div>':'')
+        +'</div></td>';
+    });
+    html+='</tr>';
+  });
+
+  html+='</tbody></table></div></div>';
+
+  // ── Légende présences ──
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:.73rem">';
+  [[1,'#d1fae5','#065f46'],[2,'#a7f3d0','#064e3b'],[3,'#fef3c7','#78350f'],[4,'#fed7aa','#7c2d12'],[5,'#fecaca','#7f1d1d']].forEach(function(c){
+    html+='<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:3px;background:'+c[1]+';display:inline-block;border:1px solid '+c[2]+'"></span>'+c[0]+' enseignant'+(c[0]>1?'s':'')+'</span>';
+  });
+  html+='</div>';
+
+  return html;
+}
+
+var cvCycle=1;
+function renderCycleView(){
+  var html='<div class="cycle-view-nav">'
+    +[1,2,3].map(function(n){return '<button class="cycle-view-btn'+(cvCycle===n?' active':'')+'" onclick="cvCycle='+n+';renderCycleView()">Cycle '+n+'</button>';}).join('')
+    +'</div>';
+
+  // Tableau enseignant par cycle : qui enseigne quoi dans quelle installation
+  html+='<div class="card" style="margin-bottom:14px"><h4>📋 EDT par enseignant — Cycle '+cvCycle+'</h4>';
+  if(!S.schedule.length){html+='<div class="alert alert-info"><span>📅</span><div>Générez l\'EDT pour voir cette vue.</div></div></div>';document.getElementById('cycleview-panel').innerHTML=html;return;}
+
+  html+='<div style="overflow-x:auto"><table class="sched-table"><thead><tr>'
+    +'<th style="min-width:80px">Enseignant</th>'
+    +DAYS.map(function(d){return '<th>'+d+'</th>';}).join('')
+    +'</tr></thead><tbody>';
+  S.teachers.forEach(function(t){
+    html+='<tr><td class="tc" style="font-weight:700;background:'+lighten(t.color,.9)+';color:var(--primary)">'+t.name+'</td>';
+    DAYS.forEach(function(day){
+      // Regrouper toutes les sessions de cet enseignant ce jour
+      var tCours=S.schedule.filter(function(e){return e.teacherId===t.id&&e.day===day;});
+      var asDay=(S.as[t.id]||[]).filter(function(a){return a.day===day;});
+      var wedpmAllowed=day==='Mercredi'; // AS autorisée mercredi PM
+      
+      if(!tCours.length&&!asDay.length){
+        if(isTDayOff(t.id,day,'M1')){html+='<td><div class="slot-free" style="font-size:.68rem">LIBRE</div></td>';}
+        else html+='<td></td>';
+        return;
+      }
+      var cellContent='<div style="padding:4px 5px;font-size:.68rem;min-height:40px">';
+      tCours.sort(function(a,b){return TS.findIndex(function(x){return x.id===a.slots[0];})-TS.findIndex(function(x){return x.id===b.slots[0];});});
+      tCours.forEach(function(e){
+        var inst=S.installations.find(function(i){return i.id===e.installId;});
+        cellContent+='<div style="margin-bottom:2px;padding:2px 4px;border-radius:3px;background:'+lighten(t.color,e.duration===2?.8:.9)+';border-left:2px solid '+t.color+'">'
+          +'<b>'+e.classId+'</b> '+(e.isPool?'🏊':''+(e.duration===1?'(1h)':''))
+          +(inst?'<br><span style="color:#555;font-style:italic">'+inst.name+(inst.distance==='eloigne'?' 🚌':'')+'</span>':'')
+          +'</div>';
+      });
+      asDay.forEach(function(a){
+        cellContent+='<div style="padding:2px 4px;border-radius:3px;background:#fef3c7;border-left:2px solid #f59e0b;font-size:.67rem">🏅 '+(a.label||'AS')+'</div>';
+      });
+      cellContent+='</div>';
+      html+='<td style="padding:0;vertical-align:top">'+cellContent+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div></div>';
+
+  // Équilibre installations
+  html+='<div class="card"><h4>⚖️ Utilisation des installations — Cycle '+cvCycle+'</h4>';
+  var instUseCount={};
+  S.schedule.filter(function(e){return !e.isPool;}).forEach(function(e){
+    instUseCount[e.installId]=(instUseCount[e.installId]||0)+e.duration;
+  });
+  var totalH=Object.values(instUseCount).reduce(function(s,v){return s+v;},0)||1;
+  html+='<div class="install-balance-grid">';
+  S.installations.filter(function(i){return i.id!=='piscine';}).forEach(function(inst){
+    var used=instUseCount[inst.id]||0;
+    var pct=Math.round(used/totalH*100);
+    html+='<div class="install-bal-card">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+inst.color+'"></div>'
+      +'<span style="font-weight:600;font-size:.8rem">'+inst.name+'</span>'
+      +'<span class="badge badge-gray" style="margin-left:auto">'+used+'h</span>'
+      +'</div>'
+      +'<div class="install-bal-bar"><div class="install-bal-fill" style="width:'+pct+'%;background:'+inst.color+'"></div></div>'
+      +'<div style="font-size:.7rem;color:var(--muted)">'+pct+'% du total · Cap. '+inst.capacity+'<br>'+(inst.distance==='eloigne'?'🚌 Éloignée — 2h min.':'📍 Proche')+'</div>'
+      +'</div>';
+  });
+  html+='</div></div>';
+
+  // Équilibre classes par enseignant
+  html+='<div class="card"><h4>🎓 Classes par enseignant</h4>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">';
+  S.teachers.forEach(function(t){
+    var classes=S.schedule.filter(function(e){return e.teacherId===t.id&&!e.isPool;}).map(function(e){return e.classId;});
+    var unique=[...new Set(classes)];
+    var byNiv={};unique.forEach(function(cid){var c=getCls(cid);if(c)byNiv[c.niveau]=(byNiv[c.niveau]||0)+1;});
+    html+='<div style="border:1px solid var(--border);border-radius:7px;padding:10px;background:#fff">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">'
+      +'<div style="width:26px;height:26px;border-radius:50%;background:'+t.color+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.73rem">'+t.name[0]+'</div>'
+      +'<span style="font-weight:600;font-size:.82rem">'+t.name+'</span>'
+      +'<span class="badge badge-blue" style="margin-left:auto">'+unique.length+' cl.</span>'
+      +'</div>'
+      +Object.keys(byNiv).map(function(niv){return '<div style="font-size:.73rem;display:flex;justify-content:space-between"><span>'+niv+'</span><span style="font-weight:600">'+byNiv[niv]+'</span></div>';}).join('')
+      +'</div>';
+  });
+  html+='</div></div>';
+
+  document.getElementById('cycleview-panel').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+load();
+if(!S.advanced)S.advanced=buildDefaultAdv();
+if(!S.edts)S.edts=[];
+renderSB();
+renderPanel('dashboard');
+</script>
+</body>
+</html>
