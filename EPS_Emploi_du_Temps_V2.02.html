@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPS — Emploi du Temps · Collège Pasteur</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface2: #eef1f6;
+  --border: #dde2ed;
+  --accent: #e63946;
+  --accent2: #457b9d;
+  --green: #2a9d8f;
+  --orange: #f4a261;
+  --purple: #8b7cf8;
+  --text: #1a2035;
+  --muted: #6b7593;
+  --white: #ffffff;
+
+  --c-clement: #e63946;
+  --c-anne: #457b9d;
+  --c-pauline: #2a9d8f;
+  --c-steven: #f4a261;
+  --c-louis: #8b7cf8;
+
+  --slot-h: 52px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── HEADER ─── */
+header {
+  background: #1d4e89;
+  border-bottom: none;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+header h1 span { color: #a8d4f5; }
+
+.header-sub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  border-left: 1px solid rgba(255,255,255,0.2);
+  padding-left: 20px;
+  margin-left: 4px;
+}
+
+.header-tabs {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.htab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  background: transparent;
+  color: rgba(255,255,255,0.65);
+}
+
+.htab:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.htab.active { background: rgba(255,255,255,0.22); color: #fff; border-color: rgba(255,255,255,0.3); }
+
+/* ─── LAYOUT ─── */
+.app {
+  display: flex;
+  height: calc(100vh - 64px);
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px 12px;
+}
+
+.sidebar-section { margin-bottom: 24px; }
+
+.sidebar-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.teacher-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.teacher-btn:hover { background: var(--surface2); }
+.teacher-btn.active { background: var(--surface2); }
+
+.teacher-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.teacher-btn.all .teacher-dot {
+  background: linear-gradient(135deg, var(--c-clement), var(--c-anne), var(--c-pauline));
+}
+
+.day-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  gap: 8px;
+}
+
+.day-btn:hover { background: var(--surface2); color: var(--text); }
+.day-btn.active { background: var(--surface2); color: var(--text); font-weight: 600; }
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.legend-chip {
+  width: 28px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* ─── MAIN ─── */
+.main {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+/* ─── VUE : grille semaine ─── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ─── GRID ─── */
+.grid-wrap { overflow-x: auto; }
+
+.timetable {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 780px;
+}
+
+.timetable th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.timetable th.day-col { text-align: center; color: var(--text); font-size: 0.8rem; }
+
+.slot-row td {
+  border: 1px solid var(--border);
+  vertical-align: top;
+  padding: 4px;
+  min-width: 140px;
+  height: var(--slot-h);
+  background: var(--white);
+}
+
+.slot-row td.time-cell {
+  min-width: 80px;
+  background: var(--surface2);
+  text-align: right;
+  padding: 0 12px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 500;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-left: none;
+}
+
+.slot-separator td {
+  height: 6px;
+  background: var(--surface2);
+  border: none;
+  border-top: 1px dashed var(--border);
+}
+
+.slot-separator td.time-cell {
+  background: var(--surface2);
+  font-size: 0.65rem;
+  color: #bbb;
+  text-align: right;
+  padding: 0 12px;
+  border-left: none;
+}
+
+/* ─── COURSE CHIP ─── */
+.chip {
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  cursor: default;
+  transition: filter 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.chip:hover { filter: brightness(1.15); }
+
+.chip-teacher {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.chip-class {
+  font-weight: 600;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-note {
+  font-size: 0.63rem;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-pool::after {
+  content: '🏊';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+}
+
+.chip-as::after {
+  content: '⭐';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+}
+
+.chip-ulis::after {
+  content: '♿';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+}
+
+/* Double slot chip (spans 2 rows) */
+.chip.double {
+  height: calc(var(--slot-h) * 2 + 5px + 2px);
+}
+
+/* Teacher colors */
+.chip-clement { background: color-mix(in srgb, var(--c-clement) 12%, transparent); border-left: 3px solid var(--c-clement); color: #7a0009; }
+.chip-anne    { background: color-mix(in srgb, var(--c-anne)    15%, transparent); border-left: 3px solid var(--c-anne);    color: #1a3d55; }
+.chip-pauline { background: color-mix(in srgb, var(--c-pauline) 15%, transparent); border-left: 3px solid var(--c-pauline); color: #124740; }
+.chip-steven  { background: color-mix(in srgb, var(--c-steven)  18%, transparent); border-left: 3px solid var(--c-steven);  color: #6b3800; }
+.chip-louis   { background: color-mix(in srgb, var(--c-louis)   15%, transparent); border-left: 3px solid var(--c-louis);   color: #3b2a8a; }
+
+/* ─── TEACHER VIEW ─── */
+#view-teacher .timetable td { min-width: 160px; }
+
+/* ─── STATS ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+.stat-value { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--white); }
+.stat-sub { font-size: 0.73rem; color: var(--muted); }
+
+.teacher-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.teacher-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.teacher-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.teacher-card-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.teacher-card-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  color: var(--white);
+}
+
+.teacher-card-hours {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.teacher-card-body { padding: 14px 20px; }
+
+.teacher-card-day {
+  margin-bottom: 12px;
+}
+
+.tcd-name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.tcd-slots { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.mini-chip {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ─── PAGE TITLE ─── */
+.page-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.page-title span {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.filter-chip:hover { border-color: var(--text); color: var(--text); }
+.filter-chip.active { color: #fff; border-color: transparent; }
+.filter-chip.fc { background: var(--c-clement); border-color: var(--c-clement); color: #fff; }
+.filter-chip.fa { background: var(--c-anne); border-color: var(--c-anne); color: #fff; }
+.filter-chip.fp { background: var(--c-pauline); border-color: var(--c-pauline); color: #fff; }
+.filter-chip.fs { background: var(--c-steven); border-color: var(--c-steven); color: #fff; }
+.filter-chip.fl { background: var(--c-louis); border-color: var(--c-louis); color: #fff; }
+
+/* ─── TOOLTIP ─── */
+.tooltip {
+  position: fixed;
+  background: #1d4e89;
+  border: 1px solid #1a3d6e;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: #fff;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.1s;
+  max-width: 200px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.tooltip.show { opacity: 1; }
+.tooltip strong { color: #ffffff; display: block; margin-bottom: 4px; }
+.tooltip .t-detail { color: rgba(255,255,255,0.7); font-size: 0.72rem; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c5cbdb; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a0a8bc; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .sidebar { width: 60px; }
+  .sidebar-label, .teacher-btn span, .day-btn span { display: none; }
+  .teacher-btn { justify-content: center; }
+  .day-btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>EPS <span>·</span> Emploi du Temps</h1>
+  <div class="header-sub">Collège Pasteur — Villemomble</div>
+  <nav class="header-tabs">
+    <button class="htab active" onclick="showView('semaine', this)">Semaine</button>
+    <button class="htab" onclick="showView('teacher', this)">Par enseignant</button>
+    <button class="htab" onclick="showView('recap', this)">Récap</button>
+  </nav>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Enseignants</div>
+      <button class="teacher-btn all active" onclick="filterTeacher('all', this)">
+        <div class="teacher-dot" style="background:linear-gradient(135deg,var(--c-clement),var(--c-anne),var(--c-pauline))"></div>
+        <span>Tous</span>
+      </button>
+      <button class="teacher-btn" onclick="filterTeacher('clement', this)">
+        <div class="teacher-dot" style="background:var(--c-clement)"></div>
+        <span>Clément</span>
+      </button>
+      <button class="teacher-btn" onclick="filterTeacher('anne', this)">
+        <div class="teacher-dot" style="background:var(--c-anne)"></div>
+        <span>Anne</span>
+      </button>
+      <button class="teacher-btn" onclick="filterTeacher('pauline', this)">
+        <div class="teacher-dot" style="background:var(--c-pauline)"></div>
+        <span>Pauline</span>
+      </button>
+      <button class="teacher-btn" onclick="filterTeacher('steven', this)">
+        <div class="teacher-dot" style="background:var(--c-steven)"></div>
+        <span>Steven</span>
+      </button>
+      <button class="teacher-btn" onclick="filterTeacher('louis', this)">
+        <div class="teacher-dot" style="background:var(--c-louis)"></div>
+        <span>Louis</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Légende</div>
+      <div class="legend-row"><div class="legend-chip" style="background:var(--c-clement)"></div> Clément</div>
+      <div class="legend-row"><div class="legend-chip" style="background:var(--c-anne)"></div> Anne</div>
+      <div class="legend-row"><div class="legend-chip" style="background:var(--c-pauline)"></div> Pauline</div>
+      <div class="legend-row"><div class="legend-chip" style="background:var(--c-steven)"></div> Steven</div>
+      <div class="legend-row"><div class="legend-chip" style="background:var(--c-louis)"></div> Louis</div>
+      <br>
+      <div class="legend-row">🏊 Piscine</div>
+      <div class="legend-row">⭐ AS</div>
+      <div class="legend-row">♿ ULIS</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ══ VUE SEMAINE ══ -->
+    <div id="view-semaine" class="view active">
+      <div class="page-title">Vue semaine <span>Cliquez sur un créneau pour les détails</span></div>
+      <div id="week-grid"></div>
+    </div>
+
+    <!-- ══ VUE PAR ENSEIGNANT ══ -->
+    <div id="view-teacher" class="view">
+      <div class="page-title">Par enseignant</div>
+      <div class="filter-bar" id="teacher-filter-bar">
+        <button class="filter-chip fc active" onclick="showTeacherGrid('clement', this)">Clément</button>
+        <button class="filter-chip fa" onclick="showTeacherGrid('anne', this)">Anne</button>
+        <button class="filter-chip fp" onclick="showTeacherGrid('pauline', this)">Pauline</button>
+        <button class="filter-chip fs" onclick="showTeacherGrid('steven', this)">Steven</button>
+        <button class="filter-chip fl" onclick="showTeacherGrid('louis', this)">Louis</button>
+      </div>
+      <div id="teacher-grid"></div>
+    </div>
+
+    <!-- ══ VUE RÉCAP ══ -->
+    <div id="view-recap" class="view">
+      <div class="page-title">Récapitulatif</div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="teacher-cards" id="teacher-cards"></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const SLOTS = [
+  { id:'M1', label:'M1', time:'08:25–09:20' },
+  { id:'M2', label:'M2', time:'09:25–10:20' },
+  { id:'M3', label:'M3', time:'10:35–11:30' },
+  { id:'M4', label:'M4', time:'11:35–12:30' },
+  { id:'PAUSE', label:'—', time:'12:30–13:30', separator:true },
+  { id:'S1', label:'S1', time:'13:30–14:25' },
+  { id:'S2', label:'S2', time:'14:30–15:25' },
+  { id:'S3', label:'S3', time:'15:30–16:25' },
+  { id:'S4', label:'S4', time:'16:30–17:25' },
+];
+
+const DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+
+const TEACHERS = {
+  clement: { name:'Clément', color:'var(--c-clement)', cls:'chip-clement' },
+  anne:    { name:'Anne',    color:'var(--c-anne)',    cls:'chip-anne'    },
+  pauline: { name:'Pauline', color:'var(--c-pauline)', cls:'chip-pauline' },
+  steven:  { name:'Steven',  color:'var(--c-steven)',  cls:'chip-steven'  },
+  louis:   { name:'Louis',   color:'var(--c-louis)',   cls:'chip-louis'   },
+};
+
+// Schedule: teacher → day → slot → {classe, note, isPool, isAS, isULIS}
+// Double slots (M3&M4, S2&S3…) stored at first slot with double:true
+const SCHEDULE = {
+  clement: {
+    Mardi: {
+      M1: { classe:'6ème A (piscine)', isPool:true, double:true, note:'Accompagnement piscine' },
+      M3: { classe:'3ème E' },
+      M4: { classe:'4ème B' },
+      S2: { classe:'6ème F', double:true },
+      S4: { classe:'4ème A' },
+    },
+    Mercredi: {
+      M2: { classe:'4ème E' },
+      M3: { classe:'4ème B', double:true },
+      S1: { classe:'AS Foot', isAS:true, note:'13h30–16h30' },
+    },
+    Jeudi: {
+      M2: { classe:'3ème A' },
+      M3: { classe:'6ème F (piscine)', isPool:true, double:true, note:'Piscine' },
+      S2: { classe:'4ème E', double:true },
+    },
+    Vendredi: {
+      M1: { classe:'3ème E', double:true },
+      M3: { classe:'3ème A', double:true },
+    },
+  },
+  anne: {
+    Lundi: {
+      M2: { classe:'5ème A' },
+      M3: { classe:'5ème B', double:true },
+      S2: { classe:'5ème C', double:true },
+      S4: { classe:'5ème D' },
+    },
+    Mardi: {
+      M1: { classe:'6ème E (piscine)', isPool:true, double:true, note:'Piscine' },
+      M3: { classe:'5ème A', double:true },
+      S2: { classe:'4ème C' },
+      S3: { classe:'5ème B' },
+    },
+    Mercredi: {
+      M4: { classe:'5ème C' },
+      S1: { classe:'AS Danse', isAS:true, note:'13h30–16h30' },
+    },
+    Vendredi: {
+      M1: { classe:'6ème E', double:true },
+      M3: { classe:'5ème D', double:true },
+    },
+  },
+  pauline: {
+    Mardi: {
+      M1: { classe:'6ème C (piscine)', isPool:true, double:true, note:'Piscine' },
+      M3: { classe:'3ème D', double:true },
+      S2: { classe:'3ème F', double:true },
+    },
+    Mercredi: {
+      M1: { classe:'6ème A', double:true },
+      M3: { classe:'5ème E' },
+      S1: { classe:'AS Basket', isAS:true, note:'13h30–16h30' },
+    },
+    Jeudi: {
+      M3: { classe:'6ème A (piscine)', isPool:true, double:true, note:'Piscine' },
+      S2: { classe:'3ème D' },
+      S3: { classe:'3ème F' },
+    },
+    Vendredi: {
+      M2: { classe:'ULIS', isULIS:true },
+      M3: { classe:'5ème E', double:true },
+      S2: { classe:'6ème C', double:true },
+    },
+  },
+  steven: {
+    Lundi: {
+      M1: { classe:'4ème C', double:true },
+      M3: { classe:'3ème B', double:true },
+      S1: { classe:'AS Foot féminin', isAS:true },
+      S2: { classe:'3ème C', double:true },
+    },
+    Mardi: {
+      M1: { classe:'6ème B', double:true },
+      M3: { classe:'5ème F', double:true },
+      S1: { classe:'AS Tennis de table', isAS:true },
+    },
+    Mercredi: {
+      M2: { classe:'3ème B' },
+      M3: { classe:'3ème C' },
+    },
+    Jeudi: {
+      M1: { classe:'6ème B', double:true },
+      M3: { classe:'6ème (piscine)', isPool:true, double:true, note:'Accompagnement piscine' },
+      S1: { classe:'Foot féminin', isAS:true },
+      S2: { classe:'4ème A', double:true },
+      S4: { classe:'5ème F' },
+    },
+  },
+  louis: {
+    Lundi: {
+      M3: { classe:'4ème F', double:true },
+      S1: { classe:'AS Tennis de table', isAS:true },
+      S2: { classe:'6ème D', double:true },
+      S4: { classe:'4ème D' },
+    },
+    Mardi: {
+      S2: { classe:'3ème G', double:true },
+      S4: { classe:'4ème F' },
+    },
+    Mercredi: {
+      M3: { classe:'3ème H', double:true },
+      S1: { classe:'AS Gymnastique', isAS:true, note:'13h–14h' },
+    },
+    Jeudi: {
+      M1: { classe:'4ème D', double:true },
+      M3: { classe:'6ème D', double:true },
+      S1: { classe:'AS Gymnastique', isAS:true },
+      S2: { classe:'3ème H' },
+      S3: { classe:'3ème G' },
+    },
+  },
+};
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let currentTeacherFilter = 'all';
+let currentView = 'semaine';
+let currentTeacherGrid = 'clement';
+
+// ══════════════════════════════════════════
+//  RENDER HELPERS
+// ══════════════════════════════════════════
+function makeChip(teacher, slotData, short=false) {
+  if (!slotData) return '';
+  const t = TEACHERS[teacher];
+  const poolClass = slotData.isPool ? ' chip-pool' : '';
+  const asClass   = slotData.isAS   ? ' chip-as'   : '';
+  const ulisClass = slotData.isULIS ? ' chip-ulis' : '';
+  const note = slotData.note ? `<div class="chip-note">${slotData.note}</div>` : '';
+  const teacherLabel = short ? '' : `<div class="chip-teacher">${t.name}</div>`;
+  return `<div class="chip ${t.cls}${poolClass}${asClass}${ulisClass}"
+    data-teacher="${teacher}"
+    data-classe="${slotData.classe}"
+    data-note="${slotData.note||''}"
+    onmouseenter="showTip(event, this)"
+    onmouseleave="hideTip()"
+    onmousemove="moveTip(event)">
+    ${teacherLabel}
+    <div class="chip-class">${slotData.classe}</div>
+    ${note}
+  </div>`;
+}
+
+// Build the cell content for a given day/slot, considering filters & merging
+function cellContent(day, slotId, teacherFilter, slotIndex) {
+  const results = [];
+  const doubleSpan = {}; // tracks which slots are "consumed" by a double above
+
+  for (const [tKey, tData] of Object.entries(SCHEDULE)) {
+    if (teacherFilter !== 'all' && teacherFilter !== tKey) continue;
+    const dayData = tData[day];
+    if (!dayData) continue;
+    const slotData = dayData[slotId];
+    if (slotData) {
+      results.push(makeChip(tKey, slotData, teacherFilter !== 'all'));
+    }
+  }
+  return results.join('');
+}
+
+// Check if a slot is "consumed" by a double-height chip in the slot above
+function isConsumedByDouble(day, slotId, teacherFilter) {
+  const prevId = prevSlot(slotId);
+  if (!prevId) return false;
+  for (const [tKey] of Object.entries(SCHEDULE)) {
+    if (teacherFilter !== 'all' && teacherFilter !== tKey) continue;
+    const dayData = SCHEDULE[tKey][day];
+    if (!dayData) continue;
+    const prevData = dayData[prevId];
+    if (prevData && prevData.double) return tKey;
+  }
+  return false;
+}
+
+const SLOT_ORDER = ['M1','M2','M3','M4','S1','S2','S3','S4'];
+function prevSlot(id) {
+  const i = SLOT_ORDER.indexOf(id);
+  return i > 0 ? SLOT_ORDER[i-1] : null;
+}
+
+// ══════════════════════════════════════════
+//  WEEK VIEW
+// ══════════════════════════════════════════
+function renderWeek(teacherFilter='all') {
+  const days = DAYS;
+  let html = '<div class="grid-wrap"><table class="timetable"><thead><tr>';
+  html += '<th>Créneau</th>';
+  days.forEach(d => { html += `<th class="day-col">${d}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  SLOTS.forEach(slot => {
+    if (slot.separator) {
+      html += `<tr class="slot-separator"><td class="time-cell">PAUSE</td>`;
+      days.forEach(() => { html += '<td></td>'; });
+      html += '</tr>';
+      return;
+    }
+
+    html += `<tr class="slot-row">`;
+    html += `<td class="time-cell"><strong>${slot.label}</strong><br>${slot.time}</td>`;
+
+    days.forEach(day => {
+      // Check if consumed by a double chip from previous slot
+      const consumed = isConsumedByDouble(day, slot.id, teacherFilter);
+      if (consumed) {
+        html += '<td style="border-top:none;background:rgba(0,0,0,0.2)"></td>';
+        return;
+      }
+
+      // Check if any entry in this slot is a double
+      let hasDouble = false;
+      let cellChips = '';
+      for (const [tKey] of Object.entries(SCHEDULE)) {
+        if (teacherFilter !== 'all' && teacherFilter !== tKey) continue;
+        const dayData = SCHEDULE[tKey][day];
+        if (!dayData) continue;
+        const slotData = dayData[slot.id];
+        if (slotData) {
+          if (slotData.double) hasDouble = true;
+          cellChips += makeChip(tKey, slotData, teacherFilter !== 'all');
+        }
+      }
+
+      if (hasDouble && !cellChips.includes('chip-as')) {
+        // Double cell — rowspan 2 for single teacher views; for "all" just render tall
+        html += `<td style="vertical-align:top">${cellChips}</td>`;
+      } else {
+        html += `<td>${cellChips}</td>`;
+      }
+    });
+
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('week-grid').innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+//  TEACHER VIEW
+// ══════════════════════════════════════════
+function renderTeacherGrid(teacher) {
+  const tData = SCHEDULE[teacher];
+  const t = TEACHERS[teacher];
+  const days = DAYS.filter(d => tData[d]);
+
+  let html = '<div class="grid-wrap"><table class="timetable"><thead><tr>';
+  html += '<th>Créneau</th>';
+  days.forEach(d => html += `<th class="day-col">${d}</th>`);
+  html += '</tr></thead><tbody>';
+
+  SLOTS.forEach(slot => {
+    if (slot.separator) {
+      html += `<tr class="slot-separator"><td class="time-cell">PAUSE</td>`;
+      days.forEach(() => html += '<td></td>');
+      html += '</tr>';
+      return;
+    }
+
+    // Skip if all days have this slot consumed by a double
+    const allConsumed = days.every(day => {
+      const prev = prevSlot(slot.id);
+      if (!prev) return false;
+      return tData[day] && tData[day][prev] && tData[day][prev].double;
+    });
+
+    html += `<tr class="slot-row"><td class="time-cell"><strong>${slot.label}</strong><br>${slot.time}</td>`;
+
+    days.forEach(day => {
+      const dayData = tData[day];
+      const prev = prevSlot(slot.id);
+      if (prev && dayData && dayData[prev] && dayData[prev].double) {
+        html += '<td style="border-top:none;background:rgba(0,0,0,0.2)"></td>';
+        return;
+      }
+      const slotData = dayData && dayData[slot.id];
+      html += `<td>${slotData ? makeChip(teacher, slotData, true) : ''}</td>`;
+    });
+
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('teacher-grid').innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+//  RECAP VIEW
+// ══════════════════════════════════════════
+function renderRecap() {
+  // Count hours per teacher
+  let statsHtml = '';
+  let totalSlots = 0;
+
+  Object.entries(TEACHERS).forEach(([key, t]) => {
+    let count = 0;
+    const tData = SCHEDULE[key];
+    Object.values(tData).forEach(day => {
+      Object.values(day).forEach(slot => {
+        if (slot.isAS) return; // AS not counted as regular
+        count += slot.double ? 2 : 1;
+      });
+    });
+    totalSlots += count;
+    statsHtml += `<div class="stat-card">
+      <div class="stat-label" style="color:${t.color}">${t.name}</div>
+      <div class="stat-value">${count}</div>
+      <div class="stat-sub">créneaux / semaine</div>
+    </div>`;
+  });
+
+  statsHtml = `<div class="stat-card">
+    <div class="stat-label">Total équipe</div>
+    <div class="stat-value">${totalSlots}</div>
+    <div class="stat-sub">créneaux enseignés</div>
+  </div>` + statsHtml;
+
+  document.getElementById('stats-grid').innerHTML = statsHtml;
+
+  // Teacher cards
+  let cardsHtml = '';
+  Object.entries(TEACHERS).forEach(([key, t]) => {
+    const tData = SCHEDULE[key];
+    let dayRows = '';
+    DAYS.forEach(day => {
+      if (!tData[day]) return;
+      const slots = tData[day];
+      let chips = '';
+      Object.entries(slots).forEach(([sid, sd]) => {
+        const extra = sd.isPool ? '🏊' : sd.isAS ? '⭐' : sd.isULIS ? '♿' : '';
+        chips += `<span class="mini-chip chip-${key}">${sid}: ${sd.classe} ${extra}</span>`;
+      });
+      dayRows += `<div class="teacher-card-day">
+        <div class="tcd-name">${day}</div>
+        <div class="tcd-slots">${chips}</div>
+      </div>`;
+    });
+
+    let total = 0;
+    Object.values(tData).forEach(day => {
+      Object.values(day).forEach(s => { if (!s.isAS) total += s.double ? 2 : 1; });
+    });
+
+    cardsHtml += `<div class="teacher-card">
+      <div class="teacher-card-header">
+        <div class="teacher-card-dot" style="background:${t.color}"></div>
+        <div class="teacher-card-name">${t.name}</div>
+        <div class="teacher-card-hours">${total} créneaux</div>
+      </div>
+      <div class="teacher-card-body">${dayRows}</div>
+    </div>`;
+  });
+
+  document.getElementById('teacher-cards').innerHTML = cardsHtml;
+}
+
+// ══════════════════════════════════════════
+//  CONTROLS
+// ══════════════════════════════════════════
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.htab').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  btn.classList.add('active');
+  currentView = name;
+
+  if (name === 'teacher') {
+    renderTeacherGrid(currentTeacherGrid);
+    // reset filter bar
+    document.querySelectorAll('#teacher-filter-bar .filter-chip').forEach(c => {
+      c.classList.toggle('active', c.textContent.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') === currentTeacherGrid);
+    });
+  }
+  if (name === 'recap') renderRecap();
+}
+
+function filterTeacher(teacher, btn) {
+  currentTeacherFilter = teacher;
+  document.querySelectorAll('.teacher-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (currentView === 'semaine') renderWeek(teacher);
+}
+
+function showTeacherGrid(teacher, btn) {
+  currentTeacherGrid = teacher;
+  document.querySelectorAll('#teacher-filter-bar .filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTeacherGrid(teacher);
+}
+
+// ══════════════════════════════════════════
+//  TOOLTIP
+// ══════════════════════════════════════════
+const tip = document.getElementById('tooltip');
+
+function showTip(e, el) {
+  const teacher = el.dataset.teacher;
+  const t = TEACHERS[teacher];
+  const note = el.dataset.note;
+  tip.innerHTML = `<strong style="color:${t.color}">${t.name}</strong>
+    <div>${el.dataset.classe}</div>
+    ${note ? `<div class="t-detail">${note}</div>` : ''}`;
+  tip.classList.add('show');
+  moveTip(e);
+}
+
+function moveTip(e) {
+  tip.style.left = (e.clientX + 14) + 'px';
+  tip.style.top  = (e.clientY - 10) + 'px';
+}
+
+function hideTip() { tip.classList.remove('show'); }
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+renderWeek('all');
+</script>
+</body>
+</html>
