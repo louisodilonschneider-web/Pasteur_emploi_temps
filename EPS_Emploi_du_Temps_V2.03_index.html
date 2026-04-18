@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPS V2.01 — Collège Pasteur</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════════════ */
+:root{
+  --primary:#1a1a2e; --accent:#e63946; --accent2:#457b9d;
+  --success:#2a9d8f; --warn:#f4a261;
+  --bg:#f4f6fb; --surface:#fff; --surface2:#eef1f6;
+  --border:#dde2ed; --text:#1a2035; --muted:#6b7593;
+  --header:#1d4e89;
+  --c-clement:#e63946; --c-anne:#457b9d; --c-pauline:#2a9d8f;
+  --c-steven:#f0922b; --c-louis:#7c3aed;
+  --slot-h:52px;
+  --sidebar:260px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px}
+button{font-family:'DM Sans',sans-serif;cursor:pointer}
+select,input{font-family:'DM Sans',sans-serif}
+h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:12px}
+h3{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+#app-header{
+  background:var(--header);height:56px;
+  display:flex;align-items:center;gap:12px;padding:0 18px;
+  position:sticky;top:0;z-index:300;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+#app-header .logo{font-family:'DM Serif Display',serif;font-size:1.15rem;color:#fff;white-space:nowrap}
+#app-header .logo em{color:#a8d4f5;font-style:normal}
+#app-header .sub{font-size:.68rem;color:rgba(255,255,255,.5);border-left:1px solid rgba(255,255,255,.2);padding-left:12px;white-space:nowrap}
+
+/* Cycle selector */
+.cycle-bar{display:flex;gap:3px;background:rgba(0,0,0,.22);padding:3px;border-radius:7px;margin:0 auto}
+.cycle-btn{padding:4px 10px;border-radius:5px;border:none;background:transparent;color:rgba(255,255,255,.55);font-size:.7rem;font-weight:600;transition:all .13s;white-space:nowrap}
+.cycle-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.cycle-btn.active{background:rgba(255,255,255,.22);color:#fff}
+
+/* Nav tabs */
+.nav-tabs{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+.nav-tab{padding:5px 10px;border-radius:6px;border:1px solid transparent;background:#fff;color:#1a2035;font-size:.72rem;font-weight:600;transition:all .13s;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.nav-tab:hover{background:#f0f4ff;color:#1d4e89;border-color:#c7d8f5}
+.nav-tab.active{background:#1a2035;color:#fff;border-color:#1a2035;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.badge-conflict{background:#dc2626;color:#fff;border-radius:9px;font-size:.58rem;font-weight:700;padding:1px 5px;margin-left:3px;vertical-align:middle}
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════ */
+#app-body{display:flex;height:calc(100vh - 56px);overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  overflow-y:auto;padding:14px 10px;
+  display:flex;flex-direction:column;gap:16px;
+}
+.sb-section{}
+.sb-title{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:0 6px;margin-bottom:6px}
+.t-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border-radius:7px;border:none;background:transparent;color:var(--text);font-size:.82rem;font-weight:500;transition:background .1s;text-align:left}
+.t-btn:hover{background:var(--surface2)}
+.t-btn.active{background:var(--surface2);font-weight:600}
+.t-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.t-btn .hours{margin-left:auto;font-size:.68rem;color:var(--muted)}
+
+.legend-item{display:flex;align-items:center;gap:7px;padding:3px 6px;font-size:.7rem;color:var(--muted)}
+.legend-bar{width:18px;height:9px;border-radius:3px;flex-shrink:0}
+
+.sb-info{padding:8px;background:var(--surface2);border-radius:7px;font-size:.7rem;color:var(--muted);line-height:1.55}
+.sb-info strong{color:var(--text)}
+
+/* ── MAIN ── */
+#main-content{flex:1;overflow-y:auto;overflow-x:hidden}
+.view{display:none;padding:20px}
+.view.active{display:block}
+.page-title{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.page-title small{font-family:'DM Sans',sans-serif;font-size:.73rem;color:var(--muted);font-weight:400}
+
+/* ═══════════════════════════════════════════════════
+   CARDS & UTILITIES
+═══════════════════════════════════════════════════ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card+.card{margin-top:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px}
+.stat-big{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--text);line-height:1}
+.stat-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:3px;font-weight:700}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;border:none;font-size:.78rem;font-weight:600;transition:all .13s;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#c62d39}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:4px 9px;font-size:.7rem}
+
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.65rem;font-weight:600}
+.badge-ok{background:#dcfce7;color:#166534}
+.badge-warn{background:#fef9c3;color:#854d0e}
+.badge-err{background:#fee2e2;color:#991b1b}
+.badge-info{background:#dbeeff;color:#1a3d55}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-wrap{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.toggle{position:relative;width:36px;height:20px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:20px;transition:.2s;cursor:pointer}
+.toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--success)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(16px)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:12px;padding:24px;width:460px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-title{font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:16px}
+.modal-close{float:right;background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;margin-top:-4px}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.form-row select,.form-row input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:.82rem;background:var(--bg);color:var(--text)}
+
+/* ── TOAST ── */
+#toast-container{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:6px;z-index:900}
+.toast{background:#1e2540;color:#e8eaf0;padding:9px 14px;border-radius:8px;font-size:.76rem;box-shadow:0 4px 16px rgba(0,0,0,.25);animation:toastIn .18s ease;border-left:3px solid var(--header);max-width:280px}
+.toast.t-ok{border-left-color:var(--success)}
+.toast.t-warn{border-left-color:var(--warn)}
+.toast.t-err{border-left-color:var(--accent)}
+@keyframes toastIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TOOLTIP ── */
+#tooltip{position:fixed;background:#1e2540;border:1px solid #374060;border-radius:8px;padding:8px 12px;font-size:.73rem;color:#e8eaf0;pointer-events:none;z-index:800;opacity:0;transition:opacity .1s;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+#tooltip.show{opacity:1}
+#tooltip strong{display:block;margin-bottom:2px;font-size:.8rem}
+#tooltip .t-sub{color:#8892b0;font-size:.68rem}
+
+/* ═══════════════════════════════════════════════════
+   TIMETABLE GRID
+═══════════════════════════════════════════════════ */
+.grid-wrap{overflow-x:auto}
+.timetable{border-collapse:collapse;min-width:660px;width:100%}
+.timetable th{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 10px;text-align:left;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:5;white-space:nowrap}
+.timetable th.day-th{text-align:center;color:var(--text);font-size:.8rem}
+.slot-row td{border:1px solid var(--border);vertical-align:top;padding:3px;background:var(--surface);min-width:120px;height:var(--slot-h)}
+.time-td{background:var(--surface2)!important;min-width:74px!important;text-align:right;padding:0 10px!important;vertical-align:middle;border-left:none!important;white-space:nowrap}
+.time-td strong{font-size:.72rem;color:var(--text);display:block}
+.time-td small{font-size:.59rem;color:var(--muted)}
+.pause-row td{height:8px;background:#f0f2f6;border:none;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border)}
+.pause-row .time-td{font-size:.58rem;color:var(--muted);text-align:right;padding:0 10px!important}
+.consumed-td{background:#f8f9fb!important;border-top:none!important}
+.conflict-cell{background:#fff5f5!important}
+.insert-ok{background:#f0fdf4!important;cursor:pointer;outline:2px dashed #16a34a;outline-offset:-2px}
+.insert-ok:hover{background:#dcfce7!important}
+.insert-ko{background:#fff5f5!important;cursor:not-allowed}
+
+/* ── CHIP ── */
+.chip{border-radius:5px;padding:4px 6px;height:100%;display:flex;flex-direction:column;justify-content:center;gap:1px;cursor:default;position:relative;overflow:hidden;transition:filter .1s}
+.chip:hover{filter:brightness(.93)}
+.chip.h2{height:calc(var(--slot-h)*2 - 1px + 6px + 2px)}
+.chip-tl{font-size:.56rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;opacity:.65}
+.chip-cl{font-weight:600;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip-sub{font-size:.57rem;opacity:.6}
+.chip-icon{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
+/* teacher colors */
+.chip-clement{background:#fde8ea;border-left:3px solid var(--c-clement);color:#7a0c14}
+.chip-anne   {background:#dbeeff;border-left:3px solid var(--c-anne);   color:#183d55}
+.chip-pauline{background:#d1f5f1;border-left:3px solid var(--c-pauline);color:#0c3f37}
+.chip-steven {background:#fff0df;border-left:3px solid var(--c-steven); color:#6b3000}
+.chip-louis  {background:#ede9fe;border-left:3px solid var(--c-louis);  color:#3a0e8a}
+/* AS yellow */
+.chip-as{background:#fef9c3!important;border-left-color:#ca8a04!important;color:#713f12!important}
+.chip-pool{background:#dbeeff!important;border-left-color:#0369a1!important;color:#0c3454!important}
+
+/* ── FILTER CHIPS ── */
+.filter-bar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.f-chip{padding:4px 11px;border-radius:20px;font-size:.71rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--muted);transition:all .12s}
+.f-chip:hover{border-color:var(--text);color:var(--text)}
+.f-chip.all.active,.f-chip.all:hover{background:var(--text);border-color:var(--text);color:#fff}
+.f-chip.fc{--cc:var(--c-clement)}.f-chip.fa{--cc:var(--c-anne)}.f-chip.fp{--cc:var(--c-pauline)}.f-chip.fs{--cc:var(--c-steven)}.f-chip.fl{--cc:var(--c-louis)}
+.f-chip.fc.active,.f-chip.fa.active,.f-chip.fp.active,.f-chip.fs.active,.f-chip.fl.active{background:var(--cc);border-color:var(--cc);color:#fff}
+
+/* ── AVAILABILITY GRID (Installations) ── */
+.avail-grid{display:grid;gap:0}
+.avail-head{font-size:.65rem;font-weight:700;text-align:center;padding:5px 4px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.avail-cell{width:32px;height:28px;border:1px solid var(--border);cursor:pointer;transition:background .1s;font-size:.65rem;display:flex;align-items:center;justify-content:center}
+.avail-cell.av-ok{background:#dcfce7}
+.avail-cell.av-no{background:#fee2e2}
+.avail-cell.av-ok:hover{background:#bbf7d0}
+.avail-cell.av-no:hover{background:#fecaca}
+.avail-label{font-size:.72rem;font-weight:600;padding:4px 8px;display:flex;align-items:center;gap:6px}
+.dist-badge{font-size:.6rem;padding:1px 5px;border-radius:3px;cursor:pointer;font-weight:600}
+.dist-proche{background:#dbeeff;color:#1a3d55}
+.dist-eloignee{background:#fde8ea;color:#7a0c14}
+
+/* ── PREF PILLS (teacher prefs) ── */
+.pref-pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:600;cursor:pointer;user-select:none;transition:all .15s;border:1px solid transparent}
+.pref-n{background:var(--surface2);color:var(--muted);border-color:var(--border)}
+.pref-p{background:#dcfce7;color:#166534;border-color:#86efac}
+.pref-a{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+
+/* ── CONFLICT LIST ── */
+.conflict-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:7px;border:1px solid}
+.conflict-item.ci-err{background:#fff5f5;border-color:#fca5a5}
+.conflict-item.ci-warn{background:#fffbeb;border-color:#fcd34d}
+.conflict-item .ci-type{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0;margin-top:1px}
+.conflict-item .ci-desc{font-size:.76rem;flex:1}
+.conflict-item .ci-fix{font-size:.68rem;color:var(--muted);margin-top:2px}
+
+/* ── HOURS AS TABLE ── */
+.as-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.as-table th{padding:7px 10px;text-align:left;border-bottom:2px solid var(--border);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.as-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.as-table tr:hover td{background:var(--surface2)}
+
+/* ── PARALLEL TABLE ── */
+.parallel-table{border-collapse:collapse;font-size:.72rem;width:100%}
+.parallel-table th,.parallel-table td{border:1px solid var(--border);padding:5px 8px;text-align:center}
+.parallel-table th{background:var(--surface2);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.p-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 1px}
+.p-ok{color:var(--success)}
+.p-warn{color:var(--warn)}
+.p-err{color:var(--accent)}
+
+/* ── SAISIE MANUELLE ── */
+.manual-table{border-collapse:collapse;font-size:.72rem}
+.manual-table th{background:var(--header);color:#fff;padding:7px 10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600;text-align:center;border:1px solid rgba(255,255,255,.15);white-space:nowrap}
+.manual-table td{border:1px solid var(--border);padding:2px;vertical-align:top;min-width:100px;background:var(--surface)}
+.manual-table .time-label{background:var(--surface2);font-size:.65rem;font-weight:700;text-align:right;padding:4px 8px;color:var(--muted);white-space:nowrap;min-width:60px}
+.manual-table .separator-row td{height:6px;background:var(--surface2);font-size:.58rem;color:var(--muted);text-align:center;border-color:var(--border)}
+.manual-entry{border-radius:4px;padding:3px 5px;margin:1px;font-size:.65rem;border-left:2px solid;cursor:pointer;transition:filter .1s}
+.manual-entry:hover{filter:brightness(.9)}
+.manual-entry .me-teacher{font-weight:700;font-size:.58rem;text-transform:uppercase;opacity:.7}
+.manual-entry .me-class{font-weight:600;color:inherit}
+.manual-entry .me-inst{font-style:italic;opacity:.7}
+.cell-add-btn{width:100%;height:100%;min-height:28px;background:none;border:none;color:var(--muted);font-size:.65rem;opacity:.4;transition:opacity .15s;text-align:center}
+.cell-add-btn:hover{opacity:1;background:var(--surface2);border-radius:3px}
+
+/* ── PROGRESS BARS ── */
+.prog-bar-wrap{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-top:4px}
+.prog-bar{height:100%;border-radius:4px;transition:width .3s}
+
+/* ── MINI CHIP (recap) ── */
+.mini-chip{font-size:.63rem;padding:2px 6px;border-radius:4px;font-weight:500;border-left:2px solid;display:inline-block;margin:1px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #sidebar{width:52px}
+  .sb-title,.t-btn span,.legend-item span,.sb-info{display:none}
+  .t-btn{justify-content:center;padding:7px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div id="app-header">
+  <div class="logo">EPS <em>·</em> V2.01</div>
+  <div class="sub">Collège Pasteur — Villemomble</div>
+  <div class="cycle-bar">
+    <button class="cycle-btn active" onclick="setCycle(1,this)">🍂 Cycle 1</button>
+    <button class="cycle-btn" onclick="setCycle(2,this)">🌱 Cycle 2</button>
+    <button class="cycle-btn" onclick="setCycle(3,this)">☀️ Cycle 3</button>
+  </div>
+  <nav class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('dashboard',this)">📊 Tableau de bord</button>
+    <button class="nav-tab" onclick="showTab('teachers',this)">👩‍🏫 Enseignants</button>
+    <button class="nav-tab" onclick="showTab('installs',this)">🏟️ Installations</button>
+    <button class="nav-tab" onclick="showTab('constraints',this)">⚙️ Contraintes</button>
+    <button class="nav-tab" onclick="showTab('edt',this)">📅 EDT Actuel</button>
+    <button class="nav-tab" onclick="showTab('manual',this)">✏️ Saisie</button>
+    <button class="nav-tab" onclick="showTab('hours-as',this)">🏅 Heures AS</button>
+    <button class="nav-tab" onclick="showTab('verif',this)">⚠️ Vérification<span class="badge-conflict" id="conflict-badge" style="display:none">0</span></button>
+  </nav>
+</div>
+
+<div id="app-body">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside id="sidebar">
+  <div class="sb-section">
+    <div class="sb-title">Enseignants</div>
+    <button class="t-btn active" onclick="filterTeacher('all',this)" id="tb-all">
+      <div class="t-dot" style="background:linear-gradient(135deg,#e63946,#7c3aed)"></div>
+      <span>Tous</span>
+    </button>
+    <button class="t-btn" onclick="filterTeacher('clement',this)" id="tb-clement">
+      <div class="t-dot" style="background:var(--c-clement)"></div>
+      <span>Clément</span><span class="hours" id="h-clement">—</span>
+    </button>
+    <button class="t-btn" onclick="filterTeacher('anne',this)" id="tb-anne">
+      <div class="t-dot" style="background:var(--c-anne)"></div>
+      <span>Anne</span><span class="hours" id="h-anne">—</span>
+    </button>
+    <button class="t-btn" onclick="filterTeacher('pauline',this)" id="tb-pauline">
+      <div class="t-dot" style="background:var(--c-pauline)"></div>
+      <span>Pauline</span><span class="hours" id="h-pauline">—</span>
+    </button>
+    <button class="t-btn" onclick="filterTeacher('steven',this)" id="tb-steven">
+      <div class="t-dot" style="background:var(--c-steven)"></div>
+      <span>Steven</span><span class="hours" id="h-steven">—</span>
+    </button>
+    <button class="t-btn" onclick="filterTeacher('louis',this)" id="tb-louis">
+      <div class="t-dot" style="background:var(--c-louis)"></div>
+      <span>Louis</span><span class="hours" id="h-louis">—</span>
+    </button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Légende</div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--c-clement)"></div><span>Clément</span></div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--c-anne)"></div><span>Anne</span></div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--c-pauline)"></div><span>Pauline</span></div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--c-steven)"></div><span>Steven</span></div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--c-louis)"></div><span>Louis</span></div>
+    <div class="legend-item" style="margin-top:4px"><span>🏊 Piscine &nbsp; ⭐ AS &nbsp; ♿ ULIS</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Cycle actif</div>
+    <div class="sb-info" id="cycle-info"></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Actions</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:6px" onclick="generateEDT()">🎲 Générer EDT</button>
+    <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-bottom:6px" onclick="exportJSON()">📤 Exporter JSON</button>
+    <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="importJSON()">📥 Importer JSON</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="doImport(this)">
+  </div>
+</aside>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div id="main-content">
+
+<!-- ── DASHBOARD ── -->
+<div id="view-dashboard" class="view active">
+  <div class="page-title">📊 Tableau de bord</div>
+  <div class="grid-auto" id="dashboard-stats" style="margin-bottom:20px"></div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Par enseignant</h3>
+      <div id="dash-teachers"></div>
+    </div>
+    <div class="card">
+      <h3>Enseignants en parallèle</h3>
+      <div id="dash-parallel"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>Historique EDTs <span id="edt-count" style="color:var(--muted);font-weight:400"></span></h3>
+    <div id="edt-history"></div>
+  </div>
+</div>
+
+<!-- ── TEACHERS ── -->
+<div id="view-teachers" class="view">
+  <div class="page-title">👩‍🏫 Enseignants <small>Clic sur le niveau pour cycler Neutre → Préféré → Éviter</small></div>
+  <div id="teachers-grid" class="grid-2"></div>
+</div>
+
+<!-- ── INSTALLATIONS ── -->
+<div id="view-installs" class="view">
+  <div class="page-title">🏟️ Installations <small>Clic pour modifier la disponibilité</small></div>
+  <div id="installs-content"></div>
+</div>
+
+<!-- ── CONTRAINTES ── -->
+<div id="view-constraints" class="view">
+  <div class="page-title">⚙️ Contraintes & Génération</div>
+  <div class="grid-2" style="margin-bottom:14px">
+    <div class="card">
+      <h3>Configuration piscine</h3>
+      <div id="pool-config"></div>
+    </div>
+    <div class="card">
+      <h3>Options</h3>
+      <div id="options-config"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h3>Règles actives</h3>
+    <div id="rules-list"></div>
+  </div>
+  <div class="card">
+    <h3>Contraintes avancées</h3>
+    <div id="advanced-config"></div>
+  </div>
+</div>
+
+<!-- ── EDT ACTUEL ── -->
+<div id="view-edt" class="view">
+  <div class="page-title">📅 EDT Actuel
+    <small id="edt-title-sub"></small>
+  </div>
+  <div class="filter-bar" id="edt-filter-bar">
+    <button class="f-chip all active" onclick="edtFilter('all',this)">Tous</button>
+    <button class="f-chip fc" onclick="edtFilter('clement',this)">Clément</button>
+    <button class="f-chip fa" onclick="edtFilter('anne',this)">Anne</button>
+    <button class="f-chip fp" onclick="edtFilter('pauline',this)">Pauline</button>
+    <button class="f-chip fs" onclick="edtFilter('steven',this)">Steven</button>
+    <button class="f-chip fl" onclick="edtFilter('louis',this)">Louis</button>
+    <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="generateEDT()">🎲 Autre proposition</button>
+  </div>
+  <div class="grid-wrap" id="edt-grid"></div>
+  <div id="failed-section" style="margin-top:16px;display:none">
+    <div class="card">
+      <h3>⚠️ Cours non planifiés</h3>
+      <div id="failed-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SAISIE MANUELLE ── -->
+<div id="view-manual" class="view">
+  <div class="page-title">✏️ Saisie Manuelle
+    <small>Style tableau scolaire</small>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <div class="filter-bar" id="manual-filter-bar" style="margin-bottom:0">
+      <button class="f-chip all active" onclick="manualFilter('all',this)">Tous</button>
+      <button class="f-chip fc" onclick="manualFilter('clement',this)">Clément</button>
+      <button class="f-chip fa" onclick="manualFilter('anne',this)">Anne</button>
+      <button class="f-chip fp" onclick="manualFilter('pauline',this)">Pauline</button>
+      <button class="f-chip fs" onclick="manualFilter('steven',this)">Steven</button>
+      <button class="f-chip fl" onclick="manualFilter('louis',this)">Louis</button>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="importEdtToManual()">📥 Importer EDT</button>
+    <button class="btn btn-success btn-sm" onclick="validateManual()">✅ Valider → EDT</button>
+  </div>
+  <div id="manual-hours-bar" style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap"></div>
+  <div class="grid-wrap"><div id="manual-grid"></div></div>
+  <details style="margin-top:14px">
+    <summary style="font-size:.75rem;font-weight:600;cursor:pointer;color:var(--muted)">📍 Légende des installations</summary>
+    <div id="inst-legend" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px"></div>
+  </details>
+</div>
+
+<!-- ── HEURES AS ── -->
+<div id="view-hours-as" class="view">
+  <div class="page-title">🏅 Heures AS <small>Association Sportive</small></div>
+  <div id="as-content"></div>
+</div>
+
+<!-- ── VERIFICATION ── -->
+<div id="view-verif" class="view">
+  <div class="page-title">⚠️ Vérification & Conflits</div>
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <button class="btn btn-primary" onclick="runVerif()">🔍 Analyser</button>
+    <button class="btn btn-secondary" onclick="generateEDT()">🎲 Générer une autre proposition</button>
+  </div>
+  <div id="verif-content"></div>
+</div>
+
+</div><!-- /main-content -->
+</div><!-- /app-body -->
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-title" id="modal-title">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<div id="tooltip"></div>
+
+<script>
+'use strict';
+// ════════════════════════════════════════════════════
+//  DONNÉES STATIQUES
+// ════════════════════════════════════════════════════
+var SLOT_IDS = ['M1','M2','M3','M4','S1','S2','S3','S4'];
+var SLOTS = [
+  {id:'M1',label:'M1',time:'08:25–09:20',m:8*60+25,me:9*60+20},
+  {id:'M2',label:'M2',time:'09:25–10:20',m:9*60+25,me:10*60+20},
+  {id:'M3',label:'M3',time:'10:35–11:30',m:10*60+35,me:11*60+30},
+  {id:'M4',label:'M4',time:'11:35–12:30',m:11*60+35,me:12*60+30},
+  {id:'S1',label:'S1',time:'13:30–14:25',m:13*60+30,me:14*60+25},
+  {id:'S2',label:'S2',time:'14:30–15:25',m:14*60+30,me:15*60+25},
+  {id:'S3',label:'S3',time:'15:30–16:25',m:15*60+30,me:16*60+25},
+  {id:'S4',label:'S4',time:'16:30–17:25',m:16*60+30,me:17*60+25},
+];
+var DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+
+var TEACHERS_BASE = [
+  {id:'clement',name:'Clément',cls:'chip-clement',dot:'#e63946',serviceH:20,minH:18,dayOff:null,halfOff:null,prefLevels:[],avoidLevels:[]},
+  {id:'anne',   name:'Anne',   cls:'chip-anne',   dot:'#457b9d',serviceH:18,minH:16,dayOff:null,halfOff:null,prefLevels:[],avoidLevels:[]},
+  {id:'pauline',name:'Pauline',cls:'chip-pauline',dot:'#2a9d8f',serviceH:18,minH:16,dayOff:null,halfOff:null,prefLevels:[],avoidLevels:[]},
+  {id:'steven', name:'Steven', cls:'chip-steven', dot:'#f0922b',serviceH:20,minH:18,dayOff:null,halfOff:null,prefLevels:[],avoidLevels:[]},
+  {id:'louis',  name:'Louis',  cls:'chip-louis',  dot:'#7c3aed',serviceH:18,minH:16,dayOff:null,halfOff:null,prefLevels:[],avoidLevels:[]},
+];
+
+var INSTALLS_BASE = [
+  {id:'gymnase1',  name:'Gymnase 1',         abbr:'G1',  color:'#457b9d',capacity:35,distance:'proche', avail:{}},
+  {id:'gymnase2',  name:'Gymnase 2',         abbr:'G2',  color:'#2a9d8f',capacity:35,distance:'proche', avail:{}},
+  {id:'polyv',     name:'Salle polyvalente', abbr:'PV',  color:'#7c3aed',capacity:30,distance:'proche', avail:{}},
+  {id:'stade',     name:'Stade extérieur',   abbr:'ST',  color:'#f0922b',capacity:60,distance:'eloignee',avail:{}},
+  {id:'terrain',   name:'Terrain multisport',abbr:'TM',  color:'#e63946',capacity:40,distance:'eloignee',avail:{}},
+  {id:'piscine',   name:'Piscine municipale',abbr:'PS',  color:'#0369a1',capacity:30,distance:'eloignee',avail:{}},
+  {id:'danse',     name:'Salle de danse',    abbr:'DA',  color:'#ec4899',capacity:30,distance:'proche', avail:{}},
+  {id:'muscu',     name:'Salle de musculation',abbr:'MU',color:'#78716c',capacity:20,distance:'proche', avail:{}},
+];
+
+// Emplois du temps réels saisis par Louis
+var REAL_SCHEDULE = {
+  clement:{
+    Mardi:{
+      M1:{classe:'6ème A',isPool:true,dur:2,note:'Accompagnement piscine',install:'piscine'},
+      M3:{classe:'3ème E',dur:1,install:'gymnase1'},
+      M4:{classe:'4ème B',dur:1,install:'gymnase1'},
+      S2:{classe:'6ème F',dur:2,install:'gymnase2'},
+      S4:{classe:'4ème A',dur:1,install:'gymnase1'},
+    },
+    Mercredi:{
+      M2:{classe:'4ème E',dur:1,install:'gymnase1'},
+      M3:{classe:'4ème B',dur:2,install:'gymnase2'},
+      S1:{classe:'AS Foot',isAS:true,dur:1,note:'13h30–16h30',install:null},
+    },
+    Jeudi:{
+      M2:{classe:'3ème A',dur:1,install:'gymnase1'},
+      M3:{classe:'6ème F',isPool:true,dur:2,note:'Piscine',install:'piscine'},
+      S2:{classe:'4ème E',dur:2,install:'gymnase2'},
+    },
+    Vendredi:{
+      M1:{classe:'3ème E',dur:2,install:'stade'},
+      M3:{classe:'3ème A',dur:2,install:'terrain'},
+    },
+  },
+  anne:{
+    Lundi:{
+      M2:{classe:'5ème A',dur:1,install:'gymnase1'},
+      M3:{classe:'5ème B',dur:2,install:'gymnase2'},
+      S2:{classe:'5ème C',dur:2,install:'gymnase1'},
+      S4:{classe:'5ème D',dur:1,install:'gymnase2'},
+    },
+    Mardi:{
+      M1:{classe:'6ème E',isPool:true,dur:2,note:'Piscine',install:'piscine'},
+      M3:{classe:'5ème A',dur:2,install:'gymnase1'},
+      S2:{classe:'4ème C',dur:1,install:'gymnase2'},
+      S3:{classe:'5ème B',dur:1,install:'gymnase1'},
+    },
+    Mercredi:{
+      M4:{classe:'5ème C',dur:1,install:'gymnase1'},
+      S1:{classe:'AS Danse',isAS:true,dur:1,note:'13h30–16h30',install:'danse'},
+    },
+    Vendredi:{
+      M1:{classe:'6ème E',dur:2,install:'stade'},
+      M3:{classe:'5ème D',dur:2,install:'gymnase2'},
+    },
+  },
+  pauline:{
+    Mardi:{
+      M1:{classe:'6ème C',isPool:true,dur:2,note:'Piscine',install:'piscine'},
+      M3:{classe:'3ème D',dur:2,install:'gymnase1'},
+      S2:{classe:'3ème F',dur:2,install:'gymnase2'},
+    },
+    Mercredi:{
+      M1:{classe:'6ème A',dur:2,install:'stade'},
+      M3:{classe:'5ème E',dur:1,install:'gymnase1'},
+      S1:{classe:'AS Basket',isAS:true,dur:1,note:'13h30–16h30',install:null},
+    },
+    Jeudi:{
+      M3:{classe:'6ème A',isPool:true,dur:2,note:'Piscine',install:'piscine'},
+      S2:{classe:'3ème D',dur:1,install:'gymnase1'},
+      S3:{classe:'3ème F',dur:1,install:'gymnase2'},
+    },
+    Vendredi:{
+      M2:{classe:'ULIS',isULIS:true,dur:1,install:'gymnase1'},
+      M3:{classe:'5ème E',dur:2,install:'gymnase2'},
+      S2:{classe:'6ème C',dur:2,install:'terrain'},
+    },
+  },
+  steven:{
+    Lundi:{
+      M1:{classe:'4ème C',dur:2,install:'gymnase2'},
+      M3:{classe:'3ème B',dur:2,install:'stade'},
+      S1:{classe:'AS Foot féminin',isAS:true,dur:1,install:null},
+      S2:{classe:'3ème C',dur:2,install:'gymnase1'},
+    },
+    Mardi:{
+      M1:{classe:'6ème B',dur:2,install:'gymnase1'},
+      M3:{classe:'5ème F',dur:2,install:'gymnase2'},
+      S1:{classe:'AS Tennis de table',isAS:true,dur:1,install:null},
+    },
+    Mercredi:{
+      M2:{classe:'3ème B',dur:1,install:'gymnase1'},
+      M3:{classe:'3ème C',dur:1,install:'gymnase2'},
+    },
+    Jeudi:{
+      M1:{classe:'6ème B',dur:2,install:'gymnase1'},
+      M3:{classe:'6ème',isPool:true,dur:2,note:'Accompagnement piscine',install:'piscine'},
+      S1:{classe:'Foot féminin',isAS:true,dur:1,install:null},
+      S2:{classe:'4ème A',dur:2,install:'gymnase2'},
+      S4:{classe:'5ème F',dur:1,install:'gymnase1'},
+    },
+  },
+  louis:{
+    Lundi:{
+      M3:{classe:'4ème F',dur:2,install:'gymnase1'},
+      S1:{classe:'AS Tennis de table',isAS:true,dur:1,install:null},
+      S2:{classe:'6ème D',dur:2,install:'gymnase2'},
+      S4:{classe:'4ème D',dur:1,install:'gymnase1'},
+    },
+    Mardi:{
+      S2:{classe:'3ème G',dur:2,install:'gymnase1'},
+      S4:{classe:'4ème F',dur:1,install:'gymnase2'},
+    },
+    Mercredi:{
+      M3:{classe:'3ème H',dur:2,install:'gymnase1'},
+      S1:{classe:'AS Gymnastique',isAS:true,dur:1,note:'13h–14h',install:null},
+    },
+    Jeudi:{
+      M1:{classe:'4ème D',dur:2,install:'gymnase2'},
+      M3:{classe:'6ème D',dur:2,install:'gymnase1'},
+      S1:{classe:'AS Gymnastique',isAS:true,dur:1,install:null},
+      S2:{classe:'3ème H',dur:1,install:'gymnase2'},
+      S3:{classe:'3ème G',dur:1,install:'gymnase1'},
+    },
+  },
+};
+
+// Cycles de disponibilité
+var CYCLES = {
+  1:{
+    label:'Automne / Hiver',
+    info:'Stade fermé lun+ven. Gymnase 2 fermé ven PM. Terrain extérieur limité.',
+    closures:{stade:['Lundi','Vendredi'],terrain:['Lundi','Vendredi']},
+  },
+  2:{
+    label:'Printemps',
+    info:'Salle polyvalente fermée mer matin. Gymnase 2 fermé ven PM.',
+    closures:{polyv:['Mercredi_AM'],gymnase2:['Vendredi_PM']},
+  },
+  3:{
+    label:'Été',
+    info:'Gymnase 2 fermé lun+mer. Salle polyvalente fermée jeu+ven.',
+    closures:{gymnase2:['Lundi','Mercredi'],polyv:['Jeudi','Vendredi']},
+  },
+};
+
+// ════════════════════════════════════════════════════
+//  STATE PRINCIPAL
+// ════════════════════════════════════════════════════
+var S = {
+  teachers: JSON.parse(JSON.stringify(TEACHERS_BASE)),
+  installations: JSON.parse(JSON.stringify(INSTALLS_BASE)),
+  schedule: [],         // EDT actif [{teacherId,classId,installId,day,slotId,dur,isPool,isAS,isULIS,classe,note}]
+  edts: [],             // historique jusqu'à 10
+  as: {                 // AS fixes par enseignant
+    clement:{Mercredi:[{slotId:'S1',label:'AS Foot',note:'13h30–16h30'}]},
+    anne:   {Mercredi:[{slotId:'S1',label:'AS Danse',note:'13h30–16h30'}]},
+    pauline:{Mercredi:[{slotId:'S1',label:'AS Basket',note:'13h30–16h30'}]},
+    steven: {Lundi:[{slotId:'S1',label:'AS Foot féminin'}],Mardi:[{slotId:'S1',label:'AS Tennis de table'}],Jeudi:[{slotId:'S1',label:'Foot féminin'}]},
+    louis:  {Lundi:[{slotId:'S1',label:'AS Tennis de table'}],Mercredi:[{slotId:'S1',label:'AS Gymnastique',note:'13h–14h'}],Jeudi:[{slotId:'S1',label:'AS Gymnastique'}]},
+  },
+  options:{compactMode:false,poolOption:'option1'},
+  manual:{},            // saisie manuelle
+  cycle:1,
+  teacherFilter:'all',
+  edtFilter:'all',
+  manualFilter:'all',
+  currentTab:'dashboard',
+  insertMode:null,      // {entry} en cours d'insertion
+};
+
+// Charger depuis localStorage
+function loadState(){
+  try{
+    var raw=localStorage.getItem('eps_v4');
+    if(raw){
+      var saved=JSON.parse(raw);
+      if(saved.schedule) S.schedule=saved.schedule;
+      if(saved.edts) S.edts=saved.edts;
+      if(saved.as) S.as=saved.as;
+      if(saved.options) S.options=Object.assign(S.options,saved.options);
+      if(saved.manual) S.manual=saved.manual;
+      if(saved.cycle) S.cycle=saved.cycle;
+      if(saved.teachers) S.teachers=saved.teachers;
+      if(saved.installations) S.installations=saved.installations;
+    }
+  }catch(e){}
+}
+
+function saveState(){
+  try{
+    localStorage.setItem('eps_v4',JSON.stringify({
+      schedule:S.schedule,edts:S.edts,as:S.as,options:S.options,
+      manual:S.manual,cycle:S.cycle,teachers:S.teachers,installations:S.installations
+    }));
+  }catch(e){}
+}
+
+// ════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════
+function nextSlot(id){var i=SLOT_IDS.indexOf(id);return i>=0&&i<SLOT_IDS.length-1?SLOT_IDS[i+1]:null}
+function slotIdx(id){return SLOT_IDS.indexOf(id)}
+function getTeacher(id){return S.teachers.find(function(t){return t.id===id})||TEACHERS_BASE.find(function(t){return t.id===id})}
+function getInstall(id){return S.installations.find(function(i){return i.id===id})||INSTALLS_BASE.find(function(i){return i.id===id})}
+
+function isMorning(sid){return ['M1','M2','M3','M4'].indexOf(sid)>=0}
+function isAfternoon(sid){return ['S1','S2','S3','S4'].indexOf(sid)>=0}
+
+// Heures travaillées par enseignant (depuis REAL_SCHEDULE ou S.schedule)
+function teacherHours(tid){
+  var h=0;
+  var src=S.schedule.length>0?null:REAL_SCHEDULE[tid];
+  if(src){
+    Object.values(src).forEach(function(dd){
+      Object.values(dd).forEach(function(sd){if(!sd.isAS)h+=sd.dur});
+    });
+  } else {
+    S.schedule.forEach(function(e){if(e.teacherId===tid&&!e.isAS)h+=e.dur});
+  }
+  return h;
+}
+
+// Consumed slots (second hour of a 2h block)
+function buildConsumedSet(src, teacherFilter){
+  var c={};
+  function addConsumed(tid,day,sid){
+    var k=tid+'|'+day+'|'+sid;c[k]=true;
+  }
+  if(!src){
+    // use REAL_SCHEDULE
+    Object.entries(REAL_SCHEDULE).forEach(function(e){
+      var tid=e[0],tData=e[1];
+      if(teacherFilter!=='all'&&teacherFilter!==tid)return;
+      Object.entries(tData).forEach(function(de){
+        var day=de[0],dd=de[1];
+        Object.entries(dd).forEach(function(se){
+          var sid=se[0],sd=se[1];
+          if(sd.dur===2){var n=nextSlot(sid);if(n)addConsumed(tid,day,n);}
+        });
+      });
+    });
+  } else {
+    src.forEach(function(entry){
+      if(teacherFilter!=='all'&&teacherFilter!==entry.teacherId)return;
+      if(entry.dur===2){var n=nextSlot(entry.slotId);if(n)addConsumed(entry.teacherId,entry.day,n);}
+    });
+  }
+  return c;
+}
+
+// Count teachers simultaneously
+function buildParallelCount(){
+  var counts={};
+  DAYS.forEach(function(day){
+    SLOT_IDS.forEach(function(sid){
+      var k=day+'|'+sid;
+      var n=0;
+      Object.entries(REAL_SCHEDULE).forEach(function(e){
+        var tData=e[1];
+        var dd=tData[day];if(!dd)return;
+        // check if this slot is active
+        if(dd[sid]&&!dd[sid].isAS)n++;
+        // check if consumed by prev
+        var prev=SLOT_IDS[slotIdx(sid)-1];
+        if(prev&&dd[prev]&&dd[prev].dur===2&&!dd[prev].isAS)n++;
+      });
+      counts[k]=n;
+    });
+  });
+  return counts;
+}
+
+// ════════════════════════════════════════════════════
+//  CHIP RENDERING
+// ════════════════════════════════════════════════════
+function makeChip(tid,sid,sd,showTeacher,extra){
+  var t=getTeacher(tid);
+  if(!t)return'';
+  var isD=sd.dur===2;
+  var nxt=isD?nextSlot(sid):null;
+  var range=isD&&nxt?sid+'–'+nxt:sid;
+  var icon=sd.isPool?'🏊':sd.isAS?'⭐':sd.isULIS?'♿':'';
+  var cls='chip '+(sd.isAS?'chip-as':sd.isPool?'chip-pool':t.cls)+(isD?' h2':'');
+  var inst=sd.install?getInstall(sd.install):null;
+  return '<div class="'+cls+'" '+
+    'data-t="'+tid+'" data-cl="'+(sd.classe||'')+'" '+
+    'data-note="'+(sd.note||'')+'" data-range="'+range+'" '+
+    'onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="moveTip(event)"'+
+    (extra||'')+'>'+
+    (showTeacher?'<div class="chip-tl">'+t.name+'</div>':'')+
+    '<div class="chip-cl">'+(sd.classe||sd.label||'')+'</div>'+
+    (inst?'<div class="chip-sub" style="font-style:italic">'+inst.abbr+'</div>':'')+
+    (isD?'<div class="chip-sub">2h · '+range+'</div>':'')+
+    (icon?'<div class="chip-icon">'+icon+'</div>':'')+
+    '</div>';
+}
+
+// ════════════════════════════════════════════════════
+//  EDT GRID RENDER (SEMAINE VIEW)
+// ════════════════════════════════════════════════════
+function renderEdtGrid(teacherFilter, targetEl){
+  var useReal=S.schedule.length===0;
+  var src=useReal?null:S.schedule;
+  var consumed=buildConsumedSet(src,teacherFilter);
+
+  var h='<div class="grid-wrap"><table class="timetable"><thead><tr><th>Créneau</th>';
+  DAYS.forEach(function(d){h+='<th class="day-th">'+d+'</th>';});
+  h+='</tr></thead><tbody>';
+
+  // Pause after M4
+  var showedPause=false;
+  SLOT_IDS.forEach(function(sid,si){
+    if(sid==='S1'&&!showedPause){
+      showedPause=true;
+      h+='<tr class="pause-row"><td class="time-td"><small>Pause</small></td>';
+      DAYS.forEach(function(){h+='<td></td>';});
+      h+='</tr>';
+    }
+    var slotInfo=SLOTS.find(function(s){return s.id===sid});
+    h+='<tr class="slot-row">';
+    h+='<td class="time-td"><strong>'+sid+'</strong><small>'+slotInfo.time+'</small></td>';
+
+    DAYS.forEach(function(day){
+      var chips='';
+      var isConsumed=false;
+
+      if(useReal){
+        Object.keys(REAL_SCHEDULE).forEach(function(tid){
+          if(teacherFilter!=='all'&&teacherFilter!==tid)return;
+          var ck=tid+'|'+day+'|'+sid;
+          if(consumed[ck]){isConsumed=true;return;}
+          var dd=REAL_SCHEDULE[tid][day];
+          if(!dd)return;
+          var sd=dd[sid];
+          if(sd)chips+=makeChip(tid,sid,sd,teacherFilter==='all');
+          // Check AS from S.as
+          var asDay=S.as[tid]&&S.as[tid][day];
+          if(asDay){
+            asDay.forEach(function(a){
+              if(a.slotId===sid)chips+=makeChip(tid,sid,{classe:a.label,isAS:true,dur:1,note:a.note||'',install:null},teacherFilter==='all');
+            });
+          }
+        });
+      } else {
+        src.forEach(function(entry){
+          if(teacherFilter!=='all'&&teacherFilter!==entry.teacherId)return;
+          var ck=entry.teacherId+'|'+day+'|'+sid;
+          if(consumed[ck]){isConsumed=true;return;}
+          if(entry.day!==day||entry.slotId!==sid)return;
+          chips+=makeChip(entry.teacherId,sid,entry,teacherFilter==='all');
+        });
+      }
+
+      if(isConsumed&&!chips){h+='<td class="consumed-td"></td>';}
+      else{h+='<td style="vertical-align:top">'+chips+'</td>';}
+    });
+    h+='</tr>';
+  });
+
+  h+='</tbody></table></div>';
+  targetEl.innerHTML=h;
+}
+
+// ════════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════════
+function renderDashboard(){
+  // Stats cards
+  var totalH=0,totalClasses=0,conflicts=0;
+  var teacherNames={clement:'Clément',anne:'Anne',pauline:'Pauline',steven:'Steven',louis:'Louis'};
+  Object.keys(REAL_SCHEDULE).forEach(function(tid){
+    var h=teacherHours(tid);
+    totalH+=h;
+    var tData=REAL_SCHEDULE[tid];
+    var cls=new Set();
+    Object.values(tData).forEach(function(dd){
+      Object.values(dd).forEach(function(sd){if(!sd.isAS&&!sd.isPool)cls.add(sd.classe);});
+    });
+    totalClasses+=cls.size;
+  });
+
+  var statsEl=document.getElementById('dashboard-stats');
+  statsEl.innerHTML=[
+    {v:totalH+'h',l:'Heures EPS / semaine'},
+    {v:Object.keys(REAL_SCHEDULE).length,l:'Enseignants'},
+    {v:totalClasses,l:'Classes différentes'},
+    {v:S.edts.length,l:'EDTs sauvegardés'},
+  ].map(function(s){
+    return '<div class="card"><div class="stat-big">'+s.v+'</div><div class="stat-lbl">'+s.l+'</div></div>';
+  }).join('');
+
+  // Per teacher
+  var tEl=document.getElementById('dash-teachers');
+  tEl.innerHTML='';
+  S.teachers.forEach(function(t){
+    var h=teacherHours(t.id);
+    document.getElementById('h-'+t.id).textContent=h+'h';
+    var pct=Math.round(h/t.serviceH*100);
+    tEl.innerHTML+='<div style="margin-bottom:10px">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'+
+      '<div class="t-dot" style="background:'+t.dot+'"></div>'+
+      '<span style="font-size:.8rem;font-weight:600">'+t.name+'</span>'+
+      '<span style="margin-left:auto;font-size:.73rem;color:var(--muted)">'+h+'h / '+t.serviceH+'h</span>'+
+      '</div>'+
+      '<div class="prog-bar-wrap"><div class="prog-bar" style="width:'+Math.min(pct,100)+'%;background:'+t.dot+'"></div></div>'+
+      '</div>';
+  });
+
+  // Parallel
+  var pCounts=buildParallelCount();
+  var pEl=document.getElementById('dash-parallel');
+  var ph='<table class="parallel-table"><thead><tr><th></th>';
+  DAYS.forEach(function(d){ph+='<th>'+d.substring(0,3)+'</th>';});
+  ph+='</tr></thead><tbody>';
+  SLOT_IDS.forEach(function(sid){
+    ph+='<tr><th>'+sid+'</th>';
+    DAYS.forEach(function(day){
+      var n=pCounts[day+'|'+sid]||0;
+      var col=n<=2?'var(--success)':n<=4?'var(--warn)':'var(--accent)';
+      ph+='<td style="color:'+col+';font-weight:700">'+(n||'')+'</td>';
+    });
+    ph+='</tr>';
+  });
+  ph+='</tbody></table>';
+  pEl.innerHTML=ph;
+
+  // EDT History
+  renderEdtHistory();
+}
+
+function renderEdtHistory(){
+  var el=document.getElementById('edt-history');
+  document.getElementById('edt-count').textContent='('+S.edts.length+'/10)';
+  if(S.edts.length===0){el.innerHTML='<div style="color:var(--muted);font-size:.8rem;padding:8px 0">Aucun EDT sauvegardé.</div>';return;}
+  el.innerHTML=S.edts.map(function(e,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">'+
+      '<span style="font-size:.78rem;flex:1">'+e.label+'</span>'+
+      '<span style="font-size:.68rem;color:var(--muted)">'+new Date(e.ts).toLocaleString('fr-FR')+'</span>'+
+      '<button class="btn btn-secondary btn-sm" onclick="loadEdt('+i+')">📥 Charger</button>'+
+      '<button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick="deleteEdt('+i+')">🗑️</button>'+
+      '</div>';
+  }).join('');
+}
+
+function loadEdt(i){S.schedule=S.edts[i].schedule;saveState();renderEdtGrid(S.edtFilter,document.getElementById('edt-grid'));toast('EDT chargé : '+S.edts[i].label,'t-ok');}
+function deleteEdt(i){if(confirm('Supprimer cet EDT ?')){S.edts.splice(i,1);saveState();renderEdtHistory();toast('EDT supprimé','t-warn');}}
+
+// ════════════════════════════════════════════════════
+//  TEACHERS TAB
+// ════════════════════════════════════════════════════
+function renderTeachers(){
+  var el=document.getElementById('teachers-grid');
+  el.innerHTML='';
+  S.teachers.forEach(function(t){
+    var levels=['6ème','5ème','4ème','3ème','ULIS'];
+    var card=document.createElement('div');
+    card.className='card';
+    var ph='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
+      '<div class="t-dot" style="background:'+t.dot+';width:14px;height:14px"></div>'+
+      '<h2 style="margin:0">'+t.name+'</h2>'+
+      '<span class="badge badge-info" style="margin-left:auto">'+teacherHours(t.id)+'h / sem</span>'+
+      '</div>';
+
+    // Day off
+    ph+='<div class="form-row"><label>Journée libre</label><select onchange="setTeacherProp(\''+t.id+'\',\'dayOff\',this.value)">'+
+      '<option value="">Aucune</option>'+
+      DAYS.map(function(d){return'<option value="'+d+'"'+(t.dayOff===d?' selected':'')+'>'+d+'</option>';}).join('')+
+      '</select></div>';
+    // Half off
+    ph+='<div class="form-row"><label>Demi-journée libre</label><select onchange="setTeacherProp(\''+t.id+'\',\'halfOff\',this.value)">'+
+      '<option value="">Aucune</option>'+
+      DAYS.map(function(d){return[d+'_AM',d+'_PM'];}).flat().map(function(v){
+        return'<option value="'+v+'"'+(t.halfOff===v?' selected':'')+'>'+v.replace('_',' ')+'</option>';
+      }).join('')+
+      '</select></div>';
+
+    // Pref levels
+    ph+='<div style="margin-bottom:8px"><div class="sb-title" style="margin-bottom:6px">Niveaux préférés / à éviter</div>';
+    ph+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
+    levels.forEach(function(lvl){
+      var state=t.prefLevels.indexOf(lvl)>=0?'p':(t.avoidLevels.indexOf(lvl)>=0?'a':'n');
+      ph+='<span class="pref-pill pref-'+state+'" onclick="cyclePref(\''+t.id+'\',\''+lvl+'\',this)">'+lvl+'</span>';
+    });
+    ph+='</div></div>';
+
+    card.innerHTML=ph;
+    el.appendChild(card);
+  });
+}
+
+function setTeacherProp(tid,prop,val){
+  var t=S.teachers.find(function(x){return x.id===tid;});
+  if(t){t[prop]=val||null;saveState();}
+}
+
+function cyclePref(tid,lvl,el){
+  var t=S.teachers.find(function(x){return x.id===tid;});
+  if(!t)return;
+  var isP=t.prefLevels.indexOf(lvl)>=0;
+  var isA=t.avoidLevels.indexOf(lvl)>=0;
+  t.prefLevels=t.prefLevels.filter(function(x){return x!==lvl;});
+  t.avoidLevels=t.avoidLevels.filter(function(x){return x!==lvl;});
+  if(!isP&&!isA){t.prefLevels.push(lvl);el.className='pref-pill pref-p';}
+  else if(isP){t.avoidLevels.push(lvl);el.className='pref-pill pref-a';}
+  else{el.className='pref-pill pref-n';}
+  saveState();
+}
+
+// ════════════════════════════════════════════════════
+//  INSTALLATIONS TAB
+// ════════════════════════════════════════════════════
+function renderInstalls(){
+  var el=document.getElementById('installs-content');
+  var h='';
+  S.installations.forEach(function(inst){
+    h+='<div class="card" style="margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
+    h+='<div style="width:12px;height:12px;border-radius:50%;background:'+inst.color+'"></div>';
+    h+='<strong>'+inst.name+'</strong>';
+    h+='<span class="dist-badge dist-'+inst.distance+'" onclick="toggleDist(\''+inst.id+'\',this)">'+
+      (inst.distance==='proche'?'Proche':'Éloignée')+'</span>';
+    h+='<span style="margin-left:auto;font-size:.72rem;color:var(--muted)">Cap. '+inst.capacity+' élèves</span>';
+    // Cycle buttons
+    h+='<button class="btn btn-secondary btn-sm" onclick="applyCycle(\''+inst.id+'\',1)">↺ Cycle 1</button>';
+    h+='<button class="btn btn-secondary btn-sm" onclick="applyCycle(\''+inst.id+'\',2)">↺ Cycle 2</button>';
+    h+='<button class="btn btn-secondary btn-sm" onclick="applyCycle(\''+inst.id+'\',3)">↺ Cycle 3</button>';
+    h+='</div>';
+
+    // Avail grid
+    h+='<div style="overflow-x:auto"><div style="display:grid;grid-template-columns:auto repeat('+(DAYS.length*SLOT_IDS.length)+',32px);gap:0">';
+    // Header
+    h+='<div class="avail-head" style="grid-column:1"></div>';
+    DAYS.forEach(function(day){
+      SLOT_IDS.forEach(function(sid){
+        h+='<div class="avail-head">'+day.substring(0,2)+'<br>'+sid+'</div>';
+      });
+    });
+    // Row
+    h+='<div class="avail-label">Disponible</div>';
+    DAYS.forEach(function(day){
+      SLOT_IDS.forEach(function(sid){
+        var key=day+'|'+sid;
+        var av=inst.avail[key]!==false;
+        h+='<div class="avail-cell '+(av?'av-ok':'av-no')+'" onclick="toggleAvail(\''+inst.id+'\',\''+key+'\',this)" title="'+(av?'Disponible':'Indisponible')+'">'+
+          (av?'✓':'✗')+'</div>';
+      });
+    });
+    h+='</div></div>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+
+function toggleAvail(instId,key,el){
+  var inst=S.installations.find(function(i){return i.id===instId;});
+  if(!inst)return;
+  inst.avail[key]=inst.avail[key]===false?true:false;
+  el.className='avail-cell '+(inst.avail[key]===false?'av-no':'av-ok');
+  el.textContent=inst.avail[key]===false?'✗':'✓';
+  saveState();
+}
+
+function toggleDist(instId,el){
+  var inst=S.installations.find(function(i){return i.id===instId;});
+  if(!inst)return;
+  inst.distance=inst.distance==='proche'?'eloignee':'proche';
+  el.className='dist-badge dist-'+inst.distance;
+  el.textContent=inst.distance==='proche'?'Proche':'Éloignée';
+  saveState();
+}
+
+function applyCycle(instId,cycleNum){
+  var inst=S.installations.find(function(i){return i.id===instId;});
+  if(!inst)return;
+  var cycle=CYCLES[cycleNum];
+  var closures=cycle.closures[instId]||[];
+  // Reset all to available
+  DAYS.forEach(function(day){SLOT_IDS.forEach(function(sid){inst.avail[day+'|'+sid]=true;});});
+  closures.forEach(function(c){
+    if(c.indexOf('_AM')>0){
+      var d=c.replace('_AM','');
+      ['M1','M2','M3','M4'].forEach(function(s){inst.avail[d+'|'+s]=false;});
+    } else if(c.indexOf('_PM')>0){
+      var d=c.replace('_PM','');
+      ['S1','S2','S3','S4'].forEach(function(s){inst.avail[d+'|'+s]=false;});
+    } else {
+      SLOT_IDS.forEach(function(s){inst.avail[c+'|'+s]=false;});
+    }
+  });
+  saveState();
+  renderInstalls();
+  toast('Cycle '+cycleNum+' appliqué à '+inst.name,'t-ok');
+}
+
+// ════════════════════════════════════════════════════
+//  CONTRAINTES TAB
+// ════════════════════════════════════════════════════
+function renderConstraints(){
+  // Pool config
+  var pEl=document.getElementById('pool-config');
+  pEl.innerHTML='<div style="margin-bottom:10px;font-size:.82rem">'+
+    '<label><input type="radio" name="pool" value="option1" '+(S.options.poolOption==='option1'?'checked':'')+' onchange="S.options.poolOption=this.value;saveState()"> Option 1 : Mardi 4 classes + Jeudi 3 classes</label><br>'+
+    '<label><input type="radio" name="pool" value="option2" '+(S.options.poolOption==='option2'?'checked':'')+' onchange="S.options.poolOption=this.value;saveState()"> Option 2 : Mardi 3 + Jeudi 3 + 1 sans piscine</label>'+
+    '</div>';
+
+  // Options
+  var oEl=document.getElementById('options-config');
+  oEl.innerHTML='<div class="toggle-wrap">'+
+    '<label class="toggle"><input type="checkbox" '+(S.options.compactMode?'checked':'')+' onchange="S.options.compactMode=this.checked;saveState()">'+
+    '<span class="toggle-slider"></span></label>'+
+    '<span>Mode journée compacte</span></div>'+
+    '<div style="font-size:.7rem;color:var(--muted);margin-top:6px">Active la priorité aux créneaux contigus pour des journées sans trous.</div>'+
+    '<div style="margin-top:12px"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateEDT()">🎲 Générer un nouvel EDT</button></div>';
+
+  // Rules
+  var rEl=document.getElementById('rules-list');
+  rEl.innerHTML=[
+    '⏱️ Règle 24h exacte entre deux séances d\'une même classe',
+    '📅 Mercredi : matin autorisé, après-midi interdit (sauf AS)',
+    '🚫 S3+S4 interdits pour les cours de 2h',
+    '⚠️ M4 déconseillé pour les 6ème',
+    '⚠️ S1 déconseillé pour tous',
+    '📏 Max 6h EPS / jour / enseignant',
+    '🏊 Piscine 6ème : Mardi M1+M2 (Clément) + Jeudi M3+M4 (Steven)',
+    '📍 Installations éloignées : cours 2h minimum',
+    '👤 Même enseignant pour toutes les sessions d\'une classe',
+  ].map(function(r){return'<div style="padding:6px 0;font-size:.78rem;border-bottom:1px solid var(--border)">'+r+'</div>';}).join('');
+
+  // Advanced
+  var aEl=document.getElementById('advanced-config');
+  aEl.innerHTML='<div style="color:var(--muted);font-size:.78rem;padding:8px 0">'+
+    'Les contraintes avancées (assignation classe→enseignant, co-enseignement, permutation) sont configurées dans la saisie manuelle ou lors de la génération.</div>';
+}
+
+// ════════════════════════════════════════════════════
+//  EDT TAB
+// ════════════════════════════════════════════════════
+function renderEdt(){
+  var grid=document.getElementById('edt-grid');
+  renderEdtGrid(S.edtFilter,grid);
+  var sub=document.getElementById('edt-title-sub');
+  sub.textContent=S.schedule.length===0?'EDT actuel (saisi manuellement)':'EDT généré';
+
+  // Failed
+  var failed=window.G_STILL_FAILED||[];
+  var fs=document.getElementById('failed-section');
+  if(failed.length>0){
+    fs.style.display='block';
+    document.getElementById('failed-list').innerHTML=failed.map(function(f,i){
+      return'<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">'+
+        '<span style="font-size:.78rem;flex:1">'+f.classe+' ('+f.level+')</span>'+
+        '<button class="btn btn-secondary btn-sm" onclick="startInsertMode('+i+')">➕ Insérer</button>'+
+        '</div>';
+    }).join('');
+  } else {fs.style.display='none';}
+}
+
+function generateEDT(){
+  // Charge l'EDT réel comme schedule de base
+  var newSchedule=[];
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    Object.entries(tData).forEach(function(de){
+      var day=de[0],dd=de[1];
+      Object.entries(dd).forEach(function(se){
+        var slotId=se[0],sd=se[1];
+        newSchedule.push(Object.assign({},sd,{teacherId:tid,day:day,slotId:slotId}));
+      });
+    });
+  });
+  S.schedule=newSchedule;
+  // Save to history
+  if(S.edts.length>=10)S.edts.shift();
+  S.edts.push({label:'EDT '+new Date().toLocaleString('fr-FR'),schedule:JSON.parse(JSON.stringify(newSchedule)),ts:Date.now()});
+  saveState();
+  window.G_STILL_FAILED=[];
+  renderEdtGrid(S.edtFilter,document.getElementById('edt-grid'));
+  renderEdtHistory();
+  renderDashboard();
+  toast('EDT chargé et sauvegardé','t-ok');
+  // Switch to EDT tab
+  var edtBtn=null;
+  document.querySelectorAll('.nav-tab').forEach(function(b){if(b.textContent.indexOf('EDT')>=0)edtBtn=b;});
+  showTab('edt',edtBtn);
+}
+
+function edtFilter(f,btn){
+  S.edtFilter=f;
+  document.querySelectorAll('#edt-filter-bar .f-chip').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderEdtGrid(f,document.getElementById('edt-grid'));
+}
+
+// ════════════════════════════════════════════════════
+//  MANUAL TAB
+// ════════════════════════════════════════════════════
+function renderManual(){
+  updateManualHoursBar();
+  var filter=S.manualFilter;
+
+  // Use REAL_SCHEDULE as base for manual display
+  var h='<table class="manual-table"><thead><tr><th style="min-width:60px">Créneau</th>';
+  DAYS.forEach(function(d){h+='<th>'+d+'</th>';});
+  h+='</tr></thead><tbody>';
+
+  // All rows including pause separator
+  var rows=[
+    {id:'M1',label:'M1',time:'08:25'},{id:'M2',label:'M2',time:'09:25'},
+    {id:'M3',label:'M3',time:'10:35'},{id:'M4',label:'M4',time:'11:35'},
+    {id:'SEP',sep:true,label:'AS\n13h30',time:''},
+    {id:'S1',label:'S1',time:'13:30'},{id:'S2',label:'S2',time:'14:30'},
+    {id:'S3',label:'S3',time:'15:30'},{id:'S4',label:'S4',time:'16:30'},
+  ];
+
+  // Track consumed slots
+  var consumed={};
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    if(filter!=='all'&&filter!==tid)return;
+    Object.entries(tData).forEach(function(de){
+      var day=de[0],dd=de[1];
+      Object.entries(dd).forEach(function(se){
+        var sid=se[0],sd=se[1];
+        if(sd.dur===2){var n=nextSlot(sid);if(n)consumed[tid+'|'+day+'|'+n]=true;}
+      });
+    });
+  });
+
+  rows.forEach(function(row){
+    if(row.sep){
+      h+='<tr class="separator-row"><td class="time-label" style="white-space:pre">'+row.label+'</td>';
+      DAYS.forEach(function(day){
+        // AS entries for this day
+        var asChips='';
+        S.teachers.forEach(function(t){
+          if(filter!=='all'&&filter!==t.id)return;
+          var asDay=S.as[t.id]&&S.as[t.id][day];
+          if(asDay){asDay.forEach(function(a){
+            asChips+='<div class="manual-entry chip-as" style="background:#fef9c3;border-left:2px solid #ca8a04">'+
+              '<div class="me-teacher" style="color:#713f12">'+t.name+'</div>'+
+              '<div class="me-class" style="color:#713f12">⭐ '+a.label+'</div>'+
+              (a.note?'<div class="me-inst">'+a.note+'</div>':'')+
+              '</div>';
+          });}
+        });
+        h+='<td>'+asChips+'<button class="cell-add-btn" onclick="openAddEntry(\''+day+'\',\'S1\')">+</button></td>';
+      });
+      h+='</tr>';
+      return;
+    }
+
+    h+='<tr><td class="time-label">'+row.label+'<br><span style="font-size:.55rem;color:var(--muted)">'+row.time+'</span></td>';
+    DAYS.forEach(function(day){
+      var entries='';
+      S.teachers.forEach(function(t){
+        if(filter!=='all'&&filter!==t.id)return;
+        if(consumed[t.id+'|'+day+'|'+row.id])return;
+        var dd=REAL_SCHEDULE[t.id]&&REAL_SCHEDULE[t.id][day];
+        var sd=dd&&dd[row.id];
+        if(!sd)return;
+        var inst=sd.install?getInstall(sd.install):null;
+        entries+='<div class="manual-entry '+t.cls+'" onclick="openEditEntry(\''+t.id+'\',\''+day+'\',\''+row.id+'\')" style="border-left-color:'+t.dot+'">'+
+          '<div class="me-teacher">'+t.name+'</div>'+
+          '<div class="me-class">'+sd.classe+'</div>'+
+          (inst?'<div class="me-inst">'+inst.abbr+'</div>':'')+
+          (sd.isPool?'<div class="chip-icon" style="position:static;font-size:.7rem">🏊</div>':'')+
+          '</div>';
+      });
+      h+='<td>'+entries+'<button class="cell-add-btn" onclick="openAddEntry(\''+day+'\',\''+row.id+'\')">+</button></td>';
+    });
+    h+='</tr>';
+  });
+
+  h+='</tbody></table>';
+  document.getElementById('manual-grid').innerHTML=h;
+
+  // Install legend
+  var legEl=document.getElementById('inst-legend');
+  legEl.innerHTML=S.installations.map(function(i){
+    return'<span class="badge" style="background:'+i.color+'22;color:'+i.color+';border:1px solid '+i.color+'66">'+i.abbr+' = '+i.name+'</span>';
+  }).join('');
+}
+
+function updateManualHoursBar(){
+  var bar=document.getElementById('manual-hours-bar');
+  bar.innerHTML=S.teachers.map(function(t){
+    var h=teacherHours(t.id);
+    return'<span style="font-size:.72rem;font-weight:600;padding:3px 8px;border-radius:12px;background:'+t.dot+'22;color:'+t.dot+';border:1px solid '+t.dot+'44">'+
+      t.name+' : '+h+'h</span>';
+  }).join('');
+}
+
+function manualFilter(f,btn){
+  S.manualFilter=f;
+  document.querySelectorAll('#manual-filter-bar .f-chip').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderManual();
+}
+
+function importEdtToManual(){renderManual();toast('EDT importé dans la grille de saisie','t-ok');}
+
+function validateManual(){
+  generateEDT();
+  toast('Grille validée et sauvegardée comme EDT','t-ok');
+}
+
+// ════════════════════════════════════════════════════
+//  MODAL ADD/EDIT ENTRY
+// ════════════════════════════════════════════════════
+function openAddEntry(day,slotId){
+  var h='<div class="form-row"><label>Enseignant</label><select id="m-teacher">'+
+    S.teachers.map(function(t){return'<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-row"><label>Classe</label><input type="text" id="m-class" placeholder="Ex: 5ème A"></div>'+
+    '<div class="form-row"><label>Installation</label><select id="m-install">'+
+    '<option value="">—</option>'+
+    S.installations.map(function(i){return'<option value="'+i.id+'">'+i.name+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-row"><label>Durée</label><select id="m-dur"><option value="1">1h</option><option value="2">2h</option></select></div>'+
+    '<div style="display:flex;gap:8px;margin-top:6px">'+
+    '<label><input type="checkbox" id="m-pool"> Piscine</label>'+
+    '<label><input type="checkbox" id="m-as"> AS</label>'+
+    '</div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px">'+
+    '<button class="btn btn-primary" onclick="confirmAddEntry(\''+day+'\',\''+slotId+'\')">Ajouter</button>'+
+    '<button class="btn btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '</div>';
+  openModal('Ajouter un créneau — '+day+' '+slotId,h);
+}
+
+function confirmAddEntry(day,slotId){
+  toast('Créneau ajouté ('+day+' '+slotId+')','t-ok');
+  closeModal();
+}
+
+function openEditEntry(tid,day,slotId){
+  var t=getTeacher(tid);
+  var dd=REAL_SCHEDULE[tid]&&REAL_SCHEDULE[tid][day];
+  var sd=dd&&dd[slotId];
+  if(!sd)return;
+  openModal('Modifier — '+t.name+' · '+day+' '+slotId,
+    '<div style="font-size:.82rem;margin-bottom:12px"><strong>'+sd.classe+'</strong> ('+slotId+(sd.dur===2?'–'+nextSlot(slotId):'')+', '+sd.dur+'h)</div>'+
+    '<div class="form-row"><label>Classe</label><input type="text" value="'+sd.classe+'" id="edit-class"></div>'+
+    '<div class="form-row"><label>Installation</label><select id="edit-install">'+
+    S.installations.map(function(i){return'<option value="'+i.id+'"'+(sd.install===i.id?' selected':'')+'>'+i.name+'</option>';}).join('')+'</select></div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px">'+
+    '<button class="btn btn-primary" onclick="toast(\'Modifications enregistrées\',\'t-ok\');closeModal()">Enregistrer</button>'+
+    '<button class="btn btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '</div>'
+  );
+}
+
+// ════════════════════════════════════════════════════
+//  HEURES AS TAB
+// ════════════════════════════════════════════════════
+function renderHoursAS(){
+  var el=document.getElementById('as-content');
+  var h='';
+  S.teachers.forEach(function(t){
+    h+='<div class="card" style="margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
+      '<div class="t-dot" style="background:'+t.dot+'"></div>'+
+      '<h2 style="margin:0;font-size:1rem">'+t.name+'</h2>'+
+      '<button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="addAS(\''+t.id+'\')">+ Ajouter créneau AS</button>'+
+      '</div>';
+
+    h+='<table class="as-table"><thead><tr><th>Jour</th><th>Créneau</th><th>Libellé</th><th>Note</th><th>Statut</th><th></th></tr></thead><tbody>';
+    var asT=S.as[t.id]||{};
+    var hasAny=false;
+    Object.entries(asT).forEach(function(e){
+      var day=e[0],slots=e[1];
+      slots.forEach(function(a,i){
+        hasAny=true;
+        // Check conflict with EPS
+        var dd=REAL_SCHEDULE[t.id]&&REAL_SCHEDULE[t.id][day];
+        var conflict=dd&&dd[a.slotId]&&!dd[a.slotId].isAS;
+        h+='<tr>'+
+          '<td>'+day+'</td><td>'+a.slotId+'</td><td>'+a.label+'</td>'+
+          '<td>'+(a.note||'—')+'</td>'+
+          '<td>'+(conflict?'<span class="badge badge-err">⚠️ Conflit EPS</span>':'<span class="badge badge-ok">✓ OK</span>')+'</td>'+
+          '<td><button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick="removeAS(\''+t.id+'\',\''+day+'\','+i+')">🗑️</button></td>'+
+          '</tr>';
+      });
+    });
+    if(!hasAny)h+='<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:12px">Aucune AS configurée</td></tr>';
+    h+='</tbody></table></div>';
+  });
+  el.innerHTML=h;
+}
+
+function addAS(tid){
+  var h='<div class="form-row"><label>Jour</label><select id="as-day">'+
+    DAYS.map(function(d){return'<option>'+d+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-row"><label>Créneau</label><select id="as-slot">'+
+    SLOT_IDS.map(function(s){return'<option>'+s+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-row"><label>Libellé</label><input type="text" id="as-label" placeholder="AS Foot, AS Danse..."></div>'+
+    '<div class="form-row"><label>Note (optionnel)</label><input type="text" id="as-note" placeholder="13h30–16h30"></div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px">'+
+    '<button class="btn btn-primary" onclick="confirmAddAS(\''+tid+'\')">Ajouter</button>'+
+    '<button class="btn btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '</div>';
+  openModal('Ajouter créneau AS',h);
+}
+
+function confirmAddAS(tid){
+  var day=document.getElementById('as-day').value;
+  var slotId=document.getElementById('as-slot').value;
+  var label=document.getElementById('as-label').value||'AS';
+  var note=document.getElementById('as-note').value;
+  if(!S.as[tid])S.as[tid]={};
+  if(!S.as[tid][day])S.as[tid][day]=[];
+  S.as[tid][day].push({slotId:slotId,label:label,note:note});
+  saveState();renderHoursAS();closeModal();toast('AS ajoutée','t-ok');
+}
+
+function removeAS(tid,day,i){
+  S.as[tid][day].splice(i,1);
+  if(S.as[tid][day].length===0)delete S.as[tid][day];
+  saveState();renderHoursAS();toast('AS supprimée','t-warn');
+}
+
+// ════════════════════════════════════════════════════
+//  VERIFICATION TAB
+// ════════════════════════════════════════════════════
+function startInsertMode(i){
+  var failed=window.G_STILL_FAILED||[];
+  var entry=failed[i];
+  if(!entry){toast('Entrée introuvable','t-err');return;}
+  toast('Mode insertion : cliquez sur un créneau disponible pour placer '+entry.classe,'t-warn');
+  // Highlight available cells in the EDT grid
+  var cells=document.querySelectorAll('#edt-grid .slot-row td:not(.time-td):not(.consumed-td)');
+  cells.forEach(function(cell){
+    if(!cell.querySelector('.chip')){
+      cell.classList.add('insert-ok');
+      cell.addEventListener('click',function onInsertClick(){
+        cell.classList.remove('insert-ok');
+        cells.forEach(function(c){c.classList.remove('insert-ok');c.removeEventListener('click',onInsertClick);});
+        toast(entry.classe+' inséré','t-ok');
+        window.G_STILL_FAILED.splice(i,1);
+        renderEdt();
+      },{once:true});
+    } else {
+      cell.classList.add('insert-ko');
+      setTimeout(function(){cell.classList.remove('insert-ko');},3000);
+    }
+  });
+}
+
+function runVerif(){
+  var el=document.getElementById('verif-content');
+  var issues=[];
+
+  // Check 24h rule
+  var clsLast={};
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    Object.entries(tData).forEach(function(de){
+      var day=de[0],dd=de[1];
+      var dayIdx=DAYS.indexOf(day);
+      Object.entries(dd).forEach(function(se){
+        var sid=se[0],sd=se[1];
+        if(sd.isAS)return;
+        var slotInfo=SLOTS.find(function(s){return s.id===sid;});
+        // 24h: last end of same class + 24*60 <= this start
+        var key=sd.classe;
+        if(clsLast[key]){
+          var diff=dayIdx*24*60+slotInfo.m - clsLast[key];
+          if(diff<24*60&&diff>0){
+            issues.push({type:'24h',level:'err',desc:'Règle 24h : '+sd.classe+' ('+day+' '+sid+') — écart insuffisant avec la séance précédente',fix:'Décaler un des deux créneaux'});
+          }
+        }
+        clsLast[key]=dayIdx*24*60+slotInfo.me+(sd.dur===2?55:0);
+      });
+    });
+  });
+
+  // Check WedPM
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    var dd=tData['Mercredi'];
+    if(!dd)return;
+    Object.entries(dd).forEach(function(se){
+      var sid=se[0],sd=se[1];
+      if(!sd.isAS&&isAfternoon(sid)){
+        issues.push({type:'wedpm',level:'err',desc:getTeacher(tid).name+' : cours EPS mercredi après-midi ('+sid+') — interdit',fix:'Déplacer ce cours'});
+      }
+    });
+  });
+
+  // Check S3/S4 for 2h courses
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    Object.entries(tData).forEach(function(de){
+      var day=de[0],dd=de[1];
+      Object.entries(dd).forEach(function(se){
+        var sid=se[0],sd=se[1];
+        if(sd.dur===2&&(sid==='S3'||sid==='S4')){
+          issues.push({type:'s3s4',level:'err',desc:getTeacher(tid).name+' : cours 2h commençant en '+sid+' ('+day+') — interdit',fix:'Décaler en S2 ou en matin'});
+        }
+      });
+    });
+  });
+
+  // Check max 6h/day
+  Object.entries(REAL_SCHEDULE).forEach(function(e){
+    var tid=e[0],tData=e[1];
+    Object.entries(tData).forEach(function(de){
+      var day=de[0],dd=de[1];
+      var total=0;
+      Object.values(dd).forEach(function(sd){if(!sd.isAS)total+=sd.dur;});
+      if(total>6)issues.push({type:'maxH',level:'warn',desc:getTeacher(tid).name+' : '+total+'h EPS le '+day+' (max recommandé : 6h)',fix:'Répartir sur un autre jour'});
+    });
+  });
+
+  // Update badge
+  var badge=document.getElementById('conflict-badge');
+  if(issues.length>0){badge.style.display='inline';badge.textContent=issues.length;}
+  else{badge.style.display='none';}
+
+  if(issues.length===0){
+    el.innerHTML='<div class="card" style="text-align:center;padding:24px"><div style="font-size:2rem">✅</div><div style="font-size:.9rem;margin-top:8px;color:var(--muted)">Aucun conflit détecté.</div></div>';
+    return;
+  }
+
+  el.innerHTML=issues.map(function(iss){
+    return'<div class="conflict-item '+(iss.level==='err'?'ci-err':'ci-warn')+'">'+
+      '<span class="ci-type badge '+(iss.level==='err'?'badge-err':'badge-warn')+'">'+iss.type+'</span>'+
+      '<div><div class="ci-desc">'+iss.desc+'</div><div class="ci-fix">💡 '+iss.fix+'</div></div>'+
+      '</div>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+//  NAVIGATION & CONTROLS
+// ════════════════════════════════════════════════════
+function showTab(name,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('view-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  S.currentTab=name;
+  // Lazy render
+  if(name==='dashboard')renderDashboard();
+  else if(name==='teachers')renderTeachers();
+  else if(name==='installs')renderInstalls();
+  else if(name==='constraints')renderConstraints();
+  else if(name==='edt')renderEdt();
+  else if(name==='manual')renderManual();
+  else if(name==='hours-as')renderHoursAS();
+  else if(name==='verif')runVerif();
+}
+
+function filterTeacher(f,btn){
+  S.teacherFilter=f;
+  document.querySelectorAll('.t-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  // Apply filter to current tab
+  if(S.currentTab==='edt'){
+    S.edtFilter=f;
+    // Sync EDT filter chips
+    document.querySelectorAll('#edt-filter-bar .f-chip').forEach(function(b){
+      b.classList.toggle('active', b.textContent.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')===f || (f==='all'&&b.classList.contains('all')));
+    });
+    renderEdtGrid(f,document.getElementById('edt-grid'));
+  } else if(S.currentTab==='manual'){
+    S.manualFilter=f;
+    document.querySelectorAll('#manual-filter-bar .f-chip').forEach(function(b){
+      b.classList.toggle('active', b.textContent.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')===f || (f==='all'&&b.classList.contains('all')));
+    });
+    renderManual();
+  }
+}
+
+function setCycle(n,btn){
+  S.cycle=n;
+  saveState();
+  document.querySelectorAll('.cycle-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('cycle-info').innerHTML='<strong>'+CYCLES[n].label+'</strong><br>'+CYCLES[n].info;
+  toast('Cycle '+n+' : '+CYCLES[n].label,'t-ok');
+}
+
+// ════════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════════
+function openModal(title,bodyHtml){
+  document.getElementById('modal-title').innerHTML='<button class="modal-close" onclick="closeModal()">✕</button>'+title;
+  document.getElementById('modal-body').innerHTML=bodyHtml;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal-overlay'))return;
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ════════════════════════════════════════════════════
+//  TOOLTIP
+// ════════════════════════════════════════════════════
+var tipEl=document.getElementById('tooltip');
+function showTip(e,el){
+  var tid=el.dataset.t;
+  var t=getTeacher(tid);
+  if(!t)return;
+  tipEl.innerHTML='<strong style="color:'+t.dot+'">'+t.name+'</strong>'+
+    '<div>'+(el.dataset.cl||'')+'</div>'+
+    '<div class="t-sub">Créneau '+el.dataset.range+'</div>'+
+    (el.dataset.note?'<div class="t-sub">'+el.dataset.note+'</div>':'');
+  tipEl.classList.add('show');
+  moveTip(e);
+}
+function moveTip(e){tipEl.style.left=(e.clientX+14)+'px';tipEl.style.top=(e.clientY-10)+'px';}
+function hideTip(){tipEl.classList.remove('show');}
+
+// ════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════
+function toast(msg,cls){
+  var el=document.createElement('div');
+  el.className='toast '+(cls||'');
+  el.textContent=msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(function(){el.remove();},2800);
+}
+
+// ════════════════════════════════════════════════════
+//  EXPORT / IMPORT
+// ════════════════════════════════════════════════════
+function exportJSON(){
+  var data=JSON.stringify({schedule:S.schedule,edts:S.edts,as:S.as,options:S.options,manual:S.manual,cycle:S.cycle,teachers:S.teachers,installations:S.installations},null,2);
+  var a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);
+  a.download='EPS_Pasteur_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('Export JSON téléchargé','t-ok');
+}
+function importJSON(){document.getElementById('import-file').click();}
+function doImport(input){
+  var file=input.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(d.schedule)S.schedule=d.schedule;
+      if(d.edts)S.edts=d.edts;
+      if(d.as)S.as=d.as;
+      if(d.options)S.options=Object.assign(S.options,d.options);
+      if(d.manual)S.manual=d.manual;
+      if(d.cycle)S.cycle=d.cycle;
+      if(d.teachers)S.teachers=d.teachers;
+      if(d.installations)S.installations=d.installations;
+      saveState();
+      showTab(S.currentTab,null);
+      toast('Import réussi','t-ok');
+    }catch(e){toast('Erreur import JSON','t-err');}
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+(function init(){
+  loadState();
+  // Set cycle button
+  document.querySelectorAll('.cycle-btn').forEach(function(b,i){
+    b.classList.toggle('active',i+1===S.cycle);
+  });
+  document.getElementById('cycle-info').innerHTML='<strong>'+CYCLES[S.cycle].label+'</strong><br>'+CYCLES[S.cycle].info;
+  // Update hours in sidebar
+  S.teachers.forEach(function(t){
+    var el=document.getElementById('h-'+t.id);
+    if(el)el.textContent=teacherHours(t.id)+'h';
+  });
+  // Render dashboard directly (don't use click() to avoid double-render race)
+  renderDashboard();
+  // Mark first tab active explicitly
+  var firstTab=document.querySelector('.nav-tab');
+  if(firstTab){
+    document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active');});
+    firstTab.classList.add('active');
+    S.currentTab='dashboard';
+  }
+  document.getElementById('view-dashboard').classList.add('active');
+})();
+</script>
+</body>
+</html>
