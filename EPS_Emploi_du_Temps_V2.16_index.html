@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPS V2.01 — Collège Pasteur</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fb;--surf:#fff;--surf2:#eef1f6;--border:#dde2ed;
+  --text:#1a2035;--muted:#6b7593;--hdr:#1d4e89;
+  --accent:#e63946;--success:#2a9d8f;--warn:#f4a261;
+  --c-cl:#e63946;--c-an:#2a9d8f;--c-pa:#f4a261;--c-st:#457b9d;--c-lo:#6d4c7d;
+  --sh:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
+button,select,input,textarea{font-family:inherit}
+button{cursor:pointer}
+h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+/* HEADER */
+#hdr{background:var(--hdr);height:50px;display:flex;align-items:center;gap:10px;padding:0 14px;
+  position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
+.logo{font-family:'DM Serif Display',serif;font-size:1.05rem;color:#fff;white-space:nowrap}
+.logo em{color:#a8d4f5;font-style:normal}
+.hdr-sub{font-size:.63rem;color:rgba(255,255,255,.5);border-left:1px solid rgba(255,255,255,.2);padding-left:10px;white-space:nowrap}
+.ntabs{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.nt{padding:4px 9px;border-radius:5px;border:1px solid transparent;background:transparent;
+  color:rgba(255,255,255,.6);font-size:.66rem;font-weight:500;transition:all .12s;white-space:nowrap}
+.nt:hover{background:rgba(255,255,255,.1);color:#fff}
+.nt.active{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.25)}
+.nbdg{background:#dc2626;color:#fff;border-radius:8px;font-size:.54rem;font-weight:700;padding:1px 4px;margin-left:2px;vertical-align:middle}
+/* LAYOUT */
+#wrap{display:flex;height:calc(100vh - 50px);overflow:hidden}
+/* SIDEBAR */
+#sb{width:196px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--border);
+  overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:12px}
+.sbt{font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding:0 5px;margin-bottom:4px}
+.tbn{display:flex;align-items:center;gap:7px;width:100%;padding:5px 7px;border-radius:6px;
+  border:none;background:transparent;color:var(--text);font-size:.77rem;font-weight:500;
+  transition:background .1s;text-align:left}
+.tbn:hover{background:var(--surf2)}.tbn.active{background:var(--surf2);font-weight:600}
+.tdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tbn .hrs{margin-left:auto;font-size:.63rem;color:var(--muted);font-weight:400}
+.leg{display:flex;align-items:center;gap:6px;padding:2px 5px;font-size:.65rem;color:var(--muted)}
+.leg-b{width:15px;height:8px;border-radius:2px;flex-shrink:0}
+.sb-acts{display:flex;flex-direction:column;gap:4px}
+/* MAIN */
+#main{flex:1;overflow-y:auto;overflow-x:hidden}
+.view{display:none;padding:16px}
+.view.active{display:block}
+.ptitle{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);
+  margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ptitle small{font-family:'DM Sans',sans-serif;font-size:.68rem;color:var(--muted);font-weight:400}
+/* UTILS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sv{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);line-height:1}
+.sl{font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:3px;font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;
+  border:none;font-size:.72rem;font-weight:600;transition:all .12s;white-space:nowrap}
+.bp{background:var(--accent);color:#fff}.bp:hover{background:#c62d39}
+.bs{background:var(--surf2);color:var(--text);border:1px solid var(--border)}.bs:hover{background:var(--border)}
+.bok{background:var(--success);color:#fff}.bok:hover{background:#228078}
+.bsm{padding:3px 8px;font-size:.65rem}
+.bxs{padding:2px 6px;font-size:.59rem;border:1px solid var(--border)}
+.bdg{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.61rem;font-weight:600}
+.bok-b{background:#dcfce7;color:#166534}.bwrn-b{background:#fef9c3;color:#854d0e}
+.berr-b{background:#fee2e2;color:#991b1b}.binf-b{background:#dbeeff;color:#1a3d55}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center}
+.mov.show{display:flex}
+.mbox{background:var(--surf);border-radius:10px;padding:18px;width:480px;max-width:94vw;
+  max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mtit{font-family:'DM Serif Display',serif;font-size:1rem;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between}
+.mcl{background:none;border:none;font-size:1.1rem;color:var(--muted);cursor:pointer}
+.fr{margin-bottom:9px}
+.fr label{display:block;font-size:.62rem;font-weight:700;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.fr select,.fr input{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:5px;font-size:.77rem;background:var(--bg);color:var(--text)}
+/* TOAST */
+#toasts{position:fixed;bottom:12px;right:12px;display:flex;flex-direction:column;gap:5px;z-index:900}
+.toast{background:#1e2540;color:#e8eaf0;padding:7px 12px;border-radius:7px;font-size:.7rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);animation:tIn .15s ease;border-left:3px solid var(--hdr);max-width:260px}
+.tok{border-left-color:var(--success)}.twrn{border-left-color:var(--warn)}.terr{border-left-color:var(--accent)}
+@keyframes tIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* TOOLTIP */
+#tip{position:fixed;background:#1e2540;border:1px solid #374060;border-radius:7px;padding:6px 10px;
+  font-size:.68rem;color:#e8eaf0;pointer-events:none;z-index:800;opacity:0;transition:opacity .08s;max-width:200px}
+#tip.show{opacity:1}
+#tip strong{display:block;margin-bottom:2px;font-size:.75rem}
+#tip .ts{color:#8892b0;font-size:.62rem}
+/* EDT TABLE */
+.gwrap{overflow-x:auto}
+.etbl{border-collapse:collapse;min-width:580px;width:100%}
+.etbl th{font-size:.63rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--muted);padding:7px 8px;text-align:left;border-bottom:2px solid var(--border);
+  background:var(--surf);position:sticky;top:0;z-index:5;white-space:nowrap}
+.etbl th.dth{text-align:center;color:var(--text);font-size:.74rem}
+.etbl td{border:1px solid var(--border);vertical-align:top;padding:2px;background:var(--surf);min-width:110px}
+.etbl td.ttd{background:var(--surf2)!important;min-width:68px!important;text-align:right;
+  padding:0 8px!important;vertical-align:middle;border-left:none!important;white-space:nowrap;height:var(--sh)}
+.etbl td.ttd strong{font-size:.67rem;color:var(--text);display:block}
+.etbl td.ttd small{font-size:.55rem;color:var(--muted)}
+.etbl td.slot1{height:var(--sh)}
+.etbl td.slot2{height:calc(var(--sh)*2 + 1px)}
+.etbl tr.pr td{height:6px;background:#f0f2f6;border:none;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border)}
+.etbl tr.pr td.ttd{font-size:.54rem;color:var(--muted);text-align:right;padding:0 8px!important;height:6px}
+/* CHIP */
+.chip{border-radius:4px;padding:3px 5px;width:100%;height:100%;display:flex;flex-direction:column;
+  justify-content:center;gap:1px;cursor:default;position:relative;overflow:hidden;transition:filter .1s}
+.chip:hover{filter:brightness(.92)}
+.ctl{font-size:.52rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;opacity:.6}
+.ccl{font-weight:600;font-size:.69rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{font-size:.53rem;opacity:.58}
+.cion{position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:.72rem;pointer-events:none}
+.c-cl{background:#fde8ea;border-left:3px solid var(--c-cl);color:#7a0c14}
+.c-an{background:#d1f5f1;border-left:3px solid var(--c-an);color:#0c3f37}
+.c-pa{background:#fff0df;border-left:3px solid var(--c-pa);color:#6b3000}
+.c-st{background:#dbeeff;border-left:3px solid var(--c-st);color:#183d55}
+.c-lo{background:#f3e8ff;border-left:3px solid var(--c-lo);color:#4a1d7a}
+.c-as{background:#fef9c3!important;border-left:3px solid #ca8a04!important;color:#713f12!important}
+.c-pool{background:#e0f2fe!important;border-left:3px solid #0369a1!important;color:#0c3454!important}
+/* FILTER BAR */
+.fbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.fc{padding:3px 9px;border-radius:16px;font-size:.67rem;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--border);background:transparent;color:var(--muted);transition:all .12s}
+.fc:hover{border-color:var(--text);color:var(--text)}
+.fca.active{background:var(--text);border-color:var(--text);color:#fff}
+.fcc.active{background:var(--c-cl);border-color:var(--c-cl);color:#fff}
+.fan.active{background:var(--c-an);border-color:var(--c-an);color:#fff}
+.fpa.active{background:var(--c-pa);border-color:var(--c-pa);color:#fff}
+.fst.active{background:var(--c-st);border-color:var(--c-st);color:#fff}
+.flo.active{background:var(--c-lo);border-color:var(--c-lo);color:#fff}
+/* PREF PILLS */
+.pp{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.6rem;font-weight:600;
+  cursor:pointer;user-select:none;transition:all .14s;border:1px solid transparent}
+.pp-n{background:var(--surf2);color:var(--muted);border-color:var(--border)}
+.pp-p{background:#dcfce7;color:#166534;border-color:#86efac}
+.pp-a{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+/* INSTALL TABLE — horaires en lignes, jours en colonnes */
+.itbl{border-collapse:collapse;font-size:.68rem;width:100%}
+.itbl th{padding:5px 7px;background:var(--surf2);border:1px solid var(--border);
+  font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;text-align:center;white-space:nowrap}
+.itbl th.slhd{text-align:left;min-width:78px}
+.itbl td{border:1px solid var(--border);padding:1px;text-align:center}
+.itbl .sllbl{background:var(--surf2);font-size:.65rem;font-weight:700;padding:3px 6px;text-align:left;white-space:nowrap;border:1px solid var(--border)}
+.avc{width:100%;height:24px;border:none;border-radius:3px;cursor:pointer;font-size:.6rem;font-weight:700;transition:all .1s}
+.av-ok{background:#dcfce7;color:#166534}.av-ok:hover{background:#bbf7d0}
+.av-no{background:#fee2e2;color:#991b1b}.av-no:hover{background:#fecaca}
+/* PARALLEL TABLE */
+.par-tbl{border-collapse:collapse;font-size:.72rem;width:100%}
+.par-tbl th{padding:6px 9px;background:var(--surf2);border:1px solid var(--border);font-weight:700;font-size:.63rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:center}
+.par-tbl th.lhd{text-align:left}
+.par-tbl td{border:1px solid var(--border);padding:6px 9px;text-align:center;font-size:.72rem}
+.par-tbl .slbl{background:var(--surf2);font-weight:700;text-align:left}
+.par-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 1px;vertical-align:middle}
+/* SAISIE 2027 */
+.stbl{border-collapse:collapse;font-size:.67rem}
+.stbl th{background:var(--hdr);color:#fff;padding:5px 8px;font-size:.63rem;text-transform:uppercase;
+  letter-spacing:.04em;font-weight:600;text-align:center;border:1px solid rgba(255,255,255,.15);white-space:nowrap}
+.stbl td{border:1px solid var(--border);padding:2px;vertical-align:top;min-width:100px;background:var(--surf);position:relative}
+.stbl .tlbl{background:var(--surf2);font-size:.6rem;font-weight:700;text-align:right;padding:3px 7px;color:var(--muted);white-space:nowrap;min-width:56px;border:1px solid var(--border)}
+.stbl .assep td{background:var(--surf2);padding:3px 5px;font-size:.6rem;color:var(--muted);border:1px solid var(--border)}
+.me{border-radius:3px;padding:2px 4px;margin:1px;font-size:.61rem;border-left:2px solid;cursor:pointer;transition:filter .1s}
+.me:hover{filter:brightness(.9)}
+.me-t{font-weight:700;font-size:.54rem;text-transform:uppercase;opacity:.65}
+.me-c{font-weight:600}.me-i{font-style:italic;opacity:.65;font-size:.56rem}
+.add-btn{display:block;width:calc(100% - 2px);margin:1px;background:none;border:1px dashed transparent;
+  color:var(--muted);font-size:.6rem;opacity:.35;transition:all .12s;text-align:center;border-radius:3px;padding:2px 0}
+.add-btn:hover{opacity:1;background:var(--surf2);border-color:var(--border)}
+.cap-bar{position:absolute;bottom:0;left:0;right:0;height:3px;overflow:hidden}
+.cap-fill{height:100%;transition:width .2s,background .2s}
+.slot-info{position:absolute;top:2px;right:2px;font-size:.54rem;font-weight:700;padding:1px 3px;border-radius:3px;line-height:1}
+/* CONTRAINTES */
+.ctr-rule{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;
+  border:1px solid var(--border);background:var(--surf);margin-bottom:7px}
+.ctr-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.ctr-body{flex:1}
+.ctr-title{font-weight:600;font-size:.8rem;margin-bottom:2px}
+.ctr-desc{font-size:.72rem;color:var(--muted)}
+.pool-opt{border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .15s;flex:1}
+.pool-opt:hover{border-color:var(--hdr)}
+.pool-opt.selected{border-color:var(--hdr);background:#f0f4ff}
+.pool-opt .po-title{font-weight:700;font-size:.82rem;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.pool-opt .po-desc{font-size:.72rem;color:var(--muted)}
+/* GENERATION */
+.gen-step{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surf);margin-bottom:8px}
+.gen-num{width:24px;height:24px;border-radius:50%;background:var(--hdr);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gen-body{flex:1}
+.gen-title{font-weight:600;font-size:.82rem;margin-bottom:3px}
+.gen-desc{font-size:.72rem;color:var(--muted)}
+/* CONFLICT */
+.ci{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:7px;margin-bottom:6px;border:1px solid}
+.ci-err{background:#fff5f5;border-color:#fca5a5}.ci-wrn{background:#fffbeb;border-color:#fcd34d}
+.ci-t{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0;margin-top:1px}
+.ci-d{font-size:.72rem;flex:1}.ci-f{font-size:.62rem;color:var(--muted);margin-top:2px}
+.pb-w{height:6px;background:var(--surf2);border-radius:4px;overflow:hidden;margin-top:3px}
+.pb{height:100%;border-radius:4px;transition:width .3s}
+/* GEN RESULT TABLE */
+.gen-grid .chip{min-height:var(--sh)}
+.gen-prog{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,32,53,.7);z-index:600;display:none;align-items:center;justify-content:center}
+.gen-prog.show{display:flex}
+.gen-box{background:var(--surf);border-radius:10px;padding:28px 32px;min-width:320px;text-align:center}
+.gen-spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--hdr);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="hdr">
+  <div class="logo">EPS <em>·</em> V2.01</div>
+  <div class="hdr-sub">Collège Pasteur — Villemomble</div>
+  <nav class="ntabs">
+    <button class="nt active" onclick="nav('dash',this)">📊 Tableau</button>
+    <button class="nt" onclick="nav('teach',this)">👩‍🏫 Enseignants</button>
+    <button class="nt" onclick="nav('inst',this)">🏟️ Installations</button>
+    <button class="nt" onclick="nav('edt26',this)">📅 EDT 2026</button>
+    <button class="nt" onclick="nav('ctr',this)">⚙️ Contraintes</button>
+    <button class="nt" onclick="nav('gen',this)">🎲 Générer 2027</button>
+    <button class="nt" onclick="nav('res27',this)">📋 Résultat 2027<span class="nbdg" id="res27-bdg" style="display:none">✓</span></button>
+    <button class="nt" onclick="nav('saisie',this)">✏️ Saisie 2027</button>
+    <button class="nt" onclick="nav('as',this)">🏅 AS</button>
+    <button class="nt" onclick="nav('verif',this)">⚠️ Vérif<span class="nbdg" id="nbdg" style="display:none">0</span></button>
+  </nav>
+</div>
+<div id="wrap">
+<aside id="sb">
+  <div>
+    <div class="sbt">Enseignants</div>
+    <button class="tbn active" onclick="sf('all',this)"><div class="tdot" style="background:linear-gradient(135deg,#e63946,#6d4c7d)"></div>Tous</button>
+    <button class="tbn" onclick="sf('cl',this)"><div class="tdot" style="background:var(--c-cl)"></div>Clément<span class="hrs" id="h-cl"></span></button>
+    <button class="tbn" onclick="sf('an',this)"><div class="tdot" style="background:var(--c-an)"></div>Anne<span class="hrs" id="h-an"></span></button>
+    <button class="tbn" onclick="sf('pa',this)"><div class="tdot" style="background:var(--c-pa)"></div>Pauline<span class="hrs" id="h-pa"></span></button>
+    <button class="tbn" onclick="sf('st',this)"><div class="tdot" style="background:var(--c-st)"></div>Steven<span class="hrs" id="h-st"></span></button>
+    <button class="tbn" onclick="sf('lo',this)"><div class="tdot" style="background:var(--c-lo)"></div>Louis<span class="hrs" id="h-lo"></span></button>
+  </div>
+  <div>
+    <div class="sbt">Légende</div>
+    <div class="leg"><div class="leg-b" style="background:var(--c-cl)"></div>Clément</div>
+    <div class="leg"><div class="leg-b" style="background:var(--c-an)"></div>Anne</div>
+    <div class="leg"><div class="leg-b" style="background:var(--c-pa)"></div>Pauline</div>
+    <div class="leg"><div class="leg-b" style="background:var(--c-st)"></div>Steven</div>
+    <div class="leg"><div class="leg-b" style="background:var(--c-lo)"></div>Louis</div>
+    <div class="leg" style="margin-top:3px">🏊 Piscine &nbsp;⭐ AS &nbsp;♿ ULIS</div>
+  </div>
+  <div class="sb-acts">
+    <div class="sbt">Actions</div>
+    <button class="btn bp" style="width:100%;justify-content:center" onclick="nav('gen',document.querySelector('.nt:nth-child(6)'))">🎲 Générer 2027</button>
+    <button class="btn bs" style="width:100%;justify-content:center" onclick="expJSON()">📤 Exporter</button>
+    <button class="btn bs" style="width:100%;justify-content:center" onclick="impJSON()">📥 Importer</button>
+    <input type="file" id="impf" accept=".json" style="display:none" onchange="doImp(this)">
+  </div>
+</aside>
+<div id="main">
+  <!-- DASHBOARD -->
+  <div id="view-dash" class="view active">
+    <div class="ptitle">📊 Tableau de bord</div>
+    <div class="ga" id="db-stats" style="margin-bottom:14px"></div>
+    <div class="g2">
+      <div class="card"><h3>Service par enseignant</h3><div id="db-teach"></div></div>
+      <div class="card"><h3>Enseignants en parallèle — EDT 2026</h3><div id="db-par" style="overflow-x:auto"></div></div>
+    </div>
+    <div class="card"><h3>EDTs sauvegardés <span id="edt-cnt" style="color:var(--muted);font-weight:400;font-size:.68rem;text-transform:none"></span></h3><div id="edt-hist"></div></div>
+  </div>
+  <!-- ENSEIGNANTS -->
+  <div id="view-teach" class="view">
+    <div class="ptitle">👩‍🏫 Enseignants <small>Clic niveau : Neutre → Préféré → Éviter</small></div>
+    <div class="g2" id="teach-grid"></div>
+  </div>
+  <!-- INSTALLATIONS -->
+  <div id="view-inst" class="view">
+    <div class="ptitle">🏟️ Installations <small>Horaires en lignes, jours en colonnes — clic pour basculer</small></div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+      <button class="btn bs bsm" onclick="openAll()">✅ Tout ouvrir</button>
+      <button class="btn bs bsm" onclick="closeAll()">❌ Tout fermer</button>
+      <span style="font-size:.68rem;color:var(--muted);margin-left:4px">Toutes les installations sont ouvertes par défaut. Fermez uniquement les créneaux non disponibles.</span>
+    </div>
+    <div id="inst-content"></div>
+    <div class="card" style="margin-top:14px">
+      <h3>Enseignants pouvant travailler en parallèle</h3>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">Basé sur la capacité totale des installations ouvertes sur chaque créneau. <strong>Vert</strong> = capacité pour 2+ groupes · <strong>Orange</strong> = 1 seul groupe · <strong>Rouge</strong> = fermé</div>
+      <div style="overflow-x:auto" id="par-inst"></div>
+    </div>
+  </div>
+  <!-- EDT 2026 -->
+  <div id="view-edt26" class="view">
+    <div class="ptitle">📅 EDT 2026 <small>Emploi du temps actuel — référence</small></div>
+    <div class="fbar" id="fbar26">
+      <button class="fc fca active" onclick="f26('all',this)">Tous</button>
+      <button class="fc fcc" onclick="f26('cl',this)">Clément</button>
+      <button class="fc fan" onclick="f26('an',this)">Anne</button>
+      <button class="fc fpa" onclick="f26('pa',this)">Pauline</button>
+      <button class="fc fst" onclick="f26('st',this)">Steven</button>
+      <button class="fc flo" onclick="f26('lo',this)">Louis</button>
+    </div>
+    <div id="grid26"></div>
+  </div>
+  <!-- CONTRAINTES -->
+  <div id="view-ctr" class="view">
+    <div class="ptitle">⚙️ Contraintes & Paramètres <small>Configurer avant la génération</small></div>
+    <!-- Piscine -->
+    <div class="card">
+      <h3>🏊 Configuration piscine — Créneaux 6ème</h3>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:4px">
+        <strong>Clément</strong> accompagne en piscine le <strong>Mardi M1+M2</strong> (sans classe propre).<br>
+        <strong>Steven</strong> accompagne en piscine le <strong>Jeudi M3+M4</strong> (sans classe propre).<br>
+        Les autres enseignants emmènent chacun une classe de 6ème sur ces créneaux.
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:10px;margin-top:12px" id="pool-opts">
+        <div class="pool-opt selected" onclick="selPool(1,this)">
+          <div class="po-title"><span style="background:#1d4e89;color:#fff;border-radius:4px;padding:1px 6px;font-size:.65rem">A</span> Option 1 — 7 classes</div>
+          <div class="po-desc" style="margin-top:6px">
+            <div style="margin-bottom:3px">🏊 <strong>Mardi</strong> : Clément (accomp.) + <strong>4 enseignants</strong> avec classe</div>
+            <div>🏊 <strong>Jeudi</strong> : Steven (accomp.) + <strong>3 enseignants</strong> avec classe</div>
+          </div>
+        </div>
+        <div class="pool-opt" onclick="selPool(2,this)">
+          <div class="po-title"><span style="background:#e63946;color:#fff;border-radius:4px;padding:1px 6px;font-size:.65rem">B</span> Option 2 — 6 classes</div>
+          <div class="po-desc" style="margin-top:6px">
+            <div style="margin-bottom:3px">🏊 <strong>Mardi</strong> : Clément (accomp.) + <strong>3 enseignants</strong> avec classe</div>
+            <div style="margin-bottom:3px">🏊 <strong>Jeudi</strong> : Steven (accomp.) + <strong>3 enseignants</strong> avec classe</div>
+            <div style="color:var(--muted);font-size:.67rem;margin-top:4px">1 classe de 6ème sans créneau piscine</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:.72rem;margin-top:8px">
+        <div id="pool-assign-recap" style="background:var(--surf2);border-radius:6px;padding:8px 10px"></div>
+        <div style="margin-top:6px;color:var(--muted);font-size:.67rem">
+          Attribuez les classes de 6ème aux enseignants dans la section "Répartition des classes" ci-dessous.
+        </div>
+      </div>
+    </div>
+    <!-- Gestion des classes -->
+    <div class="card">
+      <h3>📚 Classes actives (carte scolaire)</h3>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:10px">Cochez les classes existantes cette année. Les classes décochées ne seront pas planifiées.</div>
+      <div id="classes-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn bs bsm" onclick="toggleAllClasses(true)">✅ Toutes actives</button>
+        <button class="btn bs bsm" onclick="toggleAllClasses(false)">❌ Toutes inactives</button>
+      </div>
+    </div>
+    <!-- Répartition des classes -->
+    <div class="card">
+      <h3>🎓 Répartition des classes entre enseignants</h3>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:10px">
+        Attribuez une classe à un enseignant (toutes ses sessions), ou partagez-la entre deux enseignants (ex : 2h avec l'un, 1h avec l'autre).
+      </div>
+      <div id="assign-list" style="margin-bottom:10px"></div>
+      <button class="btn bs bsm" onclick="openAddAssign()">+ Attribuer une classe</button>
+    </div>
+    <!-- Contraintes enseignant/créneau -->
+    <div class="card">
+      <h3>📌 Contraintes de positionnement</h3>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:10px">Forcer le placement d'un cours sur un créneau précis.</div>
+      <div id="ctr-list" style="margin-bottom:10px"></div>
+      <button class="btn bs bsm" onclick="openAddCtr()">+ Ajouter une contrainte</button>
+    </div>
+    <!-- Récapitulatif service -->
+    <div class="card">
+      <h3>📊 Évolution du service selon les attributions</h3>
+      <div id="service-recap"></div>
+    </div>
+    <!-- Règles appliquées -->
+    <div class="card">
+      <h3>📋 Règles appliquées</h3>
+      <div id="rules-list"></div>
+    </div>
+  </div>
+  <!-- GÉNÉRATION EDT 2027 -->
+  <div id="view-gen" class="view">
+    <div class="ptitle">🎲 Générer l'EDT 2027</div>
+
+    <!-- SYNTHÈSE CONTRAINTES + ENSEIGNANTS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+
+      <!-- Colonne 1 : Enseignants -->
+      <div class="card" style="margin-bottom:0">
+        <h3 style="display:flex;align-items:center;justify-content:space-between">
+          👩‍🏫 Enseignants
+          <button class="btn bs bxs" onclick="nav('teach',document.querySelector('.nt[onclick*=teach]'))">Modifier →</button>
+        </h3>
+        <div id="gen-teach-recap"></div>
+      </div>
+
+      <!-- Colonne 2 : Contraintes actives -->
+      <div class="card" style="margin-bottom:0">
+        <h3 style="display:flex;align-items:center;justify-content:space-between">
+          ⚙️ Contraintes actives
+          <button class="btn bs bxs" onclick="nav('ctr',document.querySelector('.nt[onclick*=ctr]'))">Modifier →</button>
+        </h3>
+        <div id="gen-ctr-recap"></div>
+      </div>
+    </div>
+
+    <!-- Répartition des classes -->
+    <div class="card">
+      <h3 style="display:flex;align-items:center;justify-content:space-between">
+        🎓 Répartition des classes
+        <button class="btn bs bxs" onclick="nav('ctr',document.querySelector('.nt[onclick*=ctr]'))">Modifier →</button>
+      </h3>
+      <div id="gen-assign-recap"></div>
+    </div>
+
+    <!-- Paramètres de génération -->
+    <div class="card">
+      <h3>🔧 Paramètres de génération</h3>
+      <div class="g2" style="margin-bottom:12px">
+        <div>
+          <div class="fr"><label>Priorité de placement</label>
+            <select id="gen-prio">
+              <option value="chain">Journées compactes (chainScore max)</option>
+              <option value="balance">Équilibrage enseignants</option>
+              <option value="install">Priorité installations éloignées (2h)</option>
+            </select>
+          </div>
+          <div class="fr"><label>Configuration piscine</label>
+            <select id="gen-pool">
+              <option value="1">Option 1 (Clément 4 classes mardi + Steven 3 jeudi)</option>
+              <option value="2">Option 2 (3 classes mardi + 3 jeudi + 1 sans piscine)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="fr"><label>Max tentatives par session</label>
+            <input type="number" id="gen-tries" value="50" min="10" max="200">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer">
+              <input type="checkbox" id="gen-compact"> Mode journées compactes (favorise les journées denses)
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer">
+              <input type="checkbox" id="gen-respAS" checked> Respecter et bloquer les créneaux AS
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer">
+              <input type="checkbox" id="gen-24h" checked> Appliquer la règle 24h entre cours d'une même classe
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer">
+              <input type="checkbox" id="gen-prefs" checked> Tenir compte des niveaux préférés / à éviter
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer">
+              <input type="checkbox" id="gen-dayoff" checked> Respecter les journées / demi-journées libres
+            </label>
+          </div>
+        </div>
+      </div>
+      <button class="btn bp" style="font-size:.88rem;padding:9px 22px" onclick="genEdt27()">🎲 Lancer la génération</button>
+    </div>
+
+    <!-- Algorithme étapes -->
+    <div class="card">
+      <h3>⚡ Algorithme — 6 étapes</h3>
+      <div class="gen-step"><div class="gen-num">1</div><div class="gen-body"><div class="gen-title">Piscine 6ème</div><div class="gen-desc">Clément : Mardi M1+M2. Steven : Jeudi M3+M4. Toujours placé en priorité absolue.</div></div></div>
+      <div class="gen-step"><div class="gen-num">2</div><div class="gen-body"><div class="gen-title">Blocage créneaux AS</div><div class="gen-desc">Les créneaux AS de chaque enseignant sont bloqués avant tout placement EPS (si option cochée).</div></div></div>
+      <div class="gen-step"><div class="gen-num">3</div><div class="gen-body"><div class="gen-title">Contraintes de positionnement</div><div class="gen-desc">Les contraintes de positionnement forcé (onglet Contraintes) sont appliquées en priorité.</div></div></div>
+      <div class="gen-step"><div class="gen-num">4</div><div class="gen-body"><div class="gen-title">Placement des classes attribuées (2h puis 1h)</div><div class="gen-desc">Sessions tirées de la répartition des classes. Score : adjacence (+300), niveaux préférés (+50), niveaux évités (−80), S1 déconseillé (−60), M4 pour 6ème (−40). Règle 24h entre cours d'une même classe. Journées/demi-journées libres respectées.</div></div></div>
+      <div class="gen-step"><div class="gen-num">5</div><div class="gen-body"><div class="gen-title">Placement des sessions génériques</div><div class="gen-desc">Heures restantes non attribuées à une classe spécifique. Même règles de score. Installation éloignée pour 2h, proche pour 1h.</div></div></div>
+      <div class="gen-step"><div class="gen-num">6</div><div class="gen-body"><div class="gen-title">Validation & rapport</div><div class="gen-desc">Vérification du total horaire, sessions non placées listées, sauvegarde dans l'historique.</div></div></div>
+    </div>
+
+    <div id="gen-result" style="display:none">
+      <div class="card">
+        <h3 id="gen-result-title">Résultat de la génération</h3>
+        <div id="gen-result-body"></div>
+      </div>
+    </div>
+  </div>
+  <!-- RÉSULTAT 2027 -->
+  <div id="view-res27" class="view">
+    <div class="ptitle">📋 Résultat EDT 2027 <small id="res27-subtitle">Aucune génération effectuée</small></div>
+    <div id="res27-genlog"></div>
+    <div id="res27-summary"></div>
+    <div id="res27-par" style="margin-bottom:12px"></div>
+    <div class="fbar" id="fbar-res27" style="display:none">
+      <button class="fc fca active" onclick="fRes27('all',this)">Tous</button>
+      <button class="fc fcc" onclick="fRes27('cl',this)">Clément</button>
+      <button class="fc fan" onclick="fRes27('an',this)">Anne</button>
+      <button class="fc fpa" onclick="fRes27('pa',this)">Pauline</button>
+      <button class="fc fst" onclick="fRes27('st',this)">Steven</button>
+      <button class="fc flo" onclick="fRes27('lo',this)">Louis</button>
+    </div>
+    <div id="res27-grid"></div>
+  </div>
+  <!-- SAISIE 2027 -->
+  <div id="view-saisie" class="view">
+    <div class="ptitle">✏️ Saisie EDT 2027</div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+      <div class="fbar" id="fbar27" style="margin-bottom:0">
+        <button class="fc fca active" onclick="f27('all',this)">Tous</button>
+        <button class="fc fcc" onclick="f27('cl',this)">Clément</button>
+        <button class="fc fan" onclick="f27('an',this)">Anne</button>
+        <button class="fc fpa" onclick="f27('pa',this)">Pauline</button>
+        <button class="fc fst" onclick="f27('st',this)">Steven</button>
+        <button class="fc flo" onclick="f27('lo',this)">Louis</button>
+      </div>
+      <button class="btn bs bsm" onclick="imp26to27()">📥 Base EDT 2026</button>
+      <button class="btn bok bsm" onclick="save27()">💾 Sauvegarder</button>
+      <button class="btn bs bsm" style="color:var(--accent)" onclick="clear27()">🗑️ Effacer</button>
+    </div>
+    <div id="hrs27" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>
+    <div id="par-saisie" style="margin-bottom:10px"></div>
+    <div style="font-size:.63rem;color:var(--muted);margin-bottom:6px">Barre = taux occupation · Nombre = enseignants placés / capacité</div>
+    <div style="overflow-x:auto"><div id="grid27"></div></div>
+  </div>
+  <!-- AS -->
+  <div id="view-as" class="view">
+    <div class="ptitle">🏅 Heures AS</div>
+    <div id="as-content"></div>
+  </div>
+  <!-- VERIF -->
+  <div id="view-verif" class="view">
+    <div class="ptitle">⚠️ Vérification</div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button class="btn bp" onclick="runV('26')">🔍 Analyser EDT 2026</button>
+      <button class="btn bs" onclick="runV('27')">🔍 Analyser EDT 2027</button>
+    </div>
+    <div id="verif-out"></div>
+  </div>
+</div>
+</div>
+<div class="mov" id="mov" onclick="clsMod(event)">
+  <div class="mbox">
+    <div class="mtit"><span id="mtit-txt"></span><button class="mcl" onclick="clsMod()">✕</button></div>
+    <div id="mbody"></div>
+  </div>
+</div>
+<div class="gen-prog" id="gen-prog">
+  <div class="gen-box">
+    <div class="gen-spinner"></div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:6px">Génération en cours…</div>
+    <div id="gen-prog-msg" style="font-size:.76rem;color:var(--muted)">Placement piscine 6ème…</div>
+  </div>
+</div>
+<div id="toasts"></div>
+<div id="tip"></div>
+<script>
+// ═══════════════════════════════════════
+// DONNÉES STATIQUES
+// ═══════════════════════════════════════
+var DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+// Horaires corrects depuis image 1
+var SLOTS = [
+  {id:'M1',t:'08:25–09:20',m:8*60+25,me:9*60+20},
+  {id:'M2',t:'09:25–10:20',m:9*60+25,me:10*60+20},
+  {id:'M3',t:'10:35–11:30',m:10*60+35,me:11*60+30},
+  {id:'M4',t:'11:35–12:30',m:11*60+35,me:12*60+30},
+  {id:'S1',t:'13:00–13:55',m:13*60+0, me:13*60+55},
+  {id:'S2',t:'14:00–14:55',m:14*60+0, me:14*60+55},
+  {id:'S3',t:'15:10–16:05',m:15*60+10,me:16*60+5},
+  {id:'S4',t:'16:10–17:05',m:16*60+10,me:17*60+5}
+];
+var SID = SLOTS.map(function(s){return s.id;});
+
+var TB = [
+  {id:'cl',name:'Clément',dot:'#e63946',cls:'c-cl',svc:22,cours:17,as:3,hsa:2},
+  {id:'an',name:'Anne',   dot:'#2a9d8f',cls:'c-an',svc:20,cours:17,as:3,hsa:0},
+  {id:'pa',name:'Pauline',dot:'#f4a261',cls:'c-pa',svc:20,cours:17,as:3,hsa:0},
+  {id:'st',name:'Steven', dot:'#457b9d',cls:'c-st',svc:22,cours:17,as:3,hsa:2},
+  {id:'lo',name:'Louis',  dot:'#6d4c7d',cls:'c-lo',svc:18,cours:14,as:3,hsa:1}
+];
+
+var IB = [
+  {id:'gi', name:'Gymnase intérieur',   abbr:'GI',color:'#457b9d',cap:1,dist:'proche'},
+  {id:'pl', name:'Plateau',             abbr:'PL',color:'#2a9d8f',cap:2,dist:'proche'},
+  {id:'gp', name:'Gymnase Pandraud',    abbr:'GP',color:'#7c3aed',cap:2,dist:'proche'},
+  {id:'gb', name:'Gymnase Bouhail',     abbr:'GB',color:'#0369a1',cap:1,dist:'proche'},
+  {id:'gt', name:'Gymnase Tcheméo',    abbr:'GT',color:'#0891b2',cap:1,dist:'eloignee'},
+  {id:'st2',name:'Stade',              abbr:'ST',color:'#f0922b',cap:3,dist:'eloignee'},
+  {id:'ts', name:'Terrains synthétiques',abbr:'TS',color:'#16a34a',cap:3,dist:'eloignee'},
+  {id:'ps', name:'Piscine',            abbr:'PS',color:'#0284c7',cap:4,dist:'eloignee'}
+];
+
+// Classes à planifier (6ème A–G, 5ème/4ème/3ème A–F, ULIS)
+var CLASSES = {
+  '6eme': ['6A','6B','6C','6D','6E','6F','6G'],
+  '5eme': ['5A','5B','5C','5D','5E','5F'],
+  '4eme': ['4A','4B','4C','4D','4E','4F'],
+  '3eme': ['3A','3B','3C','3D','3E','3F','3G','3H'],
+  'ulis': ['ULIS']
+};
+
+var EDT26 = {
+  cl: {
+    Mardi: {
+      M1:{c:'6ème (piscine)',isPool:true,dur:2,note:'Accompagnement piscine',ins:'ps'},
+      M3:{c:'3ème E',dur:1,ins:'gp'}, M4:{c:'4ème B',dur:1,ins:'gp'},
+      S2:{c:'6ème F',dur:2,ins:'gb'}, S4:{c:'4ème A',dur:1,ins:'gb'},
+      AS:[{c:'AS Foot',note:'13h30–16h30'}]
+    },
+    Mercredi: {M2:{c:'4ème E',dur:1,ins:'gp'},M3:{c:'4ème B',dur:2,ins:'gb'},AS:[{c:'AS Foot',note:'13h30–16h30'}]},
+    Jeudi:    {M2:{c:'3ème A',dur:1,ins:'gp'},M3:{c:'6ème F',isPool:true,dur:2,note:'Piscine',ins:'ps'},S2:{c:'4ème E',dur:2,ins:'gb'}},
+    Vendredi: {M1:{c:'3ème E',dur:2,ins:'st2'},M3:{c:'3ème A',dur:2,ins:'ts'}}
+  },
+  an: {
+    Lundi:    {M2:{c:'5ème A',dur:1,ins:'gp'},M3:{c:'5ème B',dur:2,ins:'gb'},S2:{c:'5ème C',dur:2,ins:'gp'},S4:{c:'5ème D',dur:1,ins:'gb'}},
+    Mardi:    {M1:{c:'6ème E',isPool:true,dur:2,note:'Piscine',ins:'ps'},M3:{c:'5ème A',dur:2,ins:'gp'},S2:{c:'4ème C',dur:1,ins:'gb'},S3:{c:'5ème B',dur:1,ins:'gp'}},
+    Mercredi: {M4:{c:'5ème C',dur:1,ins:'gp'},AS:[{c:'AS Danse',note:'13h30–16h30'}]},
+    Vendredi: {M1:{c:'6ème E',dur:2,ins:'st2'},M3:{c:'5ème D',dur:2,ins:'gp'}}
+  },
+  pa: {
+    Mardi:    {M1:{c:'6ème C',isPool:true,dur:2,note:'Piscine',ins:'ps'},M3:{c:'3ème D',dur:2,ins:'gp'},S2:{c:'3ème F',dur:2,ins:'gb'}},
+    Mercredi: {M1:{c:'6ème A',dur:2,ins:'st2'},M3:{c:'5ème E',dur:1,ins:'gp'},AS:[{c:'AS Basket',note:'13h30–16h30'}]},
+    Jeudi:    {M3:{c:'6ème A',isPool:true,dur:2,note:'Piscine',ins:'ps'},S2:{c:'3ème D',dur:1,ins:'gp'},S3:{c:'3ème F',dur:1,ins:'gb'}},
+    Vendredi: {M2:{c:'ULIS',isULIS:true,dur:1,ins:'gp'},M3:{c:'5ème E',dur:2,ins:'gb'},S2:{c:'6ème C',dur:2,ins:'ts'}}
+  },
+  st: {
+    Lundi:    {M1:{c:'4ème C',dur:2,ins:'gb'},M3:{c:'3ème B',dur:2,ins:'st2'},AS:[{c:'AS Foot féminin'}],S2:{c:'3ème C',dur:2,ins:'gp'}},
+    Mardi:    {M1:{c:'6ème B',dur:2,ins:'gp'},M3:{c:'5ème F',dur:2,ins:'gb'},AS:[{c:'AS Tennis de table'}]},
+    Mercredi: {M2:{c:'3ème B',dur:1,ins:'gp'},M3:{c:'3ème C',dur:1,ins:'gb'}},
+    Jeudi:    {M1:{c:'6ème B',dur:2,ins:'gp'},M3:{c:'6ème (piscine)',isPool:true,dur:2,note:'Accompagnement piscine',ins:'ps'},AS:[{c:'Foot féminin'}],S2:{c:'4ème A',dur:2,ins:'gb'},S4:{c:'5ème F',dur:1,ins:'gp'}}
+  },
+  lo: {
+    Lundi:    {M3:{c:'4ème F',dur:2,ins:'gp'},AS:[{c:'AS Tennis de table'}],S2:{c:'6ème D',dur:2,ins:'gb'},S4:{c:'4ème D',dur:1,ins:'gp'}},
+    Mardi:    {S2:{c:'3ème G',dur:2,ins:'gp'},S4:{c:'4ème F',dur:1,ins:'gb'}},
+    Mercredi: {M3:{c:'3ème H',dur:2,ins:'gp'},AS:[{c:'AS Gym.',note:'13h–14h'}]},
+    Jeudi:    {M1:{c:'4ème D',dur:2,ins:'gb'},M3:{c:'6ème D',dur:2,ins:'gp'},AS:[{c:'AS Gym.'}],S2:{c:'3ème H',dur:1,ins:'gb'},S3:{c:'3ème G',dur:1,ins:'gp'}}
+  }
+};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+function mkAvail(){var av={};DAYS.forEach(function(d){SID.forEach(function(s){av[d+'|'+s]=true;});});return av;}
+
+var S = {
+  teachers: JSON.parse(JSON.stringify(TB)),
+  installs: JSON.parse(JSON.stringify(IB)).map(function(i){i.avail=mkAvail();return i;}),
+  edt27: {},
+  edts: [],
+  as: {
+    cl:{Mardi:[{s:'AS',lb:'AS Foot',note:'13h30–16h30'}],Mercredi:[{s:'AS',lb:'AS Foot',note:'13h30–16h30'}]},
+    an:{Mercredi:[{s:'AS',lb:'AS Danse',note:'13h30–16h30'}]},
+    pa:{Mercredi:[{s:'AS',lb:'AS Basket',note:'13h30–16h30'}]},
+    st:{Lundi:[{s:'AS',lb:'AS Foot féminin'}],Mardi:[{s:'AS',lb:'AS Tennis de table'}],Jeudi:[{s:'AS',lb:'Foot féminin'}]},
+    lo:{Lundi:[{s:'AS',lb:'AS Tennis de table'}],Mercredi:[{s:'AS',lb:'AS Gym.',note:'13h–14h'}],Jeudi:[{s:'AS',lb:'AS Gym.'}]}
+  },
+  constraints: [],  // [{type,tid,classe,dur,tid2,dur2,day,sid,level,note}]
+  assigns: [],      // [{classe,tid,dur,tid2,dur2,note}] — class->teacher(s) assignment
+  classesList: ['6A','6B','6C','6D','6E','6F','6G','5A','5B','5C','5D','5E','5F','4A','4B','4C','4D','4E','4F','3A','3B','3C','3D','3E','3F','3G','3H','ULIS'],
+  poolOpt: 1,
+  tf:'all', f26:'all', f27:'all', tab:'dash'
+};
+
+function save(){try{localStorage.setItem('eps_v4',JSON.stringify({teachers:S.teachers,installs:S.installs,edt27:S.edt27,edts:S.edts,as:S.as,constraints:S.constraints,assigns:S.assigns,classesList:S.classesList,poolOpt:S.poolOpt}));}catch(e){}updateRes27Badge();}
+function load(){
+  try{var r=JSON.parse(localStorage.getItem('eps_v4')||'{}');
+    if(r.teachers)S.teachers=r.teachers;
+    if(r.installs){
+      S.installs=r.installs;
+      // Always ensure every slot is in avail map; missing = open
+      S.installs.forEach(function(inst){
+        if(!inst.avail)inst.avail=mkAvail();
+        DAYS.forEach(function(d){SID.forEach(function(s){
+          if(inst.avail[d+'|'+s]===undefined||inst.avail[d+'|'+s]===null)inst.avail[d+'|'+s]=true;
+        });});
+      });
+    }
+    if(r.edt27)S.edt27=r.edt27;
+    if(r.edts)S.edts=r.edts;
+    if(r.as)S.as=r.as;
+    if(r.constraints)S.constraints=r.constraints;
+    if(r.assigns)S.assigns=r.assigns;
+    if(r.classesList)S.classesList=r.classesList;
+    if(r.poolOpt)S.poolOpt=r.poolOpt;
+    // Migration: if ALL installs are closed (old broken state), reopen everything
+    var allClosed=S.installs.every(function(inst){
+      return DAYS.every(function(d){return SID.every(function(s){return inst.avail[d+'|'+s]===false;});});
+    });
+    if(allClosed){
+      S.installs.forEach(function(inst){DAYS.forEach(function(d){SID.forEach(function(s){inst.avail[d+'|'+s]=true;});});});
+    }
+  }catch(e){}
+}
+
+function getT(id){return S.teachers.find(function(t){return t.id===id;})||TB.find(function(t){return t.id===id;});}
+function getI(id){return S.installs.find(function(i){return i.id===id;})||IB.find(function(i){return i.id===id;});}
+// Valid 2h pairs: M1+M2, M3+M4, S2+S3 ONLY (respects breaks)
+var VALID_2H_STARTS = {M1:'M2', M3:'M4', S2:'S3'};
+function nxt(id){
+  // Only return next slot if it's a valid consecutive pair (no break between)
+  return VALID_2H_STARTS[id] || null;
+}
+
+// ═══════════════════════════════════════
+// CHIP RENDER
+// ═══════════════════════════════════════
+function mkChip(tid,sid,sd,showT,onClick){
+  var t=getT(tid);if(!t)return'';
+  var isD=sd.dur===2;
+  var nx=isD?nxt(sid):null;
+  var rng=isD&&nx?sid+'–'+nx:sid;
+  var icon=sd.isPool?'🏊':sd.isAS?'⭐':sd.isULIS?'♿':'';
+  var cls='chip '+(sd.isAS?'c-as':sd.isPool?'c-pool':t.cls);
+  var ins=sd.ins?getI(sd.ins):null;
+  var oc=onClick?' onclick="'+onClick+'" style="cursor:pointer"':'';
+  return '<div class="'+cls+'" data-t="'+tid+'" data-cl="'+(sd.c||'')+'" data-note="'+(sd.note||'')+'" data-rng="'+rng+'" onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="movTip(event)"'+oc+'>'+
+    (showT?'<div class="ctl">'+t.name+'</div>':'')+
+    '<div class="ccl">'+(sd.c||'')+'</div>'+
+    (ins?'<div class="csub">'+ins.abbr+'</div>':'')+
+    (isD?'<div class="csub">2h·'+rng+'</div>':'')+
+    (icon?'<div class="cion">'+icon+'</div>':'')+
+    '</div>';
+}
+
+// ═══════════════════════════════════════
+// EDT 2026 GRID
+// ═══════════════════════════════════════
+function rEdt26(tf){
+  var isSingle=(tf!=='all');
+  // Pre-compute which cells are covered by rowspan (single-teacher view only)
+  var rowspanned={};
+  if(isSingle){
+    DAYS.forEach(function(day){
+      var dd=EDT26[tf]&&EDT26[tf][day];if(!dd)return;
+      Object.entries(dd).forEach(function(e){
+        var sid=e[0],sd=e[1];
+        if(sd&&sd.dur===2&&!sd.isAS){
+          var nx=nxt(sid);
+          if(nx)rowspanned[day+'|'+nx]=true;
+        }
+      });
+    });
+  }
+
+  var h='<div class="gwrap"><table class="etbl"><thead><tr><th>Créneau</th>';
+  DAYS.forEach(function(d){h+='<th class="dth">'+d+'</th>';});
+  h+='</tr></thead><tbody>';
+
+  SID.forEach(function(sid){
+    if(sid==='S1'){
+      h+='<tr class="pr"><td class="ttd"><small>Pause</small></td>';
+      DAYS.forEach(function(){h+='<td style="height:6px;background:#f0f2f6;border:none"></td>';});
+      h+='</tr>';
+    }
+    var sl=SLOTS.find(function(s){return s.id===sid;});
+    h+='<tr><td class="ttd"><strong>'+sid+'</strong><small>'+sl.t+'</small></td>';
+
+    DAYS.forEach(function(day){
+      // In single view: skip cells covered by rowspan
+      if(isSingle&&rowspanned[day+'|'+sid])return;
+
+      var chips='';
+      var hasDouble=false;
+
+      TB.forEach(function(t){
+        if(tf!=='all'&&tf!==t.id)return;
+        var dd=EDT26[t.id]&&EDT26[t.id][day];if(!dd)return;
+        var sd=dd[sid];if(!sd||sd.isAS)return;
+        var isD=sd.dur===2;
+        var nx=isD?nxt(sid):null;
+        var rng=isD&&nx?sid+'–'+nx:sid;
+        var icon=sd.isPool?'🏊':sd.isULIS?'♿':'';
+        var ins=sd.ins?getI(sd.ins):null;
+        chips+='<div class="chip '+(sd.isPool?'c-pool':t.cls)+'" '+
+          'data-t="'+t.id+'" data-cl="'+(sd.c||'')+'" '+
+          'data-note="'+(sd.note||'')+'" data-rng="'+rng+'" '+
+          'onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="movTip(event)">'+
+          (!isSingle?'<div class="ctl">'+t.name+'</div>':'')+
+          '<div class="ccl">'+(sd.c||'')+'</div>'+
+          (ins?'<div class="csub">'+ins.abbr+'</div>':'')+
+          (isD?'<div class="csub">2h·'+rng+'</div>':'')+
+          (icon?'<div class="cion">'+icon+'</div>':'')+
+          '</div>';
+        if(isD)hasDouble=true;
+      });
+
+      // AS on S1
+      if(sid==='S1'){
+        TB.forEach(function(t){
+          if(tf!=='all'&&tf!==t.id)return;
+          var dd=EDT26[t.id]&&EDT26[t.id][day];if(!dd||!dd.AS)return;
+          dd.AS.forEach(function(a){
+            chips+='<div class="me c-as" style="border-left-color:'+t.dot+'">'+
+              '<div class="me-t">'+t.name+'</div>'+
+              '<div class="me-c">⭐ '+a.c+'</div>'+
+              (a.note?'<div class="me-i">'+a.note+'</div>':'')+
+              '</div>';
+          });
+        });
+      }
+
+      // Rowspan only in single-teacher view, AND only if there's a valid nxt()
+      var useRowspan=isSingle&&hasDouble;
+      if(useRowspan){
+        h+='<td rowspan="2" style="padding:0;height:calc(var(--sh)*2+1px)"><div style="height:100%;display:flex;flex-direction:column">'+chips+'</div></td>';
+      } else {
+        // In multi view: show continuation bar for cells covered by 2h block
+        if(!isSingle){
+          DAYS.forEach(function(){});  // no-op placeholder
+          TB.forEach(function(t3){
+            if(tf!=='all'&&tf!==t3.id)return;
+            var dd3=EDT26[t3.id]&&EDT26[t3.id][day];if(!dd3)return;
+            var pi=SID.indexOf(sid)-1;
+            if(pi>=0){
+              var ps=SID[pi];var psd=dd3[ps];
+              if(psd&&psd.dur===2&&!psd.isAS&&nxt(ps)===sid){
+                chips+='<div class="chip '+(psd.isPool?'c-pool':t3.cls)+'" style="opacity:.55;justify-content:center;align-items:center;min-height:20px" '+
+                  'data-t="'+t3.id+'" data-cl="'+(psd.c||'')+'" data-note="Continuation 2h" data-rng="'+sid+'" '+
+                  'onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="movTip(event)">'+
+                  '<div class="csub" style="font-size:.55rem;text-align:center">▲ '+(psd.c||'')+'</div></div>';
+              }
+            }
+          });
+        }
+        h+='<td style="vertical-align:top;height:var(--sh)">'+chips+'</td>';
+      }
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  document.getElementById('grid26').innerHTML=h;
+}
+
+
+// ═══════════════════════════════════════
+// INSTALLATIONS — horaires en lignes, jours en colonnes
+// ═══════════════════════════════════════
+function rInst(){
+  var el=document.getElementById('inst-content');
+  var h='';
+  S.installs.forEach(function(inst){
+    var id=inst.id;
+    h+='<div class="card">';
+    // Header row
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    h+='<div style="width:12px;height:12px;border-radius:50%;background:'+inst.color+';cursor:pointer;box-shadow:0 0 0 2px '+inst.color+',0 0 0 4px #fff" onclick="iPickColor(this)" data-iid="'+id+'" title="Changer couleur"></div>';
+    h+='<strong style="font-size:.82rem">'+inst.name+'</strong>';
+    h+='<span class="bdg '+(inst.dist==='proche'?'binf-b':'bwrn-b')+'" style="font-size:.58rem">'+(inst.dist==='proche'?'Proche':'Éloignée')+' &middot; '+inst.cap+' groupe'+(inst.cap>1?'s':'')+'</span>';
+    h+='<button class="btn bs bxs" onclick="iTogDist(this)" data-iid="'+id+'" style="margin-left:5px">'+(inst.dist==='proche'?'→ Éloignée':'→ Proche')+'</button>';
+    h+='<div style="margin-left:auto;display:flex;gap:3px">';
+    h+='<button class="btn bs bxs" onclick="iOpenAll(this)" data-iid="'+id+'">✅ Tout ouvrir</button>';
+    h+='<button class="btn bs bxs" onclick="iCloseAll(this)" data-iid="'+id+'">❌ Tout fermer</button>';
+    h+='</div></div>';
+    // Grid: rows=SLOTS, cols=DAYS
+    h+='<div style="overflow-x:auto"><table class="itbl"><thead><tr><th class="slhd">Horaire \ Jour</th>';
+    DAYS.forEach(function(d){h+='<th>'+d+'</th>';});
+    h+='</tr></thead><tbody>';
+    SLOTS.forEach(function(sl){
+      h+='<tr><td class="sllbl"><strong>'+sl.id+'</strong> <span style="font-weight:400;color:var(--muted);font-size:.6rem">'+sl.t+'</span></td>';
+      DAYS.forEach(function(day){
+        var k=day+'|'+sl.id;
+        var av=inst.avail[k]!==false;
+        // Teacher dots for who uses this install in EDT26
+        var dots='';
+        TB.forEach(function(t){
+          var dd=EDT26[t.id]&&EDT26[t.id][day];if(!dd)return;
+          var sd=dd[sl.id];
+          var pi=SID.indexOf(sl.id)-1;
+          var prevSd=pi>=0&&dd[SID[pi]]&&dd[SID[pi]].dur===2?dd[SID[pi]]:null;
+          var uses=(sd&&sd.ins===id)||(prevSd&&prevSd.ins===id);
+          if(uses)dots+='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+t.dot+';margin:0 1px" title="'+t.name+'"></span>';
+        });
+        h+='<td style="padding:1px"><div style="display:flex;flex-direction:column;align-items:center;gap:1px">';
+        if(dots)h+='<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:1px">'+dots+'</div>';
+        h+='<button class="avc '+(av?'av-ok':'av-no')+'" onclick="iTogAv(this)" data-iid="'+id+'" data-k="'+k+'" style="width:100%">'+(av?'✓':'✗')+'</button>';
+        h+='</div></td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div></div>';
+  });
+  el.innerHTML=h;
+  rParInstall();
+}
+
+// ── Install button helpers (no quote nesting needed) ──
+function iTogAv(el){togAv(el.dataset.iid,el.dataset.k,el);}
+function iTogDist(el){togDist(el.dataset.iid,el);}
+function iOpenAll(el){openAllI(el.dataset.iid);}
+function iCloseAll(el){closeAllI(el.dataset.iid);}
+function iPickColor(el){pickInstColor(el.dataset.iid);}
+
+
+function pickInstColor(instId){
+  var inst=S.installs.find(function(i){return i.id===instId;});if(!inst)return;
+  var colors=['#457b9d','#2a9d8f','#7c3aed','#0369a1','#0891b2','#f0922b','#16a34a','#0284c7','#e63946','#f4a261','#6d4c7d','#ca8a04','#64748b','#be185d','#0f766e'];
+  var h='<input type="hidden" id="color-inst-id" value="'+instId+'">'+
+    '<div style="font-size:.8rem;margin-bottom:10px">Couleur de <strong>'+inst.name+'</strong></div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">';
+  colors.forEach(function(col){
+    h+='<div style="width:28px;height:28px;border-radius:50%;background:'+col+';cursor:pointer;border:3px solid '+(inst.color===col?'#1a2035':'transparent')+'" onclick="setInstColor(this)" data-col="'+col+'" title="'+col+'"></div>';
+  });
+  h+='</div>'+
+    '<div class="fr"><label>Code couleur (#hex)</label><input type="text" id="custom-color" value="'+inst.color+'" placeholder="#457b9d"></div>'+
+    '<div style="display:flex;gap:6px;margin-top:8px">'+
+    '<button class="btn bp" onclick="setInstColorCustom()">Appliquer</button>'+
+    '<button class="btn bs" onclick="clsMod()">Fermer</button>'+
+    '</div>';
+  openMod('Couleur — '+inst.name,h);
+}
+
+
+function setInstColor(elOrId,color){
+  var instId=typeof elOrId==='string'?elOrId:(elOrId.dataset.iid||(document.getElementById('color-inst-id')&&document.getElementById('color-inst-id').value));
+  var col=color||(typeof elOrId==='object'?elOrId.dataset.col:null);
+  if(!col)return;
+  var inst=S.installs.find(function(i){return i.id===instId;});if(!inst)return;
+  inst.color=col;save();clsMod();rInst();toast('Couleur mise à jour','tok');
+}
+
+function setInstColorCustom(){
+  var instId=document.getElementById('color-inst-id').value;
+  var col=document.getElementById('custom-color').value;
+  if(!col||!col.match(/^#[0-9a-fA-F]{3,6}$/)){toast('Code couleur invalide','terr');return;}
+  setInstColor(instId,col);
+}
+
+function _setInstColor_old(instId,color){
+  var inst=S.installs.find(function(i){return i.id===instId;});if(!inst)return;
+  inst.color=color;save();clsMod();rInst();toast('Couleur mise à jour','tok');
+}
+
+
+
+function buildParData(edtData,useEdt26){
+  var result=[];
+  SLOTS.forEach(function(sl){
+    DAYS.forEach(function(day){
+      var cap=0;
+      S.installs.forEach(function(inst){
+        var v=inst.avail[day+'|'+sl.id];
+        if(v!==false&&v!=='false')cap+=inst.cap;
+      });
+      var maxProfs=Math.min(cap,TB.length);
+      var profsOn=[];
+      TB.forEach(function(t){
+        var hasDirect=false,hasPrev=false;
+        if(useEdt26){
+          var dd=EDT26[t.id]&&EDT26[t.id][day];
+          hasDirect=!!(dd&&dd[sl.id]&&!dd[sl.id].isAS);
+          var pi=SID.indexOf(sl.id)-1;
+          hasPrev=!!(pi>=0&&dd&&dd[SID[pi]]&&dd[SID[pi]].dur===2&&!dd[SID[pi]].isAS);
+        }else if(edtData){
+          var ens=edtData[day]&&edtData[day][sl.id];
+          hasDirect=Array.isArray(ens)&&ens.some(function(e){return e.tid===t.id&&!e.isAS;});
+          var pi2=SID.indexOf(sl.id)-1;
+          var prev2=pi2>=0&&edtData[day]&&edtData[day][SID[pi2]];
+          hasPrev=Array.isArray(prev2)&&prev2.some(function(e){return e.tid===t.id&&e.dur===2&&!e.isAS;});
+        }
+        if(hasDirect||hasPrev)profsOn.push({tid:t.id,dot:t.dot,name:t.name});
+      });
+      result.push({day:day,sid:sl.id,t:sl.t,cap:cap,maxProfs:maxProfs,profsOn:profsOn});
+    });
+  });
+  return result;
+}
+
+function renderParTable(data,targetId,title){
+  var el=document.getElementById(targetId);if(!el)return;
+  var h='';
+  if(title)h+='<div style="font-size:.72rem;font-weight:700;margin-bottom:5px">'+title+'</div>';
+  h+='<div style="font-size:.66rem;color:var(--muted);margin-bottom:7px">Chiffre = nb max d\'enseignants simultanés · Ronds = enseignants déjà placés / installations disponibles</div>';
+  h+='<div style="overflow-x:auto"><table class="par-tbl"><thead><tr><th class="lhd">Créneau</th>';
+  DAYS.forEach(function(d){h+='<th>'+d+'</th>';});
+  h+='</tr></thead><tbody>';
+  SLOTS.forEach(function(sl){
+    h+='<tr><td class="slbl"><strong>'+sl.id+'</strong><br><span style="font-size:.56rem;color:var(--muted)">'+sl.t+'</span></td>';
+    DAYS.forEach(function(day){
+      var d=data.find(function(x){return x.day===day&&x.sid===sl.id;});
+      if(!d){h+='<td>—</td>';return;}
+      var n=d.maxProfs;
+      var bgCol=n===0?'#fee2e2':n<=2?'#fef9c3':'#dcfce7';
+      var numCol=n===0?'#991b1b':n<=2?'#854d0e':'#166534';
+      var tDots=d.profsOn.map(function(p){return'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+p.dot+';margin:0 1px" title="'+p.name+'"></span>';}).join('');
+      var iDots='';
+      S.installs.forEach(function(inst){
+        var v=inst.avail[day+'|'+sl.id];
+        if(v!==false&&v!=='false')iDots+='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+inst.color+';margin:0 1px;opacity:.85;border:1px solid rgba(0,0,0,.1)" title="'+inst.name+' ('+inst.cap+'gr)"></span>';
+      });
+      h+='<td style="background:'+bgCol+';text-align:center;padding:4px 3px">';
+      if(tDots)h+='<div style="display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:1px">'+tDots+'</div>';
+      if(iDots)h+='<div style="display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:2px">'+iDots+'</div>';
+      h+='<span style="font-size:.75rem;font-weight:700;color:'+numCol+'">'+(n>0?n:'—')+'</span>';
+      h+='</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  el.innerHTML=h;
+}
+
+
+function rParInstall(){
+  var data = buildParData(null, true);
+  renderParTable(data, 'par-inst', 'Enseignants pouvant travailler en parallèle (basé sur les installations ouvertes)');
+}
+
+function togAv(id,k,el){
+  var inst=S.installs.find(function(i){return i.id===id;});if(!inst)return;
+  var wasOpen=inst.avail[k]!==false&&inst.avail[k]!=='false';
+  inst.avail[k]=!wasOpen;
+  el.className='avc '+(inst.avail[k]?'av-ok':'av-no');
+  el.textContent=inst.avail[k]?'✓':'✗';
+  save();rParInstall();
+  if(S.tab==='saisie')rSaisie();
+}
+function togDist(id,el){var inst=S.installs.find(function(i){return i.id===id;});if(!inst)return;inst.dist=inst.dist==='proche'?'eloignee':'proche';save();rInst();}
+function openAllI(id){var inst=S.installs.find(function(i){return i.id===id;});if(!inst)return;DAYS.forEach(function(d){SID.forEach(function(s){inst.avail[d+'|'+s]=true;});});save();rInst();if(S.tab==='saisie')rSaisie();toast('Ouvert : '+inst.name,'tok');}
+function closeAllI(id){var inst=S.installs.find(function(i){return i.id===id;});if(!inst)return;DAYS.forEach(function(d){SID.forEach(function(s){inst.avail[d+'|'+s]=false;});});save();rInst();if(S.tab==='saisie')rSaisie();toast('Fermé : '+inst.name,'twrn');}
+function openAll(){S.installs.forEach(function(i){DAYS.forEach(function(d){SID.forEach(function(s){i.avail[d+'|'+s]=true;});});});save();rInst();toast('Tout ouvert','tok');}
+function closeAll(){if(!confirm('Fermer tous les créneaux ?'))return;S.installs.forEach(function(i){DAYS.forEach(function(d){SID.forEach(function(s){i.avail[d+'|'+s]=false;});});});save();rInst();toast('Tout fermé','twrn');}
+
+// ═══════════════════════════════════════
+// CONTRAINTES
+// ═══════════════════════════════════════
+var RULES = [
+  {icon:'✅',title:'Règle 24h',desc:'Minimum 24h entre deux cours d\'une même classe.'},
+  {icon:'🚫',title:'S3+S4 interdit',desc:'Les cours de 2h ne peuvent pas commencer en S3 ou S4.'},
+  {icon:'⚠️',title:'M4 déconseillé',desc:'M4 déconseillé pour les classes de 6ème.'},
+  {icon:'⚠️',title:'S1 déconseillé',desc:'S1 déconseillé pour tous les niveaux.'},
+  {icon:'🏊',title:'Piscine réservée',desc:'Mardi M1+M2 et Jeudi M3+M4 réservés piscine 6ème (Clément et Steven).'},
+  {icon:'📅',title:'Mercredi PM interdit',desc:'Pas de cours EPS mercredi après-midi (S1–S4). AS autorisées.'},
+  {icon:'📆',title:'Journée + demi-journée libre',desc:'Chaque enseignant peut avoir 1 journée ou demi-journée libre configurée.'},
+  {icon:'🎓',title:'Minimum 1 classe de 6ème',desc:'Chaque enseignant doit avoir au moins une classe de 6ème.'},
+  {icon:'⚽',title:'3h AS déduites du service',desc:'3h d\'AS hebdomadaires déduites du service de chaque enseignant.'}
+];
+
+function rPoolRecap(){
+  var el=document.getElementById('pool-assign-recap');if(!el)return;
+  var opt=S.poolOpt||1;
+  var maxMardi=opt===1?4:3;
+
+  // Collect 6ème assignments
+  var mardi=[];var jeudi=[];var unassigned=[];
+  var sixieClasses=(S.classesList||[]).filter(function(cl){return cl&&cl[0]==='6';});
+
+  // Which teachers have 6ème assigned
+  var teacherWith6={}; // tid -> [classe]
+  if(S.assigns){
+    S.assigns.forEach(function(a){
+      if(!a.classe||a.classe[0]!=='6')return;
+      if(S.classesList&&S.classesList.indexOf(a.classe)<0)return;
+      if(a.tid&&a.tid!=='cl'&&a.tid!=='st'){
+        if(!teacherWith6[a.tid])teacherWith6[a.tid]=[];
+        teacherWith6[a.tid].push(a.classe);
+      }
+      if(a.tid2&&a.tid2!=='cl'&&a.tid2!=='st'){
+        if(!teacherWith6[a.tid2])teacherWith6[a.tid2]=[];
+        teacherWith6[a.tid2].push(a.classe);
+      }
+    });
+  }
+
+  // Simulate distribution (same as algo)
+  var mardiCount=0,jeudiCount=0;
+  sixieClasses.forEach(function(cl){
+    var entry=S.assigns?S.assigns.find(function(a){return a.classe===cl;}):null;
+    var tid=entry?entry.tid:null;
+    if(tid==='cl'||tid==='st')tid=entry&&entry.tid2?entry.tid2:null;
+    if(mardiCount<maxMardi){
+      mardi.push({classe:cl,tid:tid});mardiCount++;
+    } else if(jeudiCount<3){
+      jeudi.push({classe:cl,tid:tid});jeudiCount++;
+    } else {
+      unassigned.push({classe:cl,tid:tid});
+    }
+  });
+
+  function dotHtml(tid){
+    var t=tid?getT(tid):null;
+    return t?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+t.dot+';margin-right:2px;vertical-align:middle"></span>':'';
+  }
+
+  var h='<div style="display:flex;gap:12px;flex-wrap:wrap">';
+  // Mardi block
+  h+='<div style="flex:1;min-width:200px"><div style="font-size:.7rem;font-weight:700;color:var(--hdr);margin-bottom:5px">🏊 Mardi M1+M2</div>';
+  h+='<div style="font-size:.67rem;margin-bottom:5px;color:var(--muted)">Clément — Accompagnement piscine</div>';
+  if(mardi.length){
+    mardi.forEach(function(e){
+      var t=e.tid?getT(e.tid):null;
+      h+='<div style="display:flex;align-items:center;gap:5px;padding:3px 0;border-bottom:1px solid var(--border);font-size:.72rem">'+
+        dotHtml(e.tid)+'<strong>'+e.classe+'</strong>'+
+        (t?'<span style="color:var(--muted)"> → '+t.name+'</span>':
+           '<span style="color:var(--accent)"> → non attribué</span>')+
+        '</div>';
+    });
+  } else {
+    h+='<div style="font-size:.68rem;color:var(--accent)">Aucune classe 6ème attribuée pour mardi</div>';
+  }
+  h+='</div>';
+
+  // Jeudi block
+  h+='<div style="flex:1;min-width:200px"><div style="font-size:.7rem;font-weight:700;color:var(--hdr);margin-bottom:5px">🏊 Jeudi M3+M4</div>';
+  h+='<div style="font-size:.67rem;margin-bottom:5px;color:var(--muted)">Steven — Accompagnement piscine</div>';
+  if(jeudi.length){
+    jeudi.forEach(function(e){
+      var t=e.tid?getT(e.tid):null;
+      h+='<div style="display:flex;align-items:center;gap:5px;padding:3px 0;border-bottom:1px solid var(--border);font-size:.72rem">'+
+        dotHtml(e.tid)+'<strong>'+e.classe+'</strong>'+
+        (t?'<span style="color:var(--muted)"> → '+t.name+'</span>':
+           '<span style="color:var(--accent)"> → non attribué</span>')+
+        '</div>';
+    });
+  } else {
+    h+='<div style="font-size:.68rem;color:var(--accent)">Aucune classe 6ème pour jeudi</div>';
+  }
+  h+='</div>';
+
+  // Unassigned (sans piscine)
+  if(unassigned.length){
+    h+='<div style="flex:1;min-width:160px"><div style="font-size:.7rem;font-weight:700;color:var(--accent);margin-bottom:5px">⚠️ Sans piscine</div>';
+    unassigned.forEach(function(e){
+      var t=e.tid?getT(e.tid):null;
+      h+='<div style="font-size:.72rem;padding:3px 0;border-bottom:1px solid var(--border)">'+
+        dotHtml(e.tid)+'<strong>'+e.classe+'</strong>'+(t?' → '+t.name:'')+'</div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+
+  // Check
+  var total6=mardi.length+jeudi.length;
+  var expected=opt===1?7:6;
+  var check=sixieClasses.length>0?
+    '<div style="margin-top:7px;font-size:.68rem;color:'+(total6===expected&&!unassigned.length?'var(--success)':'var(--warn)')+'">'+
+    (total6===expected&&!unassigned.length?
+      '✅ Répartition correcte ('+total6+' classes)':
+      '⚠️ '+total6+' classes sur '+expected+' attendues — vérifiez les attributions')+
+    '</div>':
+    '<div style="margin-top:6px;font-size:.68rem;color:var(--muted)">Aucune classe 6ème active dans la carte scolaire.</div>';
+  el.innerHTML=h+check;
+}
+
+
+function rCtr(){
+  var rl=document.getElementById('rules-list');
+  rl.innerHTML=RULES.map(function(r){
+    return'<div class="ctr-rule"><div class="ctr-icon">'+r.icon+'</div><div class="ctr-body"><div class="ctr-title">'+r.title+'</div><div class="ctr-desc">'+r.desc+'</div></div></div>';
+  }).join('');
+  rCtrList();
+  rClassesGrid();
+  rAssignList();
+  rServiceRecap();
+  rPoolRecap();
+}
+
+function rServiceRecap(){
+  var el=document.getElementById('service-recap');if(!el)return;
+  // Compute hours assigned per teacher from S.assigns
+  var assigned={};
+  TB.forEach(function(t){assigned[t.id]=0;});
+  // Pool HSA
+  assigned['cl']+=2; // piscine
+  assigned['st']+=2; // piscine
+  assigned['lo']+=1; // ULIS
+  // AS hours already deducted from service (3h each)
+  // Cours nets = service - AS = t.cours
+  if(S.assigns){
+    S.assigns.forEach(function(a){
+      if(a.tid&&assigned[a.tid]!==undefined)assigned[a.tid]+=parseInt(a.dur)||0;
+      if(a.tid2&&assigned[a.tid2]!==undefined)assigned[a.tid2]+=parseInt(a.dur2)||0;
+    });
+  }
+  var rows=TB.map(function(t){
+    var h=assigned[t.id]||0;
+    var target=t.cours;
+    var pct=Math.round(h/target*100);
+    var barCol=pct<50?'var(--accent)':pct<85?'var(--warn)':'var(--success)';
+    var status=h>target?'<span class="bdg berr-b">Dépassé +' +(h-target)+'h</span>':
+               h===target?'<span class="bdg bok-b">Complet ✓</span>':
+               '<span class="bdg bwrn-b">Reste '+(target-h)+'h</span>';
+    return'<tr>'+
+      '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:6px">'+
+      '<div class="tdot" style="background:'+t.dot+'"></div>'+t.name+'</div></td>'+
+      '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">'+t.cours+'h</td>'+
+      '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+      '<div class="pb-w" style="flex:1"><div class="pb" style="width:'+Math.min(pct,100)+'%;background:'+barCol+'"></div></div>'+
+      '<span style="font-size:.73rem;font-weight:600;min-width:28px">'+h+'h</span>'+
+      '</div></td>'+
+      '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+status+'</td>'+
+      '</tr>';
+  }).join('');
+  el.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.76rem"><thead><tr>'+
+    ['Enseignant','Cours nets','Heures attribuées','Statut'].map(function(hd){
+      return'<th style="padding:5px 8px;border-bottom:2px solid var(--border);text-align:'+(hd==='Enseignant'?'left':'center')+';font-size:.63rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">'+hd+'</th>';
+    }).join('')+
+    '</tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div style="font-size:.65rem;color:var(--muted);margin-top:6px">HSA incluses (piscine Clément+Steven, ULIS Louis). Heures attribuées = total des sessions assignées via la répartition.</div>';
+}
+
+function rCtrList(){
+  var el=document.getElementById('ctr-list');
+  if(!S.constraints.length){el.innerHTML='<div style="font-size:.76rem;color:var(--muted);padding:8px 0">Aucune contrainte ajoutée.</div>';return;}
+  el.innerHTML=S.constraints.map(function(c,i){
+    var t=getT(c.tid);
+    return'<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surf);margin-bottom:6px">'+
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+t.dot+'"></span>'+
+      '<span style="font-size:.77rem;font-weight:600">'+t.name+'</span>'+
+      '<span class="bdg binf-b">'+c.level+'</span>'+
+      '<span style="font-size:.73rem;color:var(--muted)">'+c.day+' · '+c.sid+'</span>'+
+      (c.note?'<span style="font-size:.68rem;color:var(--muted);font-style:italic">'+c.note+'</span>':'')+
+      '<button class="btn bs bxs" style="margin-left:auto;color:var(--accent)" onclick="delCtr('+i+')">✕</button>'+
+      '</div>';
+  }).join('');
+}
+
+function openAddCtr(){
+  var tOpts=TB.map(function(t){return'<option value="'+t.id+'">'+t.name+'</option>';}).join('');
+  var dOpts=DAYS.map(function(d){return'<option value="'+d+'">'+d+'</option>';}).join('');
+  var sOpts=SID.map(function(s){return'<option value="'+s+'">'+s+'</option>';}).join('');
+  var lvOpts=['6ème','5ème','4ème','3ème','ULIS'].map(function(l){return'<option value="'+l+'">'+l+'</option>';}).join('');
+  var h='<div class="fr"><label>Enseignant</label><select id="ct-t">'+tOpts+'</select></div>'+
+    '<div class="fr"><label>Niveau de classe</label><select id="ct-lv">'+lvOpts+'</select></div>'+
+    '<div class="fr"><label>Jour</label><select id="ct-d">'+dOpts+'</select></div>'+
+    '<div class="fr"><label>Créneau</label><select id="ct-s">'+sOpts+'</select></div>'+
+    '<div class="fr"><label>Note (optionnel)</label><input type="text" id="ct-n" placeholder="ex: toujours salle GP"></div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px"><button class="btn bp" onclick="confCtr()">Ajouter</button><button class="btn bs" onclick="clsMod()">Annuler</button></div>';
+  openMod('Ajouter une contrainte de positionnement',h);
+}
+
+function confCtr(){
+  var c={tid:document.getElementById('ct-t').value,level:document.getElementById('ct-lv').value,day:document.getElementById('ct-d').value,sid:document.getElementById('ct-s').value,note:document.getElementById('ct-n').value};
+  S.constraints.push(c);save();clsMod();rCtrList();toast('Contrainte ajoutée','tok');
+}
+function delCtr(i){S.constraints.splice(i,1);save();rCtrList();toast('Contrainte supprimée','twrn');}
+function rClassesGrid(){
+  var el=document.getElementById('classes-grid');if(!el)return;
+  var allClasses=['6A','6B','6C','6D','6E','6F','6G','5A','5B','5C','5D','5E','5F','4A','4B','4C','4D','4E','4F','3A','3B','3C','3D','3E','3F','3G','3H','ULIS'];
+  if(!S.classesList)S.classesList=allClasses.slice();
+  var h='';
+  allClasses.forEach(function(cl){
+    var active=S.classesList.indexOf(cl)>=0;
+    var level=cl[0]==='6'?'6ème':cl[0]==='5'?'5ème':cl[0]==='4'?'4ème':cl[0]==='3'?'3ème':'ULIS';
+    var lvlCol=level==='6ème'?'#0369a1':level==='5ème'?'#2a9d8f':level==='4ème'?'#f0922b':level==='3ème'?'#e63946':'#7c3aed';
+    var col=active?lvlCol:'#9ca3af';
+    var bg=active?lvlCol+'18':'transparent';
+    var brd=active?lvlCol:'#d1d5db';
+    h+='<label style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1.5px solid '+brd+';background:'+bg+';cursor:pointer;font-size:.73rem;font-weight:'+(active?'600':'400')+';color:'+col+'" onclick="togClass(this)" data-cl="'+cl+'">';
+    h+=cl;
+    h+='</label>';
+  });
+  el.innerHTML=h;
+}
+
+function togClass(el){
+  var cl=el.dataset.cl;
+  var active=S.classesList.indexOf(cl)<0; // toggle
+  toggleClass(cl,active);
+}
+
+
+function toggleClass(cl,active){
+  if(!S.classesList)S.classesList=[];
+  if(active){if(S.classesList.indexOf(cl)<0)S.classesList.push(cl);}
+  else{S.classesList=S.classesList.filter(function(x){return x!==cl;});}
+  save();rClassesGrid();rServiceRecap();rAssignList();
+}
+
+function toggleAllClasses(active){
+  var allClasses=['6A','6B','6C','6D','6E','6F','6G','5A','5B','5C','5D','5E','5F','4A','4B','4C','4D','4E','4F','3A','3B','3C','3D','3E','3F','3G','3H','ULIS'];
+  S.classesList=active?allClasses.slice():[];
+  save();rClassesGrid();rServiceRecap();rAssignList();toast(active?'Toutes classes activées':'Toutes classes désactivées',active?'tok':'twrn');
+}
+
+function rAssignList(){
+  var el=document.getElementById('assign-list');
+  if(!el)return;
+  if(!S.assigns||!S.assigns.length){
+    el.innerHTML='<div style="font-size:.76rem;color:var(--muted);padding:6px 0">Aucune attribution définie. La génération répartira les classes automatiquement.</div>';
+    return;
+  }
+  el.innerHTML=S.assigns.map(function(a,i){
+    var t1=getT(a.tid);
+    var t2=a.tid2?getT(a.tid2):null;
+    var desc=t1?('<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+t1.dot+'"></span> <strong>'+t1.name+'</strong> — '+a.dur+'h'):'?';
+    if(t2)desc+=' + <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+t2.dot+'"></span> <strong>'+t2.name+'</strong> — '+a.dur2+'h';
+    return'<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surf);margin-bottom:5px">'+
+      '<span class="bdg binf-b">'+a.classe+'</span>'+
+      '<span style="font-size:.76rem">'+desc+'</span>'+
+      (a.note?'<span style="font-size:.67rem;color:var(--muted);font-style:italic">'+a.note+'</span>':'')+
+      '<button class="btn bs bxs" style="margin-left:auto;color:var(--accent)" onclick="delAssign('+i+')">✕</button>'+
+      '</div>';
+  }).join('');
+}
+
+function openAddAssign(){
+  var tOpts='<option value="">— Non attribué (auto)</option>'+TB.map(function(t){return'<option value="'+t.id+'">'+t.name+'</option>';}).join('');
+  // Build class list from all classes in EDT26 or manual list
+  // S.classes can be customized; default list
+  var classes=S.classesList||['6A','6B','6C','6D','6E','6F','6G','5A','5B','5C','5D','5E','5F','4A','4B','4C','4D','4E','4F','3A','3B','3C','3D','3E','3F','3G','3H','ULIS'];
+  var cOpts=classes.map(function(cl){return'<option value="'+cl+'">'+cl+'</option>';}).join('');
+  var h='<div class="fr"><label>Classe</label><select id="as-cl">'+cOpts+'</select></div>'+
+    '<div style="background:var(--surf2);border-radius:6px;padding:10px;margin-bottom:10px">'+
+    '<div style="font-size:.74rem;font-weight:600;margin-bottom:8px">Enseignant principal</div>'+
+    '<div class="fr"><label>Enseignant</label><select id="as-t1">'+tOpts+'</select></div>'+
+    '<div class="fr"><label>Heures attribuées</label><select id="as-d1"><option value="2">2h</option><option value="1">1h</option></select></div>'+
+    '</div>'+
+    '<div style="background:var(--surf2);border-radius:6px;padding:10px;margin-bottom:10px">'+
+    '<div style="font-size:.74rem;font-weight:600;margin-bottom:8px">Enseignant secondaire (optionnel — pour partage)</div>'+
+    '<div class="fr"><label>Enseignant</label><select id="as-t2">'+tOpts+'</select></div>'+
+    '<div class="fr"><label>Heures attribuées</label><select id="as-d2"><option value="1">1h</option><option value="2">2h</option></select></div>'+
+    '</div>'+
+    '<div class="fr"><label>Note (optionnel)</label><input type="text" id="as-note" placeholder="ex: spécialité danse, sport co…"></div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px">'+
+    '<button class="btn bp" onclick="confAssign()">Attribuer</button>'+
+    '<button class="btn bs" onclick="clsMod()">Annuler</button>'+
+    '</div>';
+  openMod('Attribuer une classe',h);
+}
+
+function confAssign(){
+  var cl=document.getElementById('as-cl').value;
+  var tid=document.getElementById('as-t1').value;
+  var dur=parseInt(document.getElementById('as-d1').value)||2;
+  var tid2=document.getElementById('as-t2').value||null;
+  var dur2=parseInt(document.getElementById('as-d2').value)||1;
+  var note=document.getElementById('as-note').value;
+  if(!cl){toast('Choisissez une classe','twrn');return;}
+  if(!tid){toast('Choisissez au moins un enseignant','twrn');return;}
+  if(!S.assigns)S.assigns=[];
+  // Remove existing assignment for this class
+  S.assigns=S.assigns.filter(function(a){return a.classe!==cl;});
+  S.assigns.push({classe:cl,tid:tid,dur:dur,tid2:tid2||null,dur2:dur2,note:note});
+  save();clsMod();rAssignList();rServiceRecap();rPoolRecap();toast('Attribution enregistrée','tok');
+}
+
+function delAssign(i){S.assigns.splice(i,1);save();rAssignList();toast('Attribution supprimée','twrn');}
+
+
+function selPool(n,el){
+  S.poolOpt=n;save();
+  document.querySelectorAll('.pool-opt').forEach(function(e){e.classList.remove('selected');});
+  el.classList.add('selected');
+  rPoolRecap();
+}
+
+// ═══════════════════════════════════════
+// GÉNÉRATION EDT 2027
+// ═══════════════════════════════════════
+function genEdt27(){
+  var prio=document.getElementById('gen-prio').value;
+  var poolOpt=parseInt(document.getElementById('gen-pool').value);
+  var tries=parseInt(document.getElementById('gen-tries').value)||50;
+  var compact=document.getElementById('gen-compact').checked;
+  var respAS=document.getElementById('gen-respAS').checked;
+  var use24h=document.getElementById('gen-24h')?document.getElementById('gen-24h').checked:true;
+  var usePrefs=document.getElementById('gen-prefs')?document.getElementById('gen-prefs').checked:true;
+  var useDayOff=document.getElementById('gen-dayoff')?document.getElementById('gen-dayoff').checked:true;
+
+  // Show progress
+  document.getElementById('gen-prog').classList.add('show');
+  var msgs=['Placement piscine 6ème…','Blocage créneaux AS…','Placement cours 2h…','Placement cours 1h…','Validation & rapport…'];
+  var mi=0;
+  function setMsg(m){document.getElementById('gen-prog-msg').textContent=m;}
+
+  setTimeout(function(){
+    setMsg(msgs[0]);
+    setTimeout(function(){
+      setMsg(msgs[1]);
+      setTimeout(function(){
+        setMsg(msgs[2]);
+        setTimeout(function(){
+          setMsg(msgs[3]);
+          setTimeout(function(){
+            setMsg(msgs[4]);
+            setTimeout(function(){
+              document.getElementById('gen-prog').classList.remove('show');
+              var result=runAlgo({prio:prio,poolOpt:poolOpt,tries:tries,compact:compact,respAS:respAS,use24h:use24h,usePrefs:usePrefs,useDayOff:useDayOff});
+              showGenResult(result);
+            },400);
+          },600);
+        },700);
+      },600);
+    },400);
+  },100);
+}
+
+function runAlgo(opts){
+  var schedule={};   // tid -> day -> sid -> entry
+  var classUsedDay={};  // classe -> [day, ...] for 24h rule
+  var failed=[];
+  var log=[];
+
+  // Init grid
+  TB.forEach(function(t){
+    schedule[t.id]={};
+    DAYS.forEach(function(d){schedule[t.id][d]={};});
+  });
+
+  // ─────────────────────────────────────────
+  // HELPERS
+  // ─────────────────────────────────────────
+
+  // Check if slot is truly free for a teacher
+  function isSlotFree(tid,day,sid,dur){
+    var dd=schedule[tid][day];
+    // Slot already taken
+    if(dd[sid])return false;
+    if(dur===2){
+      // Must be a valid 2h start (M1, M3, or S2 only)
+      var nx=nxt(sid);  // uses VALID_2H_STARTS — returns null if not a valid pair
+      if(!nx)return false;
+      if(dd[nx])return false;
+    }
+    // Mercredi PM forbidden for EPS
+    if(day==='Mercredi'&&['S1','S2','S3','S4'].indexOf(sid)>=0)return false;
+    // Teacher day off — ALWAYS enforced (hard constraint)
+    var t=S.teachers.find(function(x){return x.id===tid;})||getT(tid);
+    if(t.dayOff&&t.dayOff===day)return false;
+    if(t.halfOff){
+      var amSlots=['M1','M2','M3','M4'];
+      var pmSlots=['S1','S2','S3','S4'];
+      if(t.halfOff===day+'_AM'&&amSlots.indexOf(sid)>=0)return false;
+      if(t.halfOff===day+'_PM'&&pmSlots.indexOf(sid)>=0)return false;
+    }
+    // Install capacity
+    var cap=0;
+    S.installs.forEach(function(i){
+      var v=i.avail[day+'|'+sid];
+      if(v!==false&&v!=='false')cap+=i.cap;
+    });
+    if(cap<=0)return false;
+    // Max 4 simultaneous teachers (except Mardi M1/M2 where pool allows 5)
+    var isPoolSlot=(day==='Mardi'&&(sid==='M1'||sid==='M2'))||(day==='Jeudi'&&(sid==='M3'||sid==='M4'));
+    var maxProfs=isPoolSlot?5:4;
+    var currentProfs=0;
+    TB.forEach(function(t2){
+      var dd2=schedule[t2.id][day];
+      if(!dd2)return;
+      // Count direct slot
+      if(dd2[sid]&&!dd2[sid]._consumed&&!dd2[sid].isAS)currentProfs++;
+      // Count covered by 2h from prev slot
+      var pi=SID.indexOf(sid)-1;
+      if(pi>=0){var prevSid=SID[pi];if(dd2[prevSid]&&dd2[prevSid].dur===2&&!dd2[prevSid].isAS)currentProfs++;}
+    });
+    return currentProfs<maxProfs;
+  }
+
+  // Check 24h rule: a class must not appear on the same day or adjacent days
+  // We track which DAYS a class has been placed
+  function check24h(classe,day){
+    if(!classe||classe==='[À définir]')return true; // no rule for generic
+    var used=classUsedDay[classe]||[];
+    var dayIdx=DAYS.indexOf(day);
+    for(var i=0;i<used.length;i++){
+      var usedIdx=DAYS.indexOf(used[i]);
+      // Same day or adjacent day (|diff| <= 1)
+      if(Math.abs(dayIdx-usedIdx)<=1)return false;
+    }
+    return true;
+  }
+
+  function markClass(classe,day){
+    if(!classe||classe==='[À définir]')return;
+    if(!classUsedDay[classe])classUsedDay[classe]=[];
+    if(classUsedDay[classe].indexOf(day)<0)classUsedDay[classe].push(day);
+  }
+
+  function countHours(tid){
+    var h=0;
+    DAYS.forEach(function(day){
+      Object.entries(schedule[tid][day]).forEach(function(e){
+        var k=e[0],sd=e[1];
+        if(!sd||sd._consumed||sd.isAS||k==='_as')return;
+        h+=sd.dur;
+      });
+    });
+    return h;
+  }
+
+  function countDayHours(tid,day){
+    var h=0;
+    Object.entries(schedule[tid][day]).forEach(function(e){
+      var k=e[0],sd=e[1];
+      if(!sd||sd._consumed||sd.isAS||k==='_as')return;
+      h+=sd.dur;
+    });
+    return h;
+  }
+
+  function levelOfClass(classe){
+    var c0=classe?classe[0]:'';
+    if(c0==='6')return '6ème';
+    if(c0==='5')return '5ème';
+    if(c0==='4')return '4ème';
+    if(c0==='3')return '3ème';
+    return 'ULIS';
+  }
+
+  function chainScore(tid,day,sid,classe){
+    var dd=schedule[tid][day];
+    var si=SID.indexOf(sid);
+    var s=0;
+    // Adjacency bonus (only count actual placed sessions, not consumed)
+    if(si>0){var prev=dd[SID[si-1]];if(prev&&!prev._consumed&&!prev.isAS)s+=300;}
+    if(si<SID.length-1){var next=dd[SID[si+1]];if(next&&!next._consumed&&!next.isAS)s+=300;}
+    if(si>1){var p2=dd[SID[si-2]];if(p2&&!p2._consumed&&!p2.isAS)s+=80;}
+    if(si<SID.length-2){var n2=dd[SID[si+2]];if(n2&&!n2._consumed&&!n2.isAS)s+=80;}
+    // Compact penalty
+    if(opts.compact&&s===0&&Object.values(dd).some(function(x){return x&&!x._consumed&&!x.isAS;}))s-=150;
+    // Pool teachers: 6eme sessions should prefer their piscine day
+    if(classe&&classe!=='[À définir]'&&levelOfClass(classe)==='6ème'){
+      if((tid==='cl'&&day==='Mardi')||(tid==='st'&&day==='Jeudi'))s+=200;
+      else if(tid==='cl'||tid==='st')s-=80;
+    }
+    // S1 discouraged for all
+    if(sid==='S1')s-=60;
+    // Level preferences (if option enabled)
+    if(opts.usePrefs!==false&&classe&&classe!=='[À définir]'){
+      var lv=levelOfClass(classe);
+      var t=getT(tid);
+      if(t.prefLevels&&t.prefLevels.indexOf(lv)>=0)s+=50;
+      if(t.avoidLevels&&t.avoidLevels.indexOf(lv)>=0)s-=80;
+      if(lv==='6ème'&&sid==='M4')s-=40;
+    }
+    return s;
+  }
+
+  function pickInst(day,sid,dur){
+    var best=null,bestCap=-1;
+    S.installs.forEach(function(inst){
+      var v=inst.avail[day+'|'+sid];
+      if(v===false||v==='false')return;
+      if(dur===2&&inst.dist!=='eloignee')return;
+      if(inst.cap>bestCap){bestCap=inst.cap;best=inst.id;}
+    });
+    if(!best){
+      S.installs.forEach(function(inst){
+        var v=inst.avail[day+'|'+sid];
+        if(v===false||v==='false')return;
+        if(inst.cap>bestCap){bestCap=inst.cap;best=inst.id;}
+      });
+    }
+    return best;
+  }
+
+  function placeSession(tid,day,sid,dur,label,extra){
+    var ins=extra&&extra.ins?extra.ins:pickInst(day,sid,dur);
+    schedule[tid][day][sid]=Object.assign({c:label,dur:dur,ins:ins,note:''},extra||{},{ins:ins});
+    if(dur===2){var nx=nxt(sid);if(nx)schedule[tid][day][nx]={_consumed:true,dur:1};}
+    markClass(label,day);
+  }
+
+  // ─────────────────────────────────────────
+  // STEP 1: Block AS slots
+  // ─────────────────────────────────────────
+  if(opts.respAS){
+    TB.forEach(function(t){
+      var asT=S.as[t.id]||{};
+      Object.entries(asT).forEach(function(e){
+        var day=e[0];
+        e[1].forEach(function(a){
+          if(!schedule[t.id][day]['_as'])schedule[t.id][day]['_as']=[];
+          schedule[t.id][day]['_as'].push({c:a.lb,isAS:true,dur:1,note:a.note||'',ins:null});
+        });
+      });
+    });
+  }
+  // Log teacher constraints for transparency
+  TB.forEach(function(t2){
+    var tc=S.teachers.find(function(x){return x.id===t2.id;})||t2;
+    if(tc.dayOff)log.push('✓ '+tc.name+' — journée libre : '+tc.dayOff);
+    if(tc.halfOff)log.push('✓ '+tc.name+' — demi-journée libre : '+tc.halfOff.replace('_AM',' matin').replace('_PM',' PM'));
+    if(tc.prefLevels&&tc.prefLevels.length)log.push('✓ '+tc.name+' — niveaux préférés : '+tc.prefLevels.join(', '));
+    if(tc.avoidLevels&&tc.avoidLevels.length)log.push('✓ '+tc.name+' — niveaux évités : '+tc.avoidLevels.join(', '));
+  });
+  log.push('Créneaux AS bloqués');
+
+  // ─────────────────────────────────────────
+  // STEP 2: Piscine 6ème
+  // ─────────────────────────────────────────
+  // Clément : Mardi M1+M2 — accompagnement (pas de classe propre)
+  // Steven  : Jeudi M3+M4 — accompagnement (pas de classe propre)
+  // Les autres enseignants emmènent leurs classes de 6ème sur ces créneaux
+  // Option 1 (7 classes): 4 profs avec classe Mardi + 3 profs avec classe Jeudi
+  // Option 2 (6 classes): 3 profs avec classe Mardi + 3 profs avec classe Jeudi
+
+  // Always place Clément and Steven as accompaniment
+  placeSession('cl','Mardi','M1',2,'Accompagnement piscine',{isPool:true,note:'Piscine 6ème — sans classe',ins:'ps'});
+  placeSession('st','Jeudi','M3',2,'Accompagnement piscine',{isPool:true,note:'Piscine 6ème — sans classe',ins:'ps'});
+
+  // Determine which 6ème classes go to piscine and on which day
+  // Collect all 6ème classes assigned (from S.assigns)
+  var sixieme6Classes=[]; // {classe, tid, dur}
+  if(S.assigns){
+    S.assigns.forEach(function(a){
+      if(!a.classe||a.classe[0]!=='6')return; // only 6ème
+      if(S.classesList&&S.classesList.indexOf(a.classe)<0)return;
+      // Primary teacher
+      if(a.tid&&a.tid!=='cl'&&a.tid!=='st'){
+        sixieme6Classes.push({classe:a.classe,tid:a.tid,placed:false});
+      }
+      // Secondary teacher
+      if(a.tid2&&a.tid2!=='cl'&&a.tid2!=='st'){
+        sixieme6Classes.push({classe:a.classe,tid:a.tid2,placed:false});
+      }
+    });
+  }
+  // If no assigns, auto-distribute 6ème among non-pool teachers
+  if(!sixieme6Classes.length){
+    var sixieClassList=(S.classesList||[]).filter(function(cl){return cl[0]==='6';});
+    var nonPool=TB.filter(function(t){return t.id!=='cl'&&t.id!=='st';});
+    sixieClassList.forEach(function(cl,i){
+      var teacher=nonPool[i%nonPool.length];
+      sixieme6Classes.push({classe:cl,tid:teacher.id,placed:false});
+    });
+  }
+
+  // Place 6ème classes on piscine slots
+  // Option 1: up to 4 on Mardi, rest on Jeudi
+  // Option 2: up to 3 on Mardi, rest on Jeudi
+  var maxMardi=opts.poolOpt===1?4:3;
+  var mardiCount=0,jeudiCount=0;
+
+  sixieme6Classes.forEach(function(item){
+    if(item.placed)return;
+    // Try Mardi first (up to maxMardi)
+    if(mardiCount<maxMardi&&isSlotFree(item.tid,'Mardi','M1',2)){
+      placeSession(item.tid,'Mardi','M1',2,item.classe,{isPool:true,note:'Piscine',ins:'ps'});
+      item.placed=true;mardiCount++;
+    } else if(jeudiCount<3&&isSlotFree(item.tid,'Jeudi','M3',2)){
+      placeSession(item.tid,'Jeudi','M3',2,item.classe,{isPool:true,note:'Piscine',ins:'ps'});
+      item.placed=true;jeudiCount++;
+    }
+  });
+
+  log.push('Piscine: Cl accomp. Mardi M1+M2 · St accomp. Jeudi M3+M4');
+  log.push('Classes 6ème piscine Mardi: '+mardiCount+' · Jeudi: '+jeudiCount);
+
+  // ─────────────────────────────────────────
+  // STEP 3: Forced positioning constraints
+  // ─────────────────────────────────────────
+  S.constraints.forEach(function(ctr){
+    if(ctr.tid&&ctr.day&&ctr.sid&&ctr.classe){
+      var dur=parseInt(ctr.dur)||1;
+      if(isSlotFree(ctr.tid,ctr.day,ctr.sid,dur)&&check24h(ctr.classe,ctr.day)){
+        placeSession(ctr.tid,ctr.day,ctr.sid,dur,ctr.classe,{});
+        log.push('Contrainte : '+ctr.classe+' → '+ctr.day+' '+ctr.sid);
+      }
+    }
+  });
+
+  // ─────────────────────────────────────────
+  // STEP 4: Build session list
+  // Priority: assigned classes > generic fillers
+  // ULIS always 1h
+  // ─────────────────────────────────────────
+  var sessions=[];
+  var ulisClasses=['ULIS'];
+
+  if(S.assigns&&S.assigns.length){
+    S.assigns.forEach(function(a){
+      if(S.classesList&&S.classesList.indexOf(a.classe)<0)return;
+      var isULIS=ulisClasses.indexOf(a.classe)>=0;
+      var isSixieme=a.classe&&a.classe[0]==='6';
+      if(a.tid){
+        var dur1=isULIS?1:Math.min(parseInt(a.dur)||2,2);
+        // Skip 6ème classes already placed in piscine step
+        var alreadyPlaced=isSixieme&&DAYS.some(function(day){
+          var dd=schedule[a.tid][day];
+          return Object.values(dd).some(function(sd){return sd&&sd.c===a.classe&&sd.isPool;});
+        });
+        if(!alreadyPlaced){
+          sessions.push({tid:a.tid,dur:dur1,classe:a.classe,isULIS:isULIS,target:getT(a.tid).cours,priority:1});
+        }
+      }
+      if(a.tid2){
+        var dur2=isULIS?1:Math.min(parseInt(a.dur2)||1,2);
+        var alreadyPlaced2=isSixieme&&DAYS.some(function(day){
+          var dd=schedule[a.tid2][day];
+          return Object.values(dd).some(function(sd){return sd&&sd.c===a.classe&&sd.isPool;});
+        });
+        if(!alreadyPlaced2){
+          sessions.push({tid:a.tid2,dur:dur2,classe:a.classe,isULIS:isULIS,target:getT(a.tid2).cours,priority:1});
+        }
+      }
+    });
+  }
+
+  // Generic filler sessions for remaining hours
+  TB.forEach(function(t){
+    var inList=0;
+    sessions.forEach(function(s){if(s.tid===t.id)inList+=s.dur;});
+    var remaining=t.cours-countHours(t.id)-inList;
+    if(remaining<=0)return;
+    var n2h=Math.floor(remaining/2);
+    var n1h=remaining%2;
+    for(var i=0;i<n2h;i++)sessions.push({tid:t.id,dur:2,classe:'[À définir]',target:t.cours,priority:2});
+    for(var i=0;i<n1h;i++)sessions.push({tid:t.id,dur:1,classe:'[À définir]',target:t.cours,priority:2});
+  });
+
+  log.push('Sessions à placer : '+sessions.length);
+
+  // Sort: priority assigned first, ULIS first, then 2h, then 1h
+  sessions.sort(function(a,b){
+    if(a.priority!==b.priority)return a.priority-b.priority;
+    if(a.isULIS&&!b.isULIS)return -1;
+    if(!a.isULIS&&b.isULIS)return 1;
+    return b.dur-a.dur;
+  });
+
+  // ─────────────────────────────────────────
+  // STEP 5: Place sessions
+  // ─────────────────────────────────────────
+  var placed=0;
+  sessions.forEach(function(sess){
+    if(countHours(sess.tid)>=sess.target)return;
+    var didPlace=false;
+    var dayOrder=DAYS.slice().sort(function(){return Math.random()-.5;});
+
+    for(var di=0;di<dayOrder.length&&!didPlace;di++){
+      var day=dayOrder[di];
+      if(countDayHours(sess.tid,day)+sess.dur>6)continue;
+      if(countHours(sess.tid)>=sess.target)break;
+      // 24h rule check for this day
+      if(opts.use24h!==false&&!check24h(sess.classe,day))continue;
+
+      var bestSid=null,bestScore=-99999;
+      SID.forEach(function(sid){
+        if(!isSlotFree(sess.tid,day,sid,sess.dur))return;
+        if(countDayHours(sess.tid,day)+sess.dur>6)return;
+        var sc=chainScore(sess.tid,day,sid,sess.classe);
+        sc+=Math.random()*3;
+        if(sc>bestScore){bestScore=sc;bestSid=sid;}
+      });
+
+      if(bestSid){
+        var extra={};
+        if(sess.isULIS)extra.isULIS=true;
+        placeSession(sess.tid,day,bestSid,sess.dur,sess.classe,extra);
+        placed++;
+        didPlace=true;
+      }
+    }
+    if(!didPlace)failed.push(sess);
+  });
+
+  log.push(placed+' sessions placées / '+sessions.length);
+  if(failed.length)log.push(failed.length+' non placées (contraintes trop strictes ?)');
+
+  // ─────────────────────────────────────────
+  // STEP 6: Convert to edt27 format
+  // ─────────────────────────────────────────
+  var edt27={};
+  TB.forEach(function(t){
+    DAYS.forEach(function(day){
+      var dd=schedule[t.id][day];
+      Object.entries(dd).forEach(function(e){
+        var sid=e[0],sd=e[1];
+        if(!sd||sd._consumed||sd.isAS||sid==='_as')return;
+        if(!edt27[day])edt27[day]={};
+        if(!edt27[day][sid])edt27[day][sid]=[];
+        edt27[day][sid].push(Object.assign({},sd,{tid:t.id}));
+      });
+      if(dd['_as']){
+        dd['_as'].forEach(function(a){
+          if(!edt27[day])edt27[day]={};
+          if(!edt27[day]['_as'])edt27[day]['_as']=[];
+          edt27[day]['_as'].push(Object.assign({},a,{tid:t.id}));
+        });
+      }
+    });
+  });
+
+  return{edt27:edt27,failed:failed,log:log,placed:placed,total:sessions.length};
+}
+
+function showGenResult(result){
+  S.edt27 = result.edt27;
+  if(S.edts.length>=10) S.edts.shift();
+  S.edts.push({label:'EDT 2027 (généré) — '+new Date().toLocaleString('fr-FR'), data:JSON.parse(JSON.stringify(result.edt27)), ts:Date.now(), yr:2027});
+  save();
+  // Navigate to result tab
+  var resTab = document.querySelector('.nt[onclick*="res27"]');
+  nav('res27', resTab);
+  // Show generation log in result tab  
+  var logEl=document.getElementById('res27-genlog');
+  if(logEl&&result.log){
+    var constraintLines=result.log.filter(function(l){return l.startsWith('✓');});
+    var statLines=result.log.filter(function(l){return !l.startsWith('✓');});
+    var html='';
+    if(constraintLines.length){
+      html+='<div class="card" style="margin-bottom:10px"><h3>✅ Contraintes appliquées dans cette génération</h3>'+
+        constraintLines.map(function(l){return'<div style="font-size:.72rem;padding:3px 7px;background:#dcfce7;border-left:3px solid var(--success);border-radius:3px;margin-bottom:3px">'+l+'</div>';}).join('')+
+        '</div>';
+    } else {
+      html+='<div style="font-size:.72rem;color:var(--muted);padding:6px;margin-bottom:8px">Configuration des jours libres : onglet Enseignants.</div>';
+    }
+    if(statLines.length){
+      html+='<div style="font-size:.7rem;color:var(--muted)">'+statLines.map(function(l){return'<span style="display:block;padding:2px 0;border-bottom:1px solid var(--border)">'+l+'</span>';}).join('')+'</div>';
+    }
+    logEl.innerHTML=html;
+  }
+  toast('EDT 2027 généré et sauvegardé','tok');
+}
+
+var S_f_res27 = 'all';
+
+function rRes27(tf) {
+  S_f_res27 = tf || S_f_res27;
+  var hasResult = S.edt27 && Object.keys(S.edt27).length > 0;
+  var fbar = document.getElementById('fbar-res27');
+  if(fbar) fbar.style.display = hasResult ? 'flex' : 'none';
+
+  if (!hasResult) {
+    document.getElementById('res27-subtitle').textContent = 'Aucune génération effectuée';
+    document.getElementById('res27-summary').innerHTML = '<div class="card" style="text-align:center;padding:24px"><div style="font-size:1.6rem">🎲</div><div style="font-size:.82rem;margin-top:8px;color:var(--muted)">Lancez la génération depuis l\'onglet "Générer 2027".</div></div>';
+    document.getElementById('res27-par').innerHTML = '';
+    document.getElementById('res27-grid').innerHTML = '';
+    return;
+  }
+
+  var nPlaced = 0;
+  Object.values(S.edt27).forEach(function(dd){
+    Object.values(dd).forEach(function(entries){
+      if(!Array.isArray(entries))return;
+      entries.forEach(function(en){ if(!en.isAS) nPlaced++; });
+    });
+  });
+  document.getElementById('res27-subtitle').textContent = nPlaced + ' cours placés (généré automatiquement)';
+
+  var sumH = '<div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">';
+  TB.forEach(function(t) {
+    var h = 0;
+    Object.values(S.edt27).forEach(function(dd){
+      Object.values(dd).forEach(function(entries){
+        if(!Array.isArray(entries))return;
+        entries.forEach(function(en){ if(en.tid===t.id&&!en.isAS) h+=en.dur; });
+      });
+    });
+    sumH += '<span style="font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:9px;background:'+t.dot+'18;color:'+t.dot+';border:1px solid '+t.dot+'33">'+t.name+' : '+h+'h / '+t.cours+'h</span>';
+  });
+  sumH += '<div style="display:flex;gap:6px;margin-left:auto">';
+  sumH += '<button class="btn bs bsm" onclick="navToSaisie()">✏️ Éditer</button>';
+  sumH += '<button class="btn bp bsm" onclick="navToVerif()">⚠️ Vérifier</button>';
+  sumH += '</div></div>';
+  document.getElementById('res27-summary').innerHTML = sumH;
+
+  var parData = buildParData(S.edt27, false);
+  renderParTable(parData, 'res27-par', 'Capacité restante des installations après placement');
+  rEdtGen(S_f_res27);
+}
+
+function fRes27(f, btn) {
+  S_f_res27 = f;
+  document.querySelectorAll('#fbar-res27 .fc').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  rEdtGen(f);
+}
+
+function rEdtGen(tf){
+  var isSingle=(tf!=='all');
+  // Pre-compute: for each day+slot, which entries start here (dur=2)
+  var continuations={};   // day+'|'+nextSid -> [{tid,color,label}]
+  DAYS.forEach(function(day){
+    SID.forEach(function(sid){
+      var entries=S.edt27[day]&&S.edt27[day][sid];
+      if(!Array.isArray(entries))return;
+      entries.forEach(function(en){
+        if(en.dur===2){
+          var nx=nxt(sid);
+          if(nx){
+            var key=day+'|'+nx;
+            if(!continuations[key])continuations[key]=[];
+            var t=getT(en.tid);
+            if(t)continuations[key].push({tid:en.tid,color:t.dot,cls:t.cls,label:en.c,isPool:en.isPool});
+          }
+        }
+      });
+    });
+  });
+
+  // rowspanned: only used in single-teacher view to skip td
+  var rowspanned={};
+  if(isSingle){
+    DAYS.forEach(function(day){
+      SID.forEach(function(sid){
+        var entries=S.edt27[day]&&S.edt27[day][sid];
+        if(!Array.isArray(entries))return;
+        entries.forEach(function(en){
+          if(en.tid===tf&&en.dur===2){
+            var nx=nxt(sid);
+            if(nx)rowspanned[day+'|'+nx]=true;
+          }
+        });
+      });
+    });
+  }
+
+  var h='<div class="gwrap"><table class="etbl"><thead><tr><th>Créneau</th>';
+  DAYS.forEach(function(d){h+='<th class="dth">'+d+'</th>';});
+  h+='</tr></thead><tbody>';
+
+  SID.forEach(function(sid){
+    if(sid==='S1'){
+      h+='<tr class="pr"><td class="ttd"><small>Pause</small></td>';
+      DAYS.forEach(function(){h+='<td style="height:6px;background:#f0f2f6;border:none"></td>';});
+      h+='</tr>';
+    }
+    var sl=SLOTS.find(function(s){return s.id===sid;});
+    h+='<tr><td class="ttd"><strong>'+sid+'</strong><small>'+sl.t+'</small></td>';
+
+    DAYS.forEach(function(day){
+      // Single view: skip cell if covered by rowspan above
+      if(isSingle&&rowspanned[day+'|'+sid])return;
+
+      var entries=S.edt27[day]&&S.edt27[day][sid];
+      var chips='';var hasDouble=false;
+
+      if(Array.isArray(entries)){
+        entries.forEach(function(en){
+          if(tf!=='all'&&tf!==en.tid)return;
+          var t=getT(en.tid);if(!t)return;
+          var isD=en.dur===2;
+          var nx=isD?nxt(sid):null;
+          var rng=isD&&nx?sid+'–'+nx:sid;
+          var icon=en.isPool?'🏊':en.isAS?'⭐':en.isULIS?'♿':'';
+          var ins=en.ins?getI(en.ins):null;
+          chips+='<div class="chip '+(en.isAS?'c-as':en.isPool?'c-pool':t.cls)+'" '+
+            'data-t="'+en.tid+'" data-cl="'+(en.c||'')+'" data-note="'+(en.note||'')+'" data-rng="'+rng+'" '+
+            'onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="movTip(event)">'+
+            (!isSingle?'<div class="ctl">'+t.name+'</div>':'')+
+            '<div class="ccl">'+(en.c||'')+'</div>'+
+            (ins?'<div class="csub">'+ins.abbr+'</div>':'')+
+            (isD?'<div class="csub">2h·'+rng+'</div>':'')+
+            (icon?'<div class="cion">'+icon+'</div>':'')+
+            '</div>';
+          if(isD)hasDouble=true;
+        });
+      }
+
+      // S1 AS
+      if(sid==='S1'){
+        TB.forEach(function(t){
+          if(tf!=='all'&&tf!==t.id)return;
+          var asD=S.as[t.id]&&S.as[t.id][day];
+          if(asD){asD.forEach(function(a){
+            chips+='<div class="me c-as" style="border-left-color:'+t.dot+'">'+
+              '<div class="me-t">'+t.name+'</div><div class="me-c">⭐ '+a.lb+'</div>'+
+              (a.note?'<div class="me-i">'+a.note+'</div>':'')+
+              '</div>';
+          });}
+        });
+      }
+
+      // In multi view ("Tous"), show continuation bars for 2h blocks starting in prev row
+      if(!isSingle){
+        var contKey=day+'|'+sid;
+        var conts=continuations[contKey];
+        if(conts&&conts.length){
+          conts.forEach(function(ct){
+            if(tf!=='all'&&tf!==ct.tid)return;
+            var bgClass=ct.isPool?'c-pool':ct.cls;
+            chips+='<div class="chip '+bgClass+'" style="opacity:.55;align-items:center;justify-content:center;min-height:20px" '+
+              'data-t="'+ct.tid+'" data-cl="'+ct.label+'" data-note="Continuation du bloc 2h" data-rng="'+sid+'" '+
+              'onmouseenter="showTip(event,this)" onmouseleave="hideTip()" onmousemove="movTip(event)">'+
+              '<div class="csub" style="font-size:.55rem;text-align:center">▲ '+ct.label+'</div>'+
+              '</div>';
+          });
+        }
+      }
+
+      if(isSingle&&hasDouble){
+        h+='<td rowspan="2" style="padding:0;height:calc(var(--sh)*2+1px)"><div style="height:100%;display:flex;flex-direction:column">'+chips+'</div></td>';
+      } else {
+        h+='<td style="vertical-align:top;height:var(--sh)">'+chips+'</td>';
+      }
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  document.getElementById('res27-grid').innerHTML=h;
+}
+
+
+function rSaisie(){
+  updHrs27();
+  var tf=S.f27;var C=con27();var rendered27={};
+  var h='<table class="stbl"><thead><tr><th class="tlbl">Créneau</th>';
+  DAYS.forEach(function(d){h+='<th>'+d+'</th>';});h+='</tr></thead><tbody>';
+  SID.forEach(function(sid){
+    if(sid==='S1'){
+      h+='<tr class="assep"><td class="tlbl" style="font-style:normal;font-weight:700;font-size:.58rem">AS</td>';
+      DAYS.forEach(function(day){
+        var chips='';
+        TB.forEach(function(t){
+          if(tf!=='all'&&tf!==t.id)return;
+          var asD=S.as[t.id]&&S.as[t.id][day];
+          if(asD){asD.forEach(function(a){chips+='<div class="me c-as" style="border-left-color:'+t.dot+'"><div class="me-t">'+t.name+'</div><div class="me-c">⭐ '+a.lb+'</div>'+(a.note?'<div class="me-i">'+a.note+'</div>':'')+'</div>';});}
+        });
+        h+='<td style="background:var(--surf2)">'+chips+'</td>';
+      });
+      h+='</tr>';
+    }
+    var sl=SLOTS.find(function(s){return s.id===sid;});
+    h+='<tr><td class="tlbl"><strong>'+sid+'</strong><br><span style="font-size:.52rem;color:var(--muted)">'+sl.t.split('–')[0]+'</span></td>';
+    DAYS.forEach(function(day){
+      var dd27=S.edt27[day];var entries=dd27&&dd27[sid];var chips='';var maxDur=1;
+      if(Array.isArray(entries)){
+        entries.forEach(function(en){
+          if(tf!=='all'&&tf!==en.tid)return;
+          if(C[en.tid+'|'+day+'|'+sid])return;
+          var t=getT(en.tid);if(!t)return;
+          var isD=en.dur===2;var nx=isD?nxt(sid):null;var rng=isD&&nx?sid+'–'+nx:sid;
+          var icon=en.isPool?'🏊':en.isAS?'⭐':en.isULIS?'♿':'';
+          var ins=en.ins?getI(en.ins):null;
+          chips+='<div class="me '+(en.isAS?'c-as':t.cls)+'" style="border-left-color:'+t.dot+';cursor:pointer" onclick="editE27(\''+day+'\',\''+sid+'\',\''+en.tid+'\')">'+
+            (tf==='all'?'<div class="me-t">'+t.name+'</div>':'')+
+            '<div class="me-c">'+(en.c||'')+'</div>'+
+            (ins?'<div class="me-i">'+ins.abbr+'</div>':'')+
+            (icon?' '+icon:'')+
+            '</div>';
+          if(isD&&nx)maxDur=2;
+        });
+      }
+      var n=countPlaced(day,sid);var cap=capAvail(day,sid);
+      var barPct=cap>0?Math.min(Math.round(n/cap*100),100):(n>0?100:0);
+      var barCol=n===0?'#86efac':n<cap?'#fcd34d':'#fca5a5';
+      // Dots des installations disponibles sur ce créneau
+      var iDots='';
+      S.installs.forEach(function(inst){
+        var v=inst.avail[day+'|'+sid];
+        if(v!==false&&v!=='false')
+          iDots+='<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:'+inst.color+';margin:0 1px" title="'+inst.name+'"></span>';
+      });
+      var btnTxt=(iDots?'<span style="display:flex;justify-content:center;flex-wrap:wrap;gap:1px">'+iDots+'</span>':'')+
+        (n>0?'<strong style="font-size:.65rem;color:'+(n<cap?'#854d0e':'#991b1b')+'">'+n+'</strong> ':'')+( cap>0?'+':'🔴');
+      chips+='<button class="add-btn" onclick="openAdd27(\''+day+'\',\''+sid+'\')" title="'+cap+' groupe(s)·'+n+' placé(s)">'+btnTxt+'</button>';
+      chips+='<div class="cap-bar"><div class="cap-fill" style="width:'+barPct+'%;background:'+barCol+'"></div></div>';
+      if(n>0)chips+='<div class="slot-info" style="background:'+(n<cap?'#fef9c3':'#fee2e2')+';color:'+(n<cap?'#854d0e':'#991b1b')+'">'+n+'/'+cap+'</div>';
+      if(maxDur===2){
+        h+='<td rowspan="2" style="padding:0;height:calc(var(--sh)*2+1px)"><div style="height:100%;display:flex;flex-direction:column">'+chips+'</div></td>';
+      } else {
+        h+='<td style="vertical-align:top;height:var(--sh)">'+chips+'</td>';
+      }
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  document.getElementById('grid27').innerHTML=h;
+  // Render parallel table based on current edt27 placements
+  var parData27 = buildParData(S.edt27, false);
+  renderParTable(parData27, 'par-saisie', 'Capacité restante des installations');
+}
+
+function updHrs27(){
+  var bar=document.getElementById('hrs27');
+  bar.innerHTML=TB.map(function(t){
+    var h=0;
+    Object.values(S.edt27).forEach(function(dd){Object.values(dd).forEach(function(ens){if(!Array.isArray(ens))return;ens.forEach(function(en){if(en.tid===t.id&&!en.isAS)h+=en.dur;});});});
+    return'<span style="font-size:.66rem;font-weight:600;padding:2px 7px;border-radius:9px;background:'+t.dot+'18;color:'+t.dot+';border:1px solid '+t.dot+'33">'+t.name+' : '+h+'h / '+t.cours+'h</span>';
+  }).join('');
+}
+
+function getTeacherClasses(tid){
+  // Return list of classes assigned to this teacher via S.assigns
+  if(!S.assigns)return[];
+  var cls=[];
+  S.assigns.forEach(function(a){
+    if(a.tid===tid)cls.push({classe:a.classe,dur:a.dur,isPrimary:true});
+    if(a.tid2===tid)cls.push({classe:a.classe,dur:a.dur2,isPrimary:false});
+  });
+  return cls;
+}
+
+function openAdd27(day,sid){
+  var sl=SLOTS.find(function(s){return s.id===sid;});
+  var n=countPlaced(day,sid);var cap=capAvail(day,sid);
+  var warn=cap===0?'<div class="bdg berr-b" style="display:block;margin-bottom:10px;padding:5px 8px">⚠️ Aucune installation disponible</div>':n>=cap?'<div class="bdg bwrn-b" style="display:block;margin-bottom:10px;padding:5px 8px">⚠️ Capacité atteinte ('+n+'/'+cap+')</div>':'';
+  var busy={};
+  TB.forEach(function(t){var dd=S.edt27[day];if(!dd)return;var ens=dd[sid];if(Array.isArray(ens))ens.forEach(function(en){if(en.tid===t.id)busy[t.id]=true;});var pi=SID.indexOf(sid)-1;if(pi>=0){var pens=dd[SID[pi]];if(Array.isArray(pens))pens.forEach(function(en){if(en.tid===t.id&&en.dur===2)busy[t.id]=true;});}});
+  var instOpts=S.installs.map(function(i){var av=i.avail[day+'|'+sid]!==false;return'<option value="'+i.id+'"'+(av?'':' style="color:#aaa"')+'>'+i.abbr+' — '+i.name+(av?'':' (fermé)')+'</option>';}).join('');
+
+  // Teacher select with change handler to update class suggestions
+  var tSelect='<select id="m-t" onchange="updClassSuggestions()">'+
+    TB.map(function(t){return'<option value="'+t.id+'"'+(busy[t.id]?' style="color:#aaa"':'')+'>'+t.name+(busy[t.id]?' (déjà placé)':'')+'</option>';}).join('')+'</select>';
+
+  var h=warn+
+    '<div style="background:var(--surf2);border-radius:5px;padding:6px 9px;margin-bottom:10px;font-size:.7rem;color:var(--muted)">📍 '+day+' · '+sid+' ('+sl.t+') — '+n+' placé(s) / '+cap+' groupe(s)</div>'+
+    '<div class="fr"><label>Enseignant</label>'+tSelect+'</div>'+
+    '<div id="class-suggestions" style="margin-bottom:8px"></div>'+
+    '<div class="fr"><label>Classe</label><input type="text" id="m-c" placeholder="5ème A, 3ème B… (ou cliquez une suggestion)"></div>'+
+    '<div class="fr"><label>Installation</label><select id="m-i"><option value="">— Non précisée</option>'+instOpts+'</select></div>'+
+    '<div class="fr"><label>Durée</label><select id="m-d"><option value="1">1h</option><option value="2">2h (2 créneaux)</option></select></div>'+
+    '<div class="fr"><label>Note</label><input type="text" id="m-n" placeholder="Piscine, sortie…"></div>'+
+    '<div style="display:flex;gap:8px;margin:8px 0 12px;font-size:.74rem"><label><input type="checkbox" id="m-pool"> 🏊 Piscine</label><label><input type="checkbox" id="m-as"> ⭐ AS</label><label><input type="checkbox" id="m-ulis"> ♿ ULIS</label></div>'+
+    '<div style="display:flex;gap:6px"><button class="btn bp" onclick="confAdd27(\''+day+'\',\''+sid+'\')">Ajouter</button><button class="btn bs" onclick="clsMod()">Annuler</button></div>';
+  openMod('Ajouter — '+day+' '+sid,h);
+  // Trigger suggestions for first teacher
+  setTimeout(function(){updClassSuggestions();},50);
+}
+
+function updClassSuggestions(){
+  var sel=document.getElementById('m-t');
+  var sugg=document.getElementById('class-suggestions');
+  if(!sel||!sugg)return;
+  var tid=sel.value;
+  var t=getT(tid);
+  var classes=getTeacherClasses(tid);
+  if(!classes.length){
+    sugg.innerHTML='<div style="font-size:.67rem;color:var(--muted);padding:3px 0">Aucune classe attribuée à '+t.name+' — saisissez manuellement.</div>';
+    return;
+  }
+  // Also show classes already placed in edt27 for this teacher
+  var alreadyPlaced={};
+  Object.entries(S.edt27).forEach(function(de){
+    Object.entries(de[1]).forEach(function(se){
+      if(!Array.isArray(se[1]))return;
+      se[1].forEach(function(en){
+        if(en.tid===tid&&en.c)alreadyPlaced[en.c]=(alreadyPlaced[en.c]||0)+en.dur;
+      });
+    });
+  });
+  var html='<div style="background:'+t.dot+'12;border:1px solid '+t.dot+'30;border-radius:6px;padding:7px 9px;margin-bottom:4px">'+
+    '<div style="font-size:.62rem;font-weight:700;color:'+t.dot+';margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">'+
+    '📚 Classes de '+t.name+'</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:5px">';
+  classes.forEach(function(a){
+    var placed=alreadyPlaced[a.classe]||0;
+    var remaining=a.dur-placed;
+    var col=remaining<=0?'#aaa':t.dot;
+    var bg=remaining<=0?'#f3f4f6':t.dot+'18';
+    html+='<button style="padding:3px 9px;border-radius:5px;border:1.5px solid '+col+';background:'+bg+';color:'+col+';font-size:.68rem;font-weight:600;cursor:'+(remaining>0?'pointer':'default')+'" '+
+      (remaining>0?'onclick="pickClass(\''+a.classe+'\','+a.dur+')"':'')+
+      ' title="'+a.dur+'h attribué(es) · '+placed+'h déjà placé(es) · '+Math.max(0,remaining)+'h restante(s)">'+
+      a.classe+(remaining>0?' <small>('+Math.max(0,remaining)+'h)</small>':'<small> ✓</small>')+
+      '</button>';
+  });
+  html+='</div></div>';
+  sugg.innerHTML=html;
+}
+
+function pickClass(classe,dur){
+  var inp=document.getElementById('m-c');
+  var durSel=document.getElementById('m-d');
+  if(inp)inp.value=classe;
+  if(durSel)durSel.value=dur>=2?'2':'1';
+  // Highlight
+  if(inp){inp.style.background='#dcfce7';setTimeout(function(){inp.style.background='';},600);}
+}
+
+function confAdd27(day,sid){
+  var tid=document.getElementById('m-t').value,c=document.getElementById('m-c').value.trim();
+  var ins=document.getElementById('m-i').value||null,dur=parseInt(document.getElementById('m-d').value);
+  var note=document.getElementById('m-n').value.trim();
+  var isPool=document.getElementById('m-pool').checked,isAS=document.getElementById('m-as').checked,isULIS=document.getElementById('m-ulis').checked;
+  if(!c){toast('Indiquez une classe','twrn');return;}
+  if(!S.edt27[day])S.edt27[day]={};if(!S.edt27[day][sid])S.edt27[day][sid]=[];
+  S.edt27[day][sid].push({tid:tid,c:c,dur:dur,ins:ins,note:note,isPool:isPool,isAS:isAS,isULIS:isULIS});
+  save();clsMod();rSaisie();toast('Ajouté','tok');
+}
+
+function editE27(day,sid,tid){
+  var dd=S.edt27[day];if(!dd)return;var ens=dd[sid];if(!Array.isArray(ens))return;
+  var idx=ens.findIndex(function(e){return e.tid===tid;});if(idx<0)return;
+  var en=ens[idx];var t=getT(tid);
+  var instOpts=S.installs.map(function(i){return'<option value="'+i.id+'"'+(en.ins===i.id?' selected':'')+'>'+i.abbr+' — '+i.name+'</option>';}).join('');
+  var h='<div class="fr"><label>Classe</label><input type="text" id="e-c" value="'+en.c+'"></div>'+
+    '<div class="fr"><label>Installation</label><select id="e-i"><option value="">— Non précisée</option>'+instOpts+'</select></div>'+
+    '<div class="fr"><label>Durée</label><select id="e-d"><option value="1"'+(en.dur===1?' selected':'')+'>1h</option><option value="2"'+(en.dur===2?' selected':'')+'>2h</option></select></div>'+
+    '<div class="fr"><label>Note</label><input type="text" id="e-n" value="'+(en.note||'')+'"></div>'+
+    '<div style="display:flex;gap:8px;margin:8px 0 12px;font-size:.74rem"><label><input type="checkbox" id="e-pool"'+(en.isPool?' checked':'')+'>🏊</label><label><input type="checkbox" id="e-as"'+(en.isAS?' checked':'')+'>⭐</label><label><input type="checkbox" id="e-ulis"'+(en.isULIS?' checked':'')+'>♿</label></div>'+
+    '<div style="display:flex;gap:6px"><button class="btn bp" onclick="confEdit27(\''+day+'\',\''+sid+'\','+idx+')">Enregistrer</button><button class="btn bs" style="background:#fee2e2;color:#991b1b" onclick="delE27(\''+day+'\',\''+sid+'\','+idx+')">Supprimer</button><button class="btn bs" onclick="clsMod()">Annuler</button></div>';
+  openMod('Modifier — '+t.name+' · '+day+' '+sid,h);
+}
+
+function confEdit27(day,sid,idx){
+  var en=S.edt27[day][sid][idx];
+  en.c=document.getElementById('e-c').value;en.ins=document.getElementById('e-i').value||null;en.dur=parseInt(document.getElementById('e-d').value);en.note=document.getElementById('e-n').value;en.isPool=document.getElementById('e-pool').checked;en.isAS=document.getElementById('e-as').checked;en.isULIS=document.getElementById('e-ulis').checked;
+  save();clsMod();rSaisie();toast('Modifié','tok');
+}
+
+function delE27(day,sid,idx){
+  S.edt27[day][sid].splice(idx,1);
+  if(!S.edt27[day][sid].length)delete S.edt27[day][sid];
+  if(!Object.keys(S.edt27[day]||{}).length)delete S.edt27[day];
+  save();clsMod();rSaisie();toast('Supprimé','twrn');
+}
+
+function imp26to27(){
+  if(!confirm('Importer EDT 2026 comme base 2027 ?'))return;
+  S.edt27={};
+  TB.forEach(function(t){var td=EDT26[t.id];if(!td)return;
+    Object.entries(td).forEach(function(de){var day=de[0];Object.entries(de[1]).forEach(function(se){var sid=se[0];var sd=se[1];if(sid==='AS')return;
+      if(!S.edt27[day])S.edt27[day]={};if(!S.edt27[day][sid])S.edt27[day][sid]=[];
+      S.edt27[day][sid].push(Object.assign({},sd,{tid:t.id}));});});
+  });
+  save();rSaisie();toast('EDT 2026 importé','tok');
+}
+
+function save27(){var label='EDT 2027 — '+new Date().toLocaleString('fr-FR');if(S.edts.length>=10)S.edts.shift();S.edts.push({label:label,data:JSON.parse(JSON.stringify(S.edt27)),ts:Date.now(),yr:2027});save();rEdtHist();toast('Sauvegardé','tok');}
+function clear27(){if(!confirm('Effacer tout l\'EDT 2027 ?'))return;S.edt27={};save();rSaisie();toast('Effacé','twrn');}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+function rDash(){
+  var totalH=0;var classes=new Set();
+  TB.forEach(function(t){totalH+=t.cours;var td=EDT26[t.id];Object.values(td||{}).forEach(function(dd){Object.entries(dd).forEach(function(e){var sid=e[0];var sd=e[1];if(sid==='AS'||!sd.c)return;if(!sd.isAS&&!sd.isPool)classes.add(sd.c);});});});
+  document.getElementById('db-stats').innerHTML=[{v:totalH+'h',l:'Heures EPS / semaine'},{v:5,l:'Enseignants'},{v:classes.size,l:'Classes enseignées'},{v:S.edts.length,l:'EDTs sauvegardés'}].map(function(s){return'<div class="card"><div class="sv">'+s.v+'</div><div class="sl">'+s.l+'</div></div>';}).join('');
+  var tEl=document.getElementById('db-teach');
+  tEl.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.72rem"><thead><tr>'+['Nom','Service','EPS nets','AS','HSA'].map(function(hd){return'<th style="text-align:'+(hd==='Nom'?'left':'center')+';padding:4px 6px;border-bottom:2px solid var(--border);font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">'+hd+'</th>';}).join('')+'</tr></thead><tbody>'+TB.map(function(t){return'<tr><td style="padding:5px 6px;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:5px;font-weight:600"><div class="tdot" style="background:'+t.dot+'"></div>'+t.name+'</div></td><td style="padding:5px 6px;border-bottom:1px solid var(--border);text-align:center">'+t.svc+'h</td><td style="padding:5px 6px;border-bottom:1px solid var(--border);text-align:center">'+t.cours+'h</td><td style="padding:5px 6px;border-bottom:1px solid var(--border);text-align:center">'+t.as+'h</td><td style="padding:5px 6px;border-bottom:1px solid var(--border);text-align:center">'+(t.hsa?'<span class="bdg binf-b">'+t.hsa+'h '+(t.id==='cl'||t.id==='st'?'piscine':t.id==='lo'?'ULIS':'')+'</span>':'—')+'</td></tr>';}).join('')+'</tbody></table><div style="margin-top:8px;font-size:.63rem;color:var(--muted);font-style:italic;line-height:1.55">HSA Clément &amp; Steven = accompagnement piscine · HSA Louis = ULIS (matin)</div>';
+  // Parallel
+  var pc={};DAYS.forEach(function(day){SID.forEach(function(sid){var k=day+'|'+sid;pc[k]=0;TB.forEach(function(t){var dd=EDT26[t.id]&&EDT26[t.id][day];if(!dd)return;if(dd[sid]&&!dd[sid].isAS)pc[k]++;var pi=SID.indexOf(sid)-1;if(pi>=0&&dd[SID[pi]]&&dd[SID[pi]].dur===2&&!dd[SID[pi]].isAS)pc[k]++;});});});
+  var pEl=document.getElementById('db-par');
+  var ph='<table style="border-collapse:collapse;font-size:.63rem;width:100%"><thead><tr><th style="padding:3px 5px;background:var(--surf2);border:1px solid var(--border);font-size:.58rem;color:var(--muted)">—</th>';
+  DAYS.forEach(function(d){ph+='<th style="padding:3px 5px;background:var(--surf2);border:1px solid var(--border);font-size:.58rem;color:var(--muted);text-align:center">'+d.substring(0,3)+'</th>';});ph+='</tr></thead><tbody>';
+  SID.forEach(function(sid){ph+='<tr><td style="padding:3px 5px;font-weight:700;background:var(--surf2);border:1px solid var(--border)">'+sid+'</td>';DAYS.forEach(function(day){var n=pc[day+'|'+sid]||0;var col=n===0?'#aaa':n<=2?'var(--success)':n<=4?'var(--warn)':'var(--accent)';ph+='<td style="padding:3px 5px;text-align:center;border:1px solid var(--border);font-weight:700;color:'+col+'">'+(n||'·')+'</td>';});ph+='</tr>';});
+  ph+='</tbody></table>';pEl.innerHTML=ph;
+  rEdtHist();TB.forEach(function(t){var el=document.getElementById('h-'+t.id);if(el)el.textContent=t.cours+'h';});
+}
+
+function rEdtHist(){
+  var el=document.getElementById('edt-hist');document.getElementById('edt-cnt').textContent='('+S.edts.length+'/10)';
+  if(!S.edts.length){el.innerHTML='<div style="color:var(--muted);font-size:.73rem;padding:6px 0">Aucun EDT sauvegardé.</div>';return;}
+  el.innerHTML=S.edts.map(function(e,i){return'<div style="display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.73rem;flex:1">'+e.label+'</span><span style="font-size:.6rem;color:var(--muted)">'+new Date(e.ts).toLocaleString('fr-FR')+'</span><button class="btn bs bsm" onclick="ldEdt('+i+')">📥</button><button class="btn bsm" style="background:#fee2e2;color:#991b1b;border:none" onclick="rmEdt('+i+')">🗑️</button></div>';}).join('');
+}
+function ldEdt(i){var e=S.edts[i];if(e.yr===2027){S.edt27=e.data;save();nav('saisie',document.querySelector('.nt:nth-child(7)'));toast('EDT 2027 chargé','tok');}else toast('EDT 2026 est fixe','twrn');}
+function rmEdt(i){if(!confirm('Supprimer ?'))return;S.edts.splice(i,1);save();rEdtHist();toast('Supprimé','twrn');}
+
+// ═══════════════════════════════════════
+// TEACHERS
+// ═══════════════════════════════════════
+function rTeach(){
+  var el=document.getElementById('teach-grid');el.innerHTML='';
+  S.teachers.forEach(function(t){
+    var lvls=['6ème','5ème','4ème','3ème','ULIS'];
+    var d=document.createElement('div');d.className='card';
+
+    // Active constraint badges
+    var badges='';
+    if(t.dayOff)badges+='<span style="padding:2px 8px;border-radius:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;font-size:.67rem;font-weight:600">🚫 '+t.dayOff+' libre</span> ';
+    if(t.halfOff){var ho=t.halfOff.replace('_AM',' matin').replace('_PM',' PM');badges+='<span style="padding:2px 8px;border-radius:10px;background:#dcfce7;border:1px solid #86efac;color:#166534;font-size:.67rem;font-weight:600">🚫 '+ho+' libre</span> ';}
+    if(t.prefLevels&&t.prefLevels.length)badges+='<span style="padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534;font-size:.67rem">⭐ '+t.prefLevels.join(', ')+'</span> ';
+    if(t.avoidLevels&&t.avoidLevels.length)badges+='<span style="padding:2px 8px;border-radius:10px;background:#fee2e2;color:#991b1b;font-size:.67rem">✗ '+t.avoidLevels.join(', ')+'</span>';
+
+    // Build day options for selects
+    var dayOpts='<option value="">— Aucune</option>'+DAYS.map(function(dd){
+      return'<option value="'+dd+'"'+(t.dayOff===dd?' selected':'')+'>'+dd+'</option>';
+    }).join('');
+    var halfOpts='<option value="">— Aucune</option>'+DAYS.map(function(dd){
+      return'<option value="'+dd+'_AM"'+(t.halfOff===dd+'_AM'?' selected':'')+'>'+dd+' matin</option>'+
+             '<option value="'+dd+'_PM"'+(t.halfOff===dd+'_PM'?' selected':'')+'>'+dd+' après-midi</option>';
+    }).join('');
+
+    d.innerHTML=
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+        '<div class="tdot" style="background:'+t.dot+';width:12px;height:12px"></div>'+
+        '<span style="font-size:1rem;font-weight:600">'+t.name+'</span>'+
+        '<span class="bdg binf-b" style="margin-left:auto">'+t.cours+'h+'+t.as+'h AS'+(t.hsa?'+'+t.hsa+'h HSA':'')+'</span>'+
+      '</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;min-height:24px">'+
+        (badges||'<span style="font-size:.67rem;color:var(--muted);font-style:italic">Aucune contrainte — tous créneaux disponibles</span>')+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'+
+        '<div class="fr" style="margin:0">'+
+          '<label style="display:flex;align-items:center;justify-content:space-between">'+
+            'Journée libre'+
+            (t.dayOff?'<span style="color:var(--success);font-size:.6rem;font-weight:700">ACTIF ✓</span>':'')+
+          '</label>'+
+          '<select id="dayoff-'+t.id+'" data-tid="'+t.id+'" data-prop="dayOff" onchange="tpChange(this)" style="border-color:'+(t.dayOff?'var(--success)':'var(--border)')+';font-weight:'+(t.dayOff?'700':'400')+'">'+dayOpts+'</select>'+
+        '</div>'+
+        '<div class="fr" style="margin:0">'+
+          '<label style="display:flex;align-items:center;justify-content:space-between">'+
+            'Demi-journée libre'+
+            (t.halfOff?'<span style="color:var(--success);font-size:.6rem;font-weight:700">ACTIF ✓</span>':'')+
+          '</label>'+
+          '<select id="halfoff-'+t.id+'" data-tid="'+t.id+'" data-prop="halfOff" onchange="tpChange(this)" style="border-color:'+(t.halfOff?'var(--success)':'var(--border)')+';font-weight:'+(t.halfOff?'700':'400')+'">'+halfOpts+'</select>'+
+        '</div>'+
+      '</div>'+
+      '<div style="font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">'+
+        'Niveaux préférés / à éviter '+
+        '<span style="font-weight:400;text-transform:none;font-size:.62rem">(clic pour cycler : Neutre → ⭐ Préféré → ✗ Éviter)</span>'+
+      '</div>'+
+      '<div style="display:flex;gap:4px;flex-wrap:wrap" id="prefs-'+t.id+'">'+
+      lvls.map(function(lv){
+        var pl=t.prefLevels||[];var al=t.avoidLevels||[];
+        var st=pl.indexOf(lv)>=0?'p':al.indexOf(lv)>=0?'a':'n';
+        return'<span class="pp pp-'+st+'" data-tid="'+t.id+'" data-lv="'+lv+'" onclick="cycPref2(this)">'+lv+'</span>';
+      }).join('')+
+      '</div>';
+
+    el.appendChild(d);
+  });
+}
+
+// Helper: onChange for teacher property selects (avoids quote nesting)
+function tpChange(el){
+  // Read from id="dayoff-cl" or id="halfoff-cl" pattern (more reliable than dataset)
+  var id=el.id||'';
+  var prop=id.startsWith('dayoff-')?'dayOff':id.startsWith('halfoff-')?'halfOff':(el.dataset.prop||'');
+  var tid=id.replace('dayoff-','').replace('halfoff-','')||el.dataset.tid||'';
+  var val=el.value||null;
+  if(!tid||!prop)return;
+  setTP(tid,prop,val);
+}
+
+// Helper: cycle pref via data attrs (avoids quote nesting)
+function cycPref2(el){
+  var tid=el.dataset.tid,lv=el.dataset.lv;
+  cycPref(tid,lv,el);
+}
+
+
+function setTP(tid,p,v){var t=S.teachers.find(function(x){return x.id===tid;});if(t){t[p]=v||null;save();if(S.tab==='teach')rTeach();}}
+function cycPref(tid,lv,el){var t=S.teachers.find(function(x){return x.id===tid;});if(!t)return;if(!t.prefLevels)t.prefLevels=[];if(!t.avoidLevels)t.avoidLevels=[];var isP=t.prefLevels.indexOf(lv)>=0,isA=t.avoidLevels.indexOf(lv)>=0;t.prefLevels=t.prefLevels.filter(function(x){return x!==lv;});t.avoidLevels=t.avoidLevels.filter(function(x){return x!==lv;});if(!isP&&!isA){t.prefLevels.push(lv);el.className='pp pp-p';}else if(isP){t.avoidLevels.push(lv);el.className='pp pp-a';}else el.className='pp pp-n';save();}
+
+// ═══════════════════════════════════════
+// AS
+// ═══════════════════════════════════════
+function rAS(){
+  var el=document.getElementById('as-content');var h='';
+  TB.forEach(function(t){
+    h+='<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px"><div class="tdot" style="background:'+t.dot+'"></div><strong style="font-size:.85rem">'+t.name+'</strong><button class="btn bs bsm" style="margin-left:auto" onclick="addAS(\''+t.id+'\')">+ Ajouter AS</button></div>'+
+      '<table style="width:100%;border-collapse:collapse;font-size:.7rem"><thead><tr><th style="text-align:left;padding:4px 6px;border-bottom:2px solid var(--border);font-size:.59rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Jour</th><th style="padding:4px 6px;border-bottom:2px solid var(--border);font-size:.59rem;text-transform:uppercase;color:var(--muted)">Libellé</th><th style="padding:4px 6px;border-bottom:2px solid var(--border);font-size:.59rem;text-transform:uppercase;color:var(--muted)">Note</th><th></th></tr></thead><tbody>';
+    var asT=S.as[t.id]||{};var any=false;
+    Object.entries(asT).forEach(function(e){e[1].forEach(function(a,i){any=true;h+='<tr><td style="padding:4px 6px;border-bottom:1px solid var(--border)">'+e[0]+'</td><td style="padding:4px 6px;border-bottom:1px solid var(--border)">'+a.lb+'</td><td style="padding:4px 6px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.65rem">'+(a.note||'—')+'</td><td style="padding:4px 6px;border-bottom:1px solid var(--border)"><button class="btn bsm" style="background:#fee2e2;color:#991b1b;border:none" onclick="rmAS(\''+t.id+'\',\''+e[0]+'\','+i+')">🗑️</button></td></tr>';});});
+    if(!any)h+='<tr><td colspan="4" style="padding:10px;color:var(--muted);text-align:center">Aucune AS</td></tr>';
+    h+='</tbody></table></div>';
+  });
+  el.innerHTML=h;
+}
+function addAS(tid){var h='<div class="fr"><label>Jour</label><select id="as-d">'+DAYS.map(function(d){return'<option>'+d+'</option>';}).join('')+'</select></div><div class="fr"><label>Libellé</label><input type="text" id="as-l" placeholder="AS Foot, AS Danse…"></div><div class="fr"><label>Note</label><input type="text" id="as-n" placeholder="13h30–16h30"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn bp" onclick="confAS(\''+tid+'\')">Ajouter</button><button class="btn bs" onclick="clsMod()">Annuler</button></div>';openMod('Ajouter AS',h);}
+function confAS(tid){var d=document.getElementById('as-d').value,l=document.getElementById('as-l').value||'AS',n=document.getElementById('as-n').value;if(!S.as[tid])S.as[tid]={};if(!S.as[tid][d])S.as[tid][d]=[];S.as[tid][d].push({s:'AS',lb:l,note:n});save();clsMod();rAS();toast('AS ajoutée','tok');}
+function rmAS(tid,day,i){S.as[tid][day].splice(i,1);if(!S.as[tid][day].length)delete S.as[tid][day];save();rAS();}
+
+// ═══════════════════════════════════════
+// VERIFICATION
+// ═══════════════════════════════════════
+function runV(which){
+  var el=document.getElementById('verif-out');
+  if(which==='26') el.innerHTML=''; // clear on first run
+  var issues=[];
+  function check(getSd){DAYS.forEach(function(day){TB.forEach(function(t){SID.forEach(function(sid){var sd=getSd(t.id,day,sid);if(!sd||sd.isAS)return;if(day==='Mercredi'&&['S1','S2','S3','S4'].indexOf(sid)>=0)issues.push({type:'WedPM',lvl:'err',d:t.name+' — EPS mercredi PM ('+sid+')',f:'Déplacer ce cours'});if(sd.dur===2&&(sid==='S3'||sid==='S4'))issues.push({type:'S3S4',lvl:'err',d:t.name+' — Cours 2h sur '+sid+' ('+day+')',f:'Décaler en S2 ou matin'});});});});}
+  if(which==='26'){check(function(tid,day,sid){return EDT26[tid]&&EDT26[tid][day]&&EDT26[tid][day][sid];});}
+  else{check(function(tid,day,sid){var dd=S.edt27[day];var ens=dd&&dd[sid];if(!Array.isArray(ens))return null;return ens.find(function(e){return e.tid===tid;});});}
+  var bdg=document.getElementById('nbdg');
+  if(which==='27'){
+    bdg.style.display=issues.length?'inline':'none';bdg.textContent=issues.length;
+  }
+  var prefix='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><strong style="font-size:.82rem">EDT '+which+'</strong>';
+  if(!issues.length){
+    el.innerHTML+='<div class="card" style="display:flex;align-items:center;gap:10px;padding:14px">'+
+      '<span style="font-size:1.4rem">✅</span>'+
+      '<div><div style="font-weight:600;font-size:.82rem">EDT '+which+' — Aucun conflit</div></div></div>';
+    return;
+  }
+  el.innerHTML+='<div style="font-size:.7rem;color:var(--muted);margin-bottom:8px;font-weight:700">EDT '+which+' — '+issues.length+' conflit(s)</div>'+
+    issues.map(function(iss){return'<div class="ci '+(iss.lvl==='err'?'ci-err':'ci-wrn')+'"><span class="ci-t bdg '+(iss.lvl==='err'?'berr-b':'bwrn-b')+'">'+iss.type+'</span><div><div class="ci-d">'+iss.d+'</div><div class="ci-f">💡 '+iss.f+'</div></div></div>';}).join('');
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function rGenRecap(){
+  // ── Enseignants recap ──
+  var te=document.getElementById('gen-teach-recap');
+  if(te){
+    var rows=TB.map(function(t){
+      var t2=getT(t.id);
+      var prefs=(t2.prefLevels&&t2.prefLevels.length)?t2.prefLevels.join(', '):'—';
+      var avoids=(t2.avoidLevels&&t2.avoidLevels.length)?t2.avoidLevels.join(', '):'—';
+      var dayOff=t2.dayOff||'—';
+      var halfOff=t2.halfOff?t2.halfOff.replace('_AM',' matin').replace('_PM',' PM'):'—';
+      return '<tr>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border)">'+
+          '<div style="display:flex;align-items:center;gap:5px">'+
+          '<div style="width:8px;height:8px;border-radius:50%;background:'+t.dot+';flex-shrink:0"></div>'+
+          '<strong style="font-size:.77rem">'+t.name+'</strong></div></td>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border);font-size:.72rem;text-align:center">'+t.cours+'h</td>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--success)">'+prefs+'</td>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--accent)">'+avoids+'</td>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border);font-size:.71rem;color:var(--muted)">'+dayOff+'</td>'+
+        '<td style="padding:5px 7px;border-bottom:1px solid var(--border);font-size:.71rem;color:var(--muted)">'+halfOff+'</td>'+
+        '</tr>';
+    }).join('');
+    te.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.72rem"><thead><tr>'+
+      ['Enseignant','Cours','Niveaux préférés','Niveaux évités','Jour libre','½j libre'].map(function(h){
+        return'<th style="padding:4px 7px;border-bottom:2px solid var(--border);font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left">'+h+'</th>';
+      }).join('')+
+      '</tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+
+  // ── Contraintes recap ──
+  var ce=document.getElementById('gen-ctr-recap');
+  if(ce){
+    // Pool option
+    var poolTxt='Clément : Mardi M1+M2 · Steven : Jeudi M3+M4';
+    var h='<div class="ctr-rule" style="margin-bottom:6px"><div class="ctr-icon">🏊</div>'+
+      '<div class="ctr-body"><div class="ctr-title">Piscine 6ème</div>'+
+      '<div class="ctr-desc">'+poolTxt+'</div></div></div>';
+    // AS
+    var asCount=0;
+    TB.forEach(function(t){Object.values(S.as[t.id]||{}).forEach(function(arr){asCount+=arr.length;});});
+    h+='<div class="ctr-rule" style="margin-bottom:6px"><div class="ctr-icon">⭐</div>'+
+      '<div class="ctr-body"><div class="ctr-title">Créneaux AS</div>'+
+      '<div class="ctr-desc">'+asCount+' créneau'+(asCount>1?'x':'')+" AS configuré"+(asCount>1?'s':'')+'</div></div></div>';
+    // Forced positioning
+    if(S.constraints&&S.constraints.length){
+      S.constraints.forEach(function(ctr){
+        var t=getT(ctr.tid);
+        h+='<div class="ctr-rule" style="margin-bottom:4px"><div class="ctr-icon">📌</div>'+
+          '<div class="ctr-body"><div class="ctr-title">'+ctr.classe+' → '+t.name+'</div>'+
+          '<div class="ctr-desc">'+ctr.day+' · '+ctr.sid+(ctr.note?' · '+ctr.note:'')+'</div></div></div>';
+      });
+    } else {
+      h+='<div style="font-size:.72rem;color:var(--muted);padding:4px 0">Aucune contrainte de positionnement</div>';
+    }
+    // Règles auto
+    h+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">';
+    var rules=[
+      {icon:'✅',txt:'Règle 24h entre cours'},
+      {icon:'🚫',txt:'M1+M2, M3+M4, S2+S3 uniquement pour 2h'},
+      {icon:'🚫',txt:'Mercredi PM interdit'},
+      {icon:'⚠️',txt:'S1 déconseillé'},
+      {icon:'⚠️',txt:'M4 déconseillé (6ème)'},
+      {icon:'📏',txt:'Max 6h/jour/enseignant'}
+    ];
+    rules.forEach(function(r){
+      h+='<span style="display:inline-flex;align-items:center;gap:4px;font-size:.67rem;padding:2px 8px;border-radius:10px;background:var(--surf2);border:1px solid var(--border)">'+r.icon+' '+r.txt+'</span>';
+    });
+    h+='</div>';
+    ce.innerHTML=h;
+  }
+
+  // ── Répartition classes ──
+  var ae=document.getElementById('gen-assign-recap');
+  if(ae){
+    if(!S.assigns||!S.assigns.length){
+      ae.innerHTML='<div style="font-size:.76rem;color:var(--muted);padding:4px 0">'+
+        'Aucune attribution définie — l\'algorithme répartira les '+
+        (S.classesList?S.classesList.length:0)+
+        ' classes actives librement.</div>'+
+        '<div style="margin-top:6px"><button class="btn bs bsm" onclick="navToCtr()">Configurer dans Contraintes</button></div>';
+      return;
+    }
+    // Progress bars per teacher
+    var total={};TB.forEach(function(t){total[t.id]=0;});
+    S.assigns.forEach(function(a){
+      if(a.tid)total[a.tid]=(total[a.tid]||0)+(parseInt(a.dur)||0);
+      if(a.tid2)total[a.tid2]=(total[a.tid2]||0)+(parseInt(a.dur2)||0);
+    });
+    // Pool counts as 2h for cl+st
+    total.cl=(total.cl||0)+2;total.st=(total.st||0)+2;total.lo=(total.lo||0)+1;
+
+    var progH='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">';
+    TB.forEach(function(t){
+      var h2=total[t.id]||0;var target=t.cours;
+      var pct=Math.round(Math.min(h2/target*100,100));
+      var col=h2>target?'var(--accent)':h2===target?'var(--success)':'var(--warn)';
+      var status=h2>target?('Dépassé +'+(h2-target)+'h'):h2===target?'Complet':('Reste '+(target-h2)+'h');
+      progH+='<div style="flex:1;min-width:140px;background:var(--surf2);border-radius:7px;padding:8px 10px;border:1px solid var(--border)">';
+      progH+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">'+
+        '<div style="width:8px;height:8px;border-radius:50%;background:'+t.dot+'"></div>'+
+        '<strong style="font-size:.77rem">'+t.name+'</strong>'+
+        '<span style="margin-left:auto;font-size:.67rem;color:'+col+';font-weight:600">'+h2+'h / '+target+'h</span></div>';
+      progH+='<div class="pb-w"><div class="pb" style="width:'+pct+'%;background:'+col+'"></div></div>';
+      if(status)progH+='<div style="font-size:.63rem;color:'+col+';margin-top:3px">'+status+'</div>';
+      progH+='</div>';
+    });
+    progH+='</div>';
+
+    // Class list grouped by teacher
+    var byT={};
+    S.assigns.forEach(function(a){
+      if(a.tid){if(!byT[a.tid])byT[a.tid]=[];byT[a.tid].push({cl:a.classe,dur:a.dur,secondary:false});}
+      if(a.tid2){if(!byT[a.tid2])byT[a.tid2]=[];byT[a.tid2].push({cl:a.classe,dur:a.dur2,secondary:true});}
+    });
+    var classH='<div style="display:flex;gap:10px;flex-wrap:wrap">';
+    TB.forEach(function(t){
+      var list=byT[t.id];if(!list||!list.length)return;
+      classH+='<div style="background:'+t.dot+'12;border:1px solid '+t.dot+'30;border-radius:7px;padding:8px 10px;min-width:120px">';
+      classH+='<div style="font-size:.67rem;font-weight:700;color:'+t.dot+';margin-bottom:5px;text-transform:uppercase">'+t.name+'</div>';
+      classH+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
+      list.forEach(function(item){
+        var isULIS=item.cl==='ULIS';
+        classH+='<span style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:.67rem;font-weight:600;background:'+t.dot+'28;color:'+t.dot+'">'+
+          item.cl+' <span style="font-weight:400;font-size:.62rem">'+(isULIS?'1h':item.dur+'h')+'</span>'+
+          (item.secondary?' <span style="font-size:.58rem;opacity:.7">(partagé)</span>':'')+
+          '</span>';
+      });
+      classH+='</div></div>';
+    });
+    classH+='</div>';
+    ae.innerHTML=progH+classH;
+  }
+}
+
+
+function nav(name,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.nt').forEach(function(b){b.classList.remove('active');});
+  var v=document.getElementById('view-'+name);if(v)v.classList.add('active');
+  if(btn)btn.classList.add('active');S.tab=name;
+  if(name==='dash')rDash();else if(name==='teach')rTeach();else if(name==='inst')rInst();
+  else if(name==='edt26')rEdt26(S.f26);else if(name==='ctr')rCtr();else if(name==='saisie')rSaisie();
+  else if(name==='res27')rRes27(S_f_res27);
+  else if(name==='gen')rGenRecap();
+  else if(name==='as')rAS();else if(name==='verif'){runV('26');runV('27');}
+}
+function navToCtr(){nav('ctr',document.querySelector('.nt[onclick*=ctr]'));}
+
+function navToSaisie(){nav('saisie',document.querySelector('.nt[onclick*=saisie]'));}
+function navToRes27(){nav('res27',document.querySelector('.nt[onclick*=res27]'));}
+function navToVerif(){nav('verif',document.querySelector('.nt[onclick*=verif]'));}
+
+function sf(f,btn){S.tf=f;document.querySelectorAll('#sb .tbn').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');if(S.tab==='edt26'){S.f26=f;rEdt26(f);}else if(S.tab==='saisie'){S.f27=f;rSaisie();}}
+function f26(f,btn){S.f26=f;if(btn){document.querySelectorAll('#fbar26 .fc').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}rEdt26(f);}
+function f27(f,btn){S.f27=f;if(btn){document.querySelectorAll('#fbar27 .fc').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}rSaisie();}
+
+// ═══════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════
+function openMod(title,body){document.getElementById('mtit-txt').textContent=title;document.getElementById('mbody').innerHTML=body;document.getElementById('mov').classList.add('show');}
+function clsMod(e){if(e&&e.target!==document.getElementById('mov'))return;document.getElementById('mov').classList.remove('show');}
+
+// ═══════════════════════════════════════
+// TOOLTIP
+// ═══════════════════════════════════════
+var tipEl=document.getElementById('tip');
+function showTip(e,el){var t=getT(el.dataset.t);if(!t)return;tipEl.innerHTML='<strong style="color:'+t.dot+'">'+t.name+'</strong><div>'+(el.dataset.cl||'')+'</div><div class="ts">'+el.dataset.rng+'</div>'+(el.dataset.note?'<div class="ts">'+el.dataset.note+'</div>':'');tipEl.classList.add('show');movTip(e);}
+function movTip(e){tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-8)+'px';}
+function hideTip(){tipEl.classList.remove('show');}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function toast(msg,cls){var el=document.createElement('div');el.className='toast '+(cls||'');el.textContent=msg;document.getElementById('toasts').appendChild(el);setTimeout(function(){el.remove();},2400);}
+
+// ═══════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════
+function expJSON(){var d=JSON.stringify({teachers:S.teachers,installs:S.installs,edt27:S.edt27,edts:S.edts,as:S.as,constraints:S.constraints,poolOpt:S.poolOpt},null,2);var a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(d);a.download='EPS_Pasteur_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('Export téléchargé','tok');}
+function impJSON(){document.getElementById('impf').click();}
+function doImp(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.teachers)S.teachers=d.teachers;if(d.installs)S.installs=d.installs;if(d.edt27)S.edt27=d.edt27;if(d.edts)S.edts=d.edts;if(d.as)S.as=d.as;if(d.constraints)S.constraints=d.constraints;if(d.poolOpt)S.poolOpt=d.poolOpt;save();nav(S.tab,null);toast('Import réussi','tok');}catch(ex){toast('Erreur import','terr');}};r.readAsText(f);inp.value='';}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+// Update res27 badge
+function updateRes27Badge(){
+  var hasResult = S.edt27 && Object.keys(S.edt27).length > 0;
+  var bdg = document.getElementById('res27-bdg');
+  if (bdg) bdg.style.display = hasResult ? 'inline' : 'none';
+}
+
+// Clear old localStorage if version mismatch
+try {
+  var lsRaw = localStorage.getItem('eps_v4');
+  if (lsRaw) {
+    var lsParsed = JSON.parse(lsRaw);
+    // If installs in localStorage have no avail or all false, wipe them so defaults apply
+    if (lsParsed.installs) {
+      var anyOpen = lsParsed.installs.some(function(inst){
+        if (!inst.avail) return false;
+        return Object.values(inst.avail).some(function(v){ return v === true; });
+      });
+      if (!anyOpen) {
+        delete lsParsed.installs;
+        localStorage.setItem('eps_v4', JSON.stringify(lsParsed));
+      }
+    }
+  }
+} catch(e) {}
+
+load();
+rDash();
+</script>
+</body>
+</html>
